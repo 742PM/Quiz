@@ -43,9 +43,10 @@
   <ItemGroup>
     <Compile Include="DataBaseController.cs" />
     <Compile Include="DataTransferObjects\Answer.cs" />
-    <Compile Include="DataTransferObjects\Excercise.cs" />
-    <Compile Include="DataTransferObjects\Generators.cs" />
+    <Compile Include="DataTransferObjects\Progress.cs" />
+    <Compile Include="DataTransferObjects\Task.cs" />
     <Compile Include="DataTransferObjects\Level.cs" />
+    <Compile Include="DataTransferObjects\Topic.cs" />
     <Compile Include="DataTransferObjects\User.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="Program.cs" />

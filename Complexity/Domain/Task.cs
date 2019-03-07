@@ -1,39 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain
 {
-    
-    public class Task
+    [Value]
+    public class Task : IEquatable<Task>
     {
-        public Task(IEnumerable<IAnswer> answers, IQuestion question, IEnumerable<IHint> hints, IAnswer rightAnswer)
+        public Task(IEnumerable<string> answers, string question, IEnumerable<string> hints, string rightAnswer)
         {
-            Answers = answers;
+            Answers = answers?.ToArray() ?? Array.Empty<string>();
             Question = question;
-            Hints = hints;
+            Hints = hints?.ToArray() ?? Array.Empty<string>();
             RightAnswer = rightAnswer;
         }
 
-        public IQuestion Question { get;  }
+        public string Question { get; }
 
-        public IEnumerable<IAnswer> Answers { get;  }
-        
-        public IEnumerable<IHint> Hints { get; }
+        public string[] Answers { get; }
 
-        public IAnswer RightAnswer { get; }
-    }
+        public string[] Hints { get; }
 
-    //Возможно, стоит заменить все три интерфейса на просто строки, YAGNI и все такое,
-    //но я не уверен, ведь одержимость примитивами и все такое
-    public interface IHint : IFormattable
-    {
-    }
+        public string RightAnswer { get; }
 
-    public interface IAnswer : IFormattable
-    {
-    }
+        public bool Equals(Task other) =>
+            other != null &&
+            (Answers, Question, Hints, RightAnswer).Equals((other.Answers, other.Question, other.Hints,
+                                                            other.RightAnswer));
 
-    public interface IQuestion : IFormattable
-    {
+        public void Deconstruct(out string question, out string[] answers, out string[] hints, out string rightAnswer)
+        {
+            question = Question;
+            answers = Answers;
+            hints = Hints;
+            rightAnswer = RightAnswer;
+        }
+
+        public bool IsRightAnswer(string answer) => answer==RightAnswer;
+
+        public override bool Equals(object obj) => obj is Task task && Equals(task);
+
+        public override int GetHashCode() => (Answers, Question, Hints, RightAnswer).GetHashCode();
+
+        public static bool operator ==(Task left, Task right) => Equals(left, right);
+
+        public static bool operator !=(Task left, Task right) => !Equals(left, right);
     }
 }

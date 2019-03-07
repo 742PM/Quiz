@@ -1,12 +1,12 @@
 namespace DataBase
 {
-    public class TopicDTO
+    public class TopicEntity
     {
         public int TopicId { get; set; }
         public bool IsCompleted { get; set; }
         
         public string Name { get; set; }
-        public LevelDTO[] Levels { get; set; }
-        public LevelDTO CurrentLevel { get; set; }
+        public LevelEntity[] Levels { get; set; }
+        public LevelEntity CurrentLevel { get; set; }
     }
 }

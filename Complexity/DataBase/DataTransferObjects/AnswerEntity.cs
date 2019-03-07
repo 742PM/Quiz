@@ -2,7 +2,7 @@ using System;
 
 namespace DataBase
 {
-    public class AnswerDTO
+    public class AnswerEntity
     {
         public Guid AnswerId { get; set; }
         

@@ -13,9 +13,6 @@ namespace DataBase
                 var customer = new User
                 { 
                     UserId = 1,
-                    completedLevels = new[]{new Level()},
-                    currentLevel = new Level()
-                    
                 };
 
                 customers.Insert(customer);

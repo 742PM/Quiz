@@ -43,12 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataBaseController.cs" />
-    <Compile Include="DataTransferObjects\Answer.cs" />
-    <Compile Include="DataTransferObjects\Progress.cs" />
-    <Compile Include="DataTransferObjects\Task.cs" />
-    <Compile Include="DataTransferObjects\Level.cs" />
-    <Compile Include="DataTransferObjects\Topic.cs" />
-    <Compile Include="DataTransferObjects\User.cs" />
+    <Compile Include="DataTransferObjects\AnswerDTO.cs" />
+    <Compile Include="Progress.cs" />
+    <Compile Include="DataTransferObjects\TaskDTO.cs" />
+    <Compile Include="DataTransferObjects\LevelDTO.cs" />
+    <Compile Include="DataTransferObjects\TopicDTO.cs" />
+    <Compile Include="DataTransferObjects\UserDTO.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,6 +56,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

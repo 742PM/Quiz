@@ -7,9 +7,9 @@ namespace Domain
     [Entity]
     public class Level
     {
-        public Level(IEnumerable<Task> tasks, Guid id, Dictionary<Task, int> taskWeights)
+        public Level(Guid id, Dictionary<Task, int> taskWeights)
         {
-            Tasks = new HashSet<Task>(tasks);
+            Tasks = new HashSet<Task>(taskWeights.Keys);
             Id = id;
             TaskWeights = taskWeights;
         }

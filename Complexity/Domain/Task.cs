@@ -36,7 +36,7 @@ namespace Domain
             rightAnswer = RightAnswer;
         }
 
-        public bool IsRightAnswer(string answer) => answer.Equals(Answers);
+        public bool IsRightAnswer(string answer) => answer==RightAnswer;
 
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 

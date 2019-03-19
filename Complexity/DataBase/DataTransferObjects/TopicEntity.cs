@@ -8,6 +8,6 @@ namespace DataBase
         public Guid TopicId { get; set; }
         
         public string Name { get; set; }
-        public Task[] Tasks { get; set; }
+        public TaskEntity[] Tasks { get; set; }
     }
 }

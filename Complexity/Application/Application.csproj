@@ -6,7 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataBase\DataBase.csproj" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
-
+  
 </Project>

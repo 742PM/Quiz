@@ -6,26 +6,26 @@ namespace Domain
     [Entity]
     public class Topic
     {
-        public Topic(IEnumerable<Level> levels, Guid topicId, string name, string description)
+        public Topic(IEnumerable<ITaskGenerator> generators, int id, string name, string description)
         {
-            Levels = levels;
-            TopicId = topicId;
+            Generators = generators;
+            Id = id;
             Name = name;
             Description = description;
         }
 
-        public Guid TopicId { get; }
+        public int Id { get; }
 
         public string Name { get; }
 
         public string Description { get; }
 
-        public IEnumerable<Level> Levels { get; }
+        public IEnumerable<ITaskGenerator> Generators { get; }
 
-        protected bool Equals(Topic other) => TopicId.Equals(other.TopicId);
+        protected bool Equals(Topic other) => Id.Equals(other.Id);
 
         public override bool Equals(object obj) => obj is Topic topic && Equals(topic);
 
-        public override int GetHashCode() => TopicId.GetHashCode();
+        public override int GetHashCode() => Id.GetHashCode();
     }
 }

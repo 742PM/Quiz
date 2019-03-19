@@ -1,12 +1,12 @@
 namespace DataBase
 {
-    public class LevelDTO
+    public class LevelEntity
     {
         public int LevelId { get; set; }
         public int AccessLevel { get; set; }
         public bool IsCompleted { get; set; }
         
-        public TaskDTO CurrentTask { get; set; }
-        public TaskDTO[] Tasks { get; set; }
+        public TaskEntity CurrentTask { get; set; }
+        public TaskEntity[] Tasks { get; set; }
     }
 }

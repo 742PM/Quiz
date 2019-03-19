@@ -32,24 +32,44 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27">
-      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    <Reference Include="DnsClient, Version=1.0.7.0, Culture=neutral, PublicKeyToken=4574bb5573c51424">
+      <HintPath>..\packages\DnsClient.1.0.7\lib\net45\DnsClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.7.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Bson.2.7.3\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.7.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Driver.2.7.3\lib\net45\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.7.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.7.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <HintPath>..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataBaseController.cs" />
-    <Compile Include="DataTransferObjects\AnswerDTO.cs" />
+    <Compile Include="DataTransferObjects\AnswerEntity.cs" />
+    <Compile Include="MongoUserRepository.cs" />
     <Compile Include="Progress.cs" />
-    <Compile Include="DataTransferObjects\TaskDTO.cs" />
-    <Compile Include="DataTransferObjects\LevelDTO.cs" />
-    <Compile Include="DataTransferObjects\TopicDTO.cs" />
-    <Compile Include="DataTransferObjects\UserDTO.cs" />
-    <Compile Include="IController.cs" />
+    <Compile Include="DataTransferObjects\TaskEntity.cs" />
+    <Compile Include="DataTransferObjects\LevelEntity.cs" />
+    <Compile Include="DataTransferObjects\TopicEntity.cs" />
+    <Compile Include="DataTransferObjects\UserEntity.cs" />
+    <Compile Include="IUserRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

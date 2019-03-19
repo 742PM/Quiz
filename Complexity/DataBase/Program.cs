@@ -1,4 +1,6 @@
-﻿using LiteDB;
+﻿
+using System;
+using MongoDB.Driver;
 
 namespace DataBase
 {
@@ -6,17 +8,11 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            using(var db = new LiteDatabase(@"MyData.db"))
-            {
-                var customers = db.GetCollection<User>("users");
-
-                var customer = new User
-                { 
-                    UserId = 1,
-                };
-
-                customers.Insert(customer);
-            }
+            var mongoConnectionString =
+                Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING")
+                ?? "mongodb://localhost:27017";
+            var db = new MongoClient(mongoConnectionString).GetDatabase("ComplexityBot");
+            var userRepo = new MongoUserRepository(db);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace DataBase
         public int AccessLevel { get; set; }
         
         public int CurrentTopicId { get; set; }
-        public TopicDTO[] TopicsDtoInfo { get; set; }
+        public TopicEntity[] TopicsEntityInfo { get; set; }
     }
 }

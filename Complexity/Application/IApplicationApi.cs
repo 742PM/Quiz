@@ -14,20 +14,20 @@ namespace Application
         IEnumerable<TopicInfo> GetTopicsInfo();
 
         /// <summary>
-        /// Получение количество возможных уровней сложностей в данной теме 
+        /// Получение возможных уровней сложностей в данной теме 
         /// </summary>
         /// <returns>
-        /// Количество уровней сложности
+        /// Уровни сложности
         /// </returns>
-        int GetDifficultiesCount(Guid topicId);
+        IEnumerable<int> GetDifficulties(Guid topicId);
 
         /// <summary>
-        /// Получение номера максимального доступного уровня сложности в данной теме для данного уровня 
+        /// Получение доступных уровней сложности в данной теме для данного уровня 
         /// </summary>
         /// <returns>
-        /// Максимальный доступный уровень сложности для пользователя
+        /// Доступные уровни сложности для пользователя
         /// </returns>
-        int GetMaxAvailableDifficulty(Guid userId, Guid topicId);
+        IEnumerable<int> GetAvailableDifficulties(Guid userId, Guid topicId);
 
 
         /// <summary>

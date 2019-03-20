@@ -15,7 +15,7 @@ namespace Domain
             Hints = hints;
             RightAnswer = rightAnswer;
         }
-        
+        public Task With(string answer) => new Task(Answers,Question,Hints,answer,ParentGeneratorId);
         public string Question { get; }
 
         public string[] Answers { get; }

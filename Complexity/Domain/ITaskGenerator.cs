@@ -5,7 +5,7 @@ namespace Domain
 {
     public interface ITaskGenerator
     {
-        IEnumerable<Task> Tasks { get; }
+        Task GetTask(Random randomSeed);
 
         string Description { get; }
 

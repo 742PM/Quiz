@@ -62,11 +62,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTransferObjects\AnswerEntity.cs" />
     <Compile Include="MongoUserRepository.cs" />
     <Compile Include="Progress.cs" />
     <Compile Include="DataTransferObjects\TaskEntity.cs" />
-    <Compile Include="DataTransferObjects\LevelEntity.cs" />
     <Compile Include="DataTransferObjects\TopicEntity.cs" />
     <Compile Include="DataTransferObjects\UserEntity.cs" />
     <Compile Include="IUserRepository.cs" />

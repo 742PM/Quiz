@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace DataBase
 {
@@ -13,7 +14,6 @@ namespace DataBase
         {
             Id = id;
         }
-        
 
         public UserEntity(Guid id, Progress progress)
         {
@@ -27,6 +27,8 @@ namespace DataBase
             // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local For MongoDB
             private set;
         }
+        
+        public TaskEntity CurrentTask { get; set; }
 
         public Progress Progress { get; set; }
     }

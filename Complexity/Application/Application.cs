@@ -1,11 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Domain;
+using Ninject;
 
 namespace Application
 {
-    class Application
+    public class Application
     {
-        //TODO: add Ninject here and initialize domain, api and other data
+        //TODO: build asp.net, database etc.
+        static Application()
+        {
+            var container = new StandardKernel();
+
+            container.Bind<IQuizApi>()
+                     .To<QuizApi>()
+                     .InSingletonScope()
+                     .WithConstructorArgument("id", Guid.Empty);
+            container.Bind<ITaskGenerator>()
+                     .To<ExampleTaskGenerator>()
+                     .WithConstructorArgument("hint", "Wow"); //Какое-то странное что-то, просто пример
+        }
     }
 }

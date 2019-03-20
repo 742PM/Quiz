@@ -5,16 +5,17 @@ using System.Linq;
 namespace Domain
 {
     [Value]
-    public class Task : IEquatable<Task>
+    public struct Task : IEquatable<Task>
     {
-        public Task(IEnumerable<string> answers, string question, IEnumerable<string> hints, string rightAnswer)
+        public Task(string[] answers, string question, string[] hints, string rightAnswer,Guid generatorId)
         {
-            Answers = answers?.ToArray() ?? Array.Empty<string>();
+            Answers = answers;
             Question = question;
-            Hints = hints?.ToArray() ?? Array.Empty<string>();
+            ParentGeneratorId = generatorId;
+            Hints = hints;
             RightAnswer = rightAnswer;
         }
-
+        
         public string Question { get; }
 
         public string[] Answers { get; }
@@ -24,7 +25,6 @@ namespace Domain
         public string RightAnswer { get; }
 
         public bool Equals(Task other) =>
-            other != null &&
             (Answers, Question, Hints, RightAnswer).Equals((other.Answers, other.Question, other.Hints,
                                                             other.RightAnswer));
 
@@ -36,7 +36,7 @@ namespace Domain
             rightAnswer = RightAnswer;
         }
 
-        public bool IsRightAnswer(string answer) => answer==RightAnswer;
+        public Guid ParentGeneratorId { get; }
 
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 

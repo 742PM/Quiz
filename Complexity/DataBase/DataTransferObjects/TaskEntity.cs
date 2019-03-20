@@ -1,8 +1,13 @@
+using System;
+
 namespace DataBase
 {
     public class TaskEntity
     {
         public int TaskId { get; set; }
+        public Guid GeneratorId { get; set; }
+
+        public int Difficulty { get; set; }
         
         public AnswerEntity RightAnswer { get; set; }
         public AnswerEntity[] Answers { get; set; }

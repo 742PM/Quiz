@@ -6,7 +6,7 @@ namespace Domain
     [Entity]
     public class Topic
     {
-        public Topic(IEnumerable<ITaskGenerator> generators, int id, string name, string description)
+        public Topic(IEnumerable<ITaskGenerator> generators, Guid id, string name, string description)
         {
             Generators = generators;
             Id = id;
@@ -14,7 +14,7 @@ namespace Domain
             Description = description;
         }
 
-        public int Id { get; }
+        public Guid Id { get; }
 
         public string Name { get; }
 

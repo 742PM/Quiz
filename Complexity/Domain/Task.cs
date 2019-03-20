@@ -7,10 +7,11 @@ namespace Domain
     [Value]
     public struct Task : IEquatable<Task>
     {
-        public Task(string[] answers, string question, string[] hints, string rightAnswer)
+        public Task(string[] answers, string question, string[] hints, string rightAnswer,Guid generatorId)
         {
             Answers = answers;
             Question = question;
+            ParentGeneratorId = generatorId;
             Hints = hints;
             RightAnswer = rightAnswer;
         }
@@ -35,6 +36,7 @@ namespace Domain
             rightAnswer = RightAnswer;
         }
 
+        public Guid ParentGeneratorId { get; }
 
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 

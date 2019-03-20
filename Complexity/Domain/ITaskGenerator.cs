@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Domain
 {
@@ -7,5 +8,9 @@ namespace Domain
         IEnumerable<Task> Tasks { get; }
 
         string Description { get; }
+
+        int Difficulty { get; }
+
+        Guid Id { get; }
     }
 }

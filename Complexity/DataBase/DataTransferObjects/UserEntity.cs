@@ -27,8 +27,6 @@ namespace DataBase
             // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local For MongoDB
             private set;
         }
-        
-        public TaskEntity CurrentTask { get; set; }
 
         public Progress Progress { get; set; }
     }

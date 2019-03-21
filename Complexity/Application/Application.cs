@@ -25,6 +25,7 @@ namespace Application
 
         private readonly IEnumerable<Topic> topics;
         private readonly IUserRepository userRepository;
+        private readonly Random random = new Random();
 
         public Application(IEnumerable<Topic> topics, IUserRepository userRepository)
         {
@@ -34,7 +35,7 @@ namespace Application
 
         public IEnumerable<TopicInfo> GetTopicsInfo()
         {
-            return topics.Select(t => new TopicInfo(t.Name, t.Id));
+            return topics.Select(topic => topic.ToInfo());
         }
 
         public IEnumerable<int> GetDifficulties(Guid topicId)
@@ -82,9 +83,8 @@ namespace Application
                 .First(topic => topic.Id == topicId)
                 .Generators
                 .First(generator => generator.Difficulty == difficulty)
-                .Tasks
-                .Select(task => new TaskInfo(task.Question, task.Answers))
-                .First();
+                .GetTask(random)
+                .ToInfo();
         }
 
         public TaskInfo GetNextTask(Guid userId)
@@ -96,9 +96,8 @@ namespace Application
                 .SkipWhile(generator => generator.Id != user.Progress.CurrentTask.GeneratorId)
                 .Skip(1)
                 .First()
-                .Tasks
-                .Select(task => new TaskInfo(task.Question, task.Answers))
-                .First();
+                .GetTask(random)
+                .ToInfo();
         }
 
         public TaskInfo GetSimilarTask(Guid userId)
@@ -108,9 +107,8 @@ namespace Application
                 .First(topic => topic.Id == user.Progress.CurrentTopicId)
                 .Generators
                 .First(generator => generator.Id == user.Progress.CurrentTask.GeneratorId)
-                .Tasks
-                .Select(task => new TaskInfo(task.Question, task.Answers))
-                .First();
+                .GetTask(random)
+                .ToInfo();
         }
 
         public bool CheckAnswer(Guid userId, string answer)

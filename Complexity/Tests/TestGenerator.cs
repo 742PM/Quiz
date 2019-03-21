@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Domain;
 
 namespace Tests
@@ -11,12 +10,17 @@ namespace Tests
             Difficulty = difficulty;
         }
 
-        public IEnumerable<Task> Tasks => new[]
+        public Task GetTask(Random randomSeed)
         {
-            new Task(new[] { "a1", "a2", "a3" }, "?", new[] { "h1", "h2", "h3" }, "a1", Id),
-        };
+            return new Task(
+                new[] { "a1", "a2", "a3" }, 
+                "?", 
+                new[] { "h1", "h2", "h3" }, 
+                "a1", 
+                Id);
+        }
 
-        public string Description => "Test";
+        public string Description => $"Test {Difficulty}";
 
         public int Difficulty { get; }
 

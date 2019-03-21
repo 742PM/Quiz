@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Application.Info;
 using DataBase;
 using Domain;
 using Ninject;
@@ -36,82 +37,95 @@ namespace Application
 
         public IEnumerable<int> GetDifficulties(Guid topicId)
         {
-            var topic = topics
-                .FirstOrDefault(t => t.Id == topicId) ?? 
-                throw new ArgumentException($"No topic with with id {topicId}");
-            return topic
+            return GetTopic(topicId)
                 .Generators
                 .Select(generator => generator.Difficulty)
-                .Distinct();
+                .Distinct()
+                .OrderBy(difficulty => difficulty);
         }
 
         public IEnumerable<int> GetAvailableDifficulties(Guid userId, Guid topicId)
         {
             var user = FindOrInsertUser(userId);
             var difficulties = GetDifficulties(topicId);
-            var maxStartedDifficulty = user
+            var startedDifficulties = user
                 .Progress
                 .Topics
                 .First(topic => topic.TopicId == topicId)
                 .Tasks
                 .Select(task => task.Difficulty)
-                .Distinct()
-                .Max();
+                .ToList();
+            if (startedDifficulties.Count == 0)
+                return GetDifficulties(topicId).Take(1);
+            var maxStartedDifficulty = startedDifficulties.Max();
             var difficultyStep = GetTopicProgress(userId, topicId, maxStartedDifficulty) == 100 ? 1 : 0;
             return difficulties.TakeWhile(difficulty => difficulty <= maxStartedDifficulty + difficultyStep);
         }
 
         public IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty)
         {
-            return topics
-                .First(topic => topic.Id == topicId)
+            return GetTopic(topicId)
                 .Generators
+                .Where(generator => generator.Difficulty == difficulty)
                 .Select(generator => generator.Description);
         }
 
         public int GetCurrentProgress(Guid userId)
         {
             var user = FindOrInsertUser(userId);
+            CheckCurrentTask(user);
             return GetTopicProgress(userId, user.Progress.CurrentTopicId, user.Progress.CurrentTask.Difficulty);
         }
 
         public TaskInfo GetTask(Guid userId, Guid topicId, int difficulty)
         {
-            return topics
-                .First(topic => topic.Id == topicId)
+            var user = FindOrInsertUser(userId);
+            if (!GetAvailableDifficulties(userId, topicId).Contains(difficulty))
+                throw new AccessDeniedException(
+                    $"User {userId} doesn't have access to difficulty {difficulty} in topic {topicId}");
+            var taskGenerator = GetTopic(topicId)
                 .Generators
-                .First(generator => generator.Difficulty == difficulty)
-                .GetTask(random)
-                .ToInfo();
+                .First(generator => generator.Difficulty == difficulty);
+            var task = taskGenerator.GetTask(random);
+            UpdateUserCurrentTask(user, topicId, task, taskGenerator);
+            return task.ToInfo();
         }
 
         public TaskInfo GetNextTask(Guid userId)
         {
             var user = FindOrInsertUser(userId);
-            return topics
-                .First(topic => topic.Id == user.Progress.CurrentTopicId)
+            CheckCurrentTask(user);
+            var generators = GetTopic(user.Progress.CurrentTopicId)
                 .Generators
+                .Where(generator => generator.Difficulty == user.Progress.CurrentTask.Difficulty)
+                .ToArray();
+            var nextGenerators = generators
                 .SkipWhile(generator => generator.Id != user.Progress.CurrentTask.GeneratorId)
-                .Skip(1)
-                .First()
-                .GetTask(random)
-                .ToInfo();
+                .ToList();
+            var nextGenerator = nextGenerators.Count > 1
+                ? nextGenerators.Skip(1).First()
+                : generators.First();
+            var task = nextGenerator.GetTask(random);
+            UpdateUserCurrentTask(user, user.Progress.CurrentTopicId, task, nextGenerator);
+            return task.ToInfo();
         }
 
         public TaskInfo GetSimilarTask(Guid userId)
         {
             var user = FindOrInsertUser(userId);
-            return topics
-                .First(topic => topic.Id == user.Progress.CurrentTopicId)
+            CheckCurrentTask(user);
+            var taskGenerator = GetTopic(user.Progress.CurrentTopicId)
                 .Generators
-                .First(generator => generator.Id == user.Progress.CurrentTask.GeneratorId)
-                .GetTask(random)
-                .ToInfo();
+                .First(generator => generator.Id == user.Progress.CurrentTask.GeneratorId);
+            var task = taskGenerator.GetTask(random);
+            UpdateUserCurrentTask(user, user.Progress.CurrentTopicId, task, taskGenerator);
+            return task.ToInfo();
         }
 
         public bool CheckAnswer(Guid userId, string answer)
         {
             var user = FindOrInsertUser(userId);
+            CheckCurrentTask(user);
             var expected = user.Progress.CurrentTask.RightAnswer;
             return expected == answer;
         }
@@ -119,7 +133,27 @@ namespace Application
         public string GetHint(Guid userId)
         {
             var user = FindOrInsertUser(userId);
+            CheckCurrentTask(user);
             return user.Progress.CurrentTask.Hints.First();
+        }
+
+        private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Task task, ITaskGenerator generator)
+        {
+            user.Progress.CurrentTask = task.ToEntity(generator);
+            user.Progress.CurrentTopicId = topicId;
+            userRepository.Update(user);
+        }
+
+        private static void CheckCurrentTask(UserEntity user)
+        {
+            if (user.Progress.CurrentTask is null)
+                throw new AccessDeniedException($"User {user.Id} hadn't started any task");
+        }
+
+        private Topic GetTopic(Guid topicId)
+        {
+            return topics.FirstOrDefault(t => t.Id == topicId) ??
+                   throw new ArgumentException($"No topic with with id {topicId}");
         }
 
         private int GetTopicProgress(Guid userId, Guid topicId, int difficulty)
@@ -132,16 +166,26 @@ namespace Application
                 .Tasks
                 .Distinct(new TaskGeneratorIdEqualityComparer())
                 .Count(task => task.Difficulty == difficulty);
-            var allTasksCount = topics
-                .First(topic => topic.Id == topicId)
+            var allTasksCount = GetTopic(topicId)
                 .Generators
                 .Count(generator => generator.Difficulty == difficulty);
-            return solvedTasksCount / allTasksCount * 100;
+            var progress = (double) solvedTasksCount / allTasksCount * 100;
+            return (int) progress;
         }
 
         private UserEntity FindOrInsertUser(Guid userId)
         {
-            return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId));
+            var progress = new Progress
+            {
+                Topics = topics.Select(topic => new TopicEntity
+                    {
+                        Name = topic.Name,
+                        TopicId = topic.Id,
+                        Tasks = new TaskEntity[0]
+                    })
+                    .ToArray()
+            };
+            return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
         }
 
         private class TaskGeneratorIdEqualityComparer : IEqualityComparer<TaskEntity>

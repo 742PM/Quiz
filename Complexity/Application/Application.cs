@@ -36,10 +36,12 @@ namespace Application
 
         public IEnumerable<int> GetDifficulties(Guid topicId)
         {
-            return topics
-                .SelectMany(topic => topic
-                    .Generators
-                    .Select(generator => generator.Difficulty))
+            var topic = topics
+                .FirstOrDefault(t => t.Id == topicId) ?? 
+                throw new ArgumentException($"No topic with with id {topicId}");
+            return topic
+                .Generators
+                .Select(generator => generator.Difficulty)
                 .Distinct();
         }
 

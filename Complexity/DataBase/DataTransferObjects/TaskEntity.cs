@@ -4,7 +4,7 @@ namespace DataBase
 {
     public class TaskEntity
     {
-        public int TaskId { get; set; }
+        public Guid TaskId { get; set; }
         public Guid GeneratorId { get; set; }
 
         public int Difficulty { get; set; }

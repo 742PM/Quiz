@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Application;
+using Application.Info;
 using Domain;
 using FluentAssertions;
 using NUnit.Framework;

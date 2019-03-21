@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Application
+namespace Application.Info
 {
     public class TopicInfo
     {

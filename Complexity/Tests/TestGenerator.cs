@@ -8,15 +8,16 @@ namespace Tests
         public TestGenerator(int difficulty)
         {
             Difficulty = difficulty;
+            Id = Guid.NewGuid();
         }
 
         public Task GetTask(Random randomSeed)
         {
             return new Task(
                 new[] { "a1", "a2", "a3" }, 
-                "?", 
-                new[] { "h1", "h2", "h3" }, 
-                "a1", 
+                $"{Id}?", 
+                new[] { "h1", "h2", "h3" },
+                $"{Id}!", 
                 Id);
         }
 
@@ -24,6 +25,6 @@ namespace Tests
 
         public int Difficulty { get; }
 
-        public Guid Id => Guid.NewGuid();
+        public Guid Id { get; }
     }
 }

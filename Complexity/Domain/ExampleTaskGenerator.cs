@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Domain
@@ -15,6 +16,9 @@ namespace Domain
         }
 
         public IEnumerable<Task> Tasks => Enumerable.Repeat(exampleTask, 10000);
+
+        public Task GetTask(Random randomSeed) => exampleTask.With(randomSeed.NextDouble().ToString(CultureInfo.InvariantCulture));
+        public Task GetTask() => GetTask(new Random(42));
 
         public string Description => "This is so example!";
         public int Difficulty => 0;

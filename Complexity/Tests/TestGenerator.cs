@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Domain;
 
 namespace Tests
@@ -21,10 +23,19 @@ namespace Tests
                 Id);
         }
 
+        /// <inheritdoc />
+        public Task GetTask() => throw new NotImplementedException();
+
         public string Description => $"Test {Difficulty}";
 
         public int Difficulty { get; }
 
         public Guid Id { get; }
+
+        /// <inheritdoc />
+        public IEnumerator<Task> GetEnumerator() => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

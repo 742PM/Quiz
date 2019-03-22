@@ -41,6 +41,9 @@ namespace Domain
         public Task GetTask() => GetTask(random);
 
         /// <inheritdoc />
+        public int Difficulty { get; }
+
+        /// <inheritdoc />
         public string Description { get; }
 
 

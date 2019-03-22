@@ -8,8 +8,6 @@ namespace Domain
         Task GetTask(Random randomSeed);
         Task GetTask();
 
-        string Description { get; }
-
         int Difficulty { get; } //нужно удалить нахер
 
         Guid Id { get; }

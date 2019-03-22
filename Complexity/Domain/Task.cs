@@ -7,31 +7,28 @@ namespace Domain
     [Value]
     public struct Task : IEquatable<Task>
     {
-        public Task(string[] answers, string question, string[] hints, string rightAnswer,Guid generatorId)
+        public Task(string question, string[] hints, string rightAnswer,Guid generatorId)
         {
-            Answers = answers;
             Question = question;
             ParentGeneratorId = generatorId;
             Hints = hints;
             RightAnswer = rightAnswer;
         }
-        public Task With(string answer) => new Task(Answers,Question,Hints,answer,ParentGeneratorId);
+        public Task With(string answer) => new Task(Question,Hints,answer,ParentGeneratorId);
         public string Question { get; }
 
-        public string[] Answers { get; }
 
         public string[] Hints { get; }
 
         public string RightAnswer { get; }
 
         public bool Equals(Task other) =>
-            (Answers, Question, Hints, RightAnswer).Equals((other.Answers, other.Question, other.Hints,
+            ( Question, Hints, RightAnswer).Equals(( other.Question, other.Hints,
                                                             other.RightAnswer));
 
-        public void Deconstruct(out string question, out string[] answers, out string[] hints, out string rightAnswer)
+        public void Deconstruct(out string question,  out string[] hints, out string rightAnswer)
         {
             question = Question;
-            answers = Answers;
             hints = Hints;
             rightAnswer = RightAnswer;
         }
@@ -40,7 +37,7 @@ namespace Domain
 
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 
-        public override int GetHashCode() => (Answers, Question, Hints, RightAnswer).GetHashCode();
+        public override int GetHashCode() => ( Question, Hints, RightAnswer).GetHashCode();
 
         public static bool operator ==(Task left, Task right) => Equals(left, right);
 

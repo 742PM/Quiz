@@ -6,12 +6,14 @@ namespace Domain
     [Entity]
     public class Topic
     {
-        public Topic(IEnumerable<ITaskGenerator> generators, Guid id, string name, string description)
+        public Topic(IEnumerable<ITaskGenerator> generators, Guid id, string name, string description,
+                     Level[] levels)
         {
             Generators = generators;
             Id = id;
             Name = name;
             Description = description;
+            Levels = levels;
         }
 
         public Guid Id { get; }
@@ -19,6 +21,8 @@ namespace Domain
         public string Name { get; }
 
         public string Description { get; }
+
+        public Level[] Levels { get; }
 
         public IEnumerable<ITaskGenerator> Generators { get; }
 

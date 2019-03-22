@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Domain
 
         public ExampleTaskGenerator(string hint)
         {
-            exampleTask = new Task(new[] {"a", "b", "c"}, "Is this an \"a\"?",
+            exampleTask = new Task("Is this an \"a\"?",
                                    new[] {"What a hint!", "And there it goes...", $"{hint}!"}, "a", Id);
         }
 
@@ -24,5 +25,11 @@ namespace Domain
         public int Difficulty => 0;
 
         public Guid Id => new Guid(1,2,3,4,5,6,7,8,9,10,11);
+
+        /// <inheritdoc />
+        public IEnumerator<Task> GetEnumerator() => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -13,7 +13,7 @@ namespace Domain
         }
 
         public IEnumerable<Topic> Topics { get; }
-        public Topic this[int topicId] => Topics.FirstOrDefault(t => t.Id == topicId);
+        public Topic this[Guid topicId] => Topics.FirstOrDefault(t => t.Id == topicId);
 
         public Topic this[string topicName] => Topics.FirstOrDefault(t => t.Name == topicName);
 

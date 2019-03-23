@@ -7,7 +7,7 @@ namespace Domain
     {
         IEnumerable<Topic> Topics { get; }
 
-        Topic this[int topicId] { get; }
+        Topic this[Guid topicId] { get; }
 
         Topic this[string topicName] { get; }
 

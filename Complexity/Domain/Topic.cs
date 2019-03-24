@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 namespace Domain
 {
-    [Entity]
+    [Entity] //Should it be Value?
     [MustBeSaved]
     public class Topic
     {
-        public Topic(IEnumerable<TaskGenerator> generators, Guid id, string name, string description,
+        public Topic(Guid id, string name, string description,
                      Level[] levels)
         {
-            Generators = generators;
             Id = id;
             Name = name;
             Description = description;
@@ -24,8 +23,6 @@ namespace Domain
         public string Description { get; }
 
         public Level[] Levels { get; }
-
-        public IEnumerable<TaskGenerator> Generators { get; }
 
         protected bool Equals(Topic other) => Id.Equals(other.Id);
 

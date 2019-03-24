@@ -1,54 +1,41 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Domain
 {
-    public class TemplateGenerator : ITaskGenerator
+    public class TemplateTaskGenerator : TaskGenerator
     {
-        private readonly Random random;
 
-        public TemplateGenerator(GeneratorTemplate template, string description, Guid id)
+        public TemplateTaskGenerator(
+            Guid id,
+            string[] possibleAnswers,
+            string templateCode,
+            string[] hints,
+            string answer)
         {
-            Description = description;
-            (TemplateCode, Hints, Answer) = template;
-            random = new Random(42);
             Id = id;
+            PossibleAnswers = possibleAnswers;
+            TemplateCode = templateCode;
+            Hints = hints;
+            Answer = answer;
         }
 
-        public string TemplateCode { get; set; }
+        [MustBeSaved]
+        public string[] PossibleAnswers { get; }
 
-        public string[] Hints { get; set; }
+        [MustBeSaved]
+        public string TemplateCode { get; }
 
-        public string Answer { get; set; }
+        [MustBeSaved]
+        public string[] Hints { get; }
 
-        /// <inheritdoc />
-        public IEnumerator<Task> GetEnumerator()
-        {
-            while (true)
-            {
-                yield return GetTask(random);
-            }
-        }
+        [MustBeSaved]
+        public string Answer { get; }
 
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        [MustBeSaved]
+        public override Guid Id { get; }
 
         /// <inheritdoc />
-        public Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id);
-
-        /// <inheritdoc />
-        public Task GetTask() => GetTask(random);
-
-        /// <inheritdoc />
-        public int Difficulty { get; }
-
-        /// <inheritdoc />
-        public string Description { get; }
-
-
-        /// <inheritdoc />
-        public Guid Id { get; }
+        public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id);
 
         private string Randomize(Random randomSeed) =>
             TemplateCode.Replace("$i$", ((char) randomSeed.Next('a', 'z')).ToString());

@@ -15,7 +15,7 @@ namespace Application
         {
             var container = new StandardKernel();
 
-            container.Bind<ITaskGenerator>()
+            container.Bind<TaskGenerator>()
                 .To<ExampleTaskGenerator>()
                 .WithConstructorArgument("hint", "Wow"); //Какое-то странное что-то, просто пример
         }
@@ -137,7 +137,7 @@ namespace Application
             return user.Progress.CurrentTask.Hints.First();
         }
 
-        private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Task task, ITaskGenerator generator)
+        private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Task task, TaskGenerator generator)
         {
             user.Progress.CurrentTask = task.ToEntity(generator);
             user.Progress.CurrentTopicId = topicId;

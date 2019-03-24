@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace Domain
 {
     [Entity]
+    [MustBeSaved]
     public class Topic
     {
-        public Topic(IEnumerable<ITaskGenerator> generators, Guid id, string name, string description,
+        public Topic(IEnumerable<TaskGenerator> generators, Guid id, string name, string description,
                      Level[] levels)
         {
             Generators = generators;
@@ -24,7 +25,7 @@ namespace Domain
 
         public Level[] Levels { get; }
 
-        public IEnumerable<ITaskGenerator> Generators { get; }
+        public IEnumerable<TaskGenerator> Generators { get; }
 
         protected bool Equals(Topic other) => Id.Equals(other.Id);
 

@@ -3,24 +3,19 @@
     /// <summary>
     /// Subtopic for some topic
     /// </summary>
+    [MustBeSaved]
+    [Value] //Should it be Entity?
     public class Level
     {
-        private readonly ITaskGeneratorSelector selector;
-
-        public Level(ITaskGeneratorSelector selector, string description, (ITaskGenerator,int)[] generators)
+        public Level( string description, (TaskGenerator,int)[] generators)
         {
             Description = description;
-            this.selector = selector;
             Generators = generators;
         }
+
         public string Description { get; }
 
-        public Task GetTask( /* тут надо какое-то состояние юзера или чет вроде*/) =>
-            selector.Select(Generators)
-                    .GetTask(); 
-
-
-        public (ITaskGenerator generator, int streak)[] Generators { get; }
+        public (TaskGenerator generator, int streak)[] Generators { get; }
 
     }
 }

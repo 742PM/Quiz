@@ -2,7 +2,8 @@
 
 namespace Domain
 {
-    public class Entity : Attribute
+    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface)]
+    public class EntityAttribute : Attribute
     {
     }
 }

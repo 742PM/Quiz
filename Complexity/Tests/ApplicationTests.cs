@@ -15,7 +15,7 @@ namespace Tests
     {
         private static readonly Random Random = new Random();
 
-        private readonly ITaskGenerator[] generators =
+        private readonly TaskGenerator[] generators =
         {
             new TestGenerator(1),
             new TestGenerator(2),
@@ -491,7 +491,7 @@ namespace Tests
             return new TopicEntity { Name = topic.Name, Tasks = tasks, TopicId = topic.Id };
         }
 
-        private static TaskEntity GetTaskEntity(ITaskGenerator generator)
+        private static TaskEntity GetTaskEntity(TaskGenerator generator)
         {
             return generator.GetTask(Random).ToEntity(generator);
         }

@@ -5,7 +5,7 @@ using Domain;
 
 namespace Tests
 {
-    public class TestGenerator : ITaskGenerator
+    public class TestGenerator : TaskGenerator
     {
         public TestGenerator(int difficulty)
         {
@@ -13,7 +13,7 @@ namespace Tests
             Id = Guid.NewGuid();
         }
 
-        public Task GetTask(Random randomSeed)
+        public override Task GetTask(Random randomSeed)
         {
             return new Task(
                 new[] { "a1", "a2", "a3" }, 
@@ -23,19 +23,10 @@ namespace Tests
                 Id);
         }
 
-        /// <inheritdoc />
-        public Task GetTask() => throw new NotImplementedException();
 
-        public string Description => $"Test {Difficulty}";
 
         public int Difficulty { get; }
 
-        public Guid Id { get; }
-
-        /// <inheritdoc />
-        public IEnumerator<Task> GetEnumerator() => throw new NotImplementedException();
-
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public override Guid Id { get; }
     }
 }

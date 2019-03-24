@@ -5,6 +5,7 @@ using System.Linq;
 namespace Domain
 {
     [Value]
+    [MustBeSaved]
     public struct Task : IEquatable<Task>
     {
         public Task(string question, string[] hints, string rightAnswer,Guid generatorId)

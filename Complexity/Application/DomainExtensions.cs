@@ -10,7 +10,7 @@ namespace Application
 
         public static TopicInfo ToInfo(this Topic topic) => new TopicInfo(topic.Name, topic.Id);
 
-        public static TaskEntity ToEntity(this Task task, ITaskGenerator generator)
+        public static TaskEntity ToEntity(this Task task, TaskGenerator generator)
         {
             var (question, hints, rightAnswer) = task;
             return new TaskEntity

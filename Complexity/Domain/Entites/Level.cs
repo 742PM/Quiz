@@ -1,13 +1,15 @@
-﻿namespace Domain
+﻿using System;
+
+namespace Domain
 {
     /// <summary>
     /// Subtopic for some topic
     /// </summary>
     [MustBeSaved]
-    [Value] //Should it be Entity?
-    public class Level
+    [Entity] //Should it be Entity?
+    public class Level : Entity<Guid>
     {
-        public Level( string description, (TaskGenerator,int)[] generators)
+        public Level(Guid id, string description, (TaskGenerator,int)[] generators) : base(id)
         {
             Description = description;
             Generators = generators;

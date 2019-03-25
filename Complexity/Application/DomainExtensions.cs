@@ -1,6 +1,9 @@
 ﻿using Application.Info;
 using DataBase;
 using Domain;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
+using Domain.Values;
 
 namespace Application
 {

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using Domain.Values;
 
-namespace Domain
+namespace Domain.Entities.TaskGenerators
 {
     [Entity] //Should it be Entity?
     [MustBeSaved]

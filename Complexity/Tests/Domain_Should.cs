@@ -1,5 +1,7 @@
 ﻿using System;
 using Domain;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using FluentAssertions;
 using NUnit.Framework;
 

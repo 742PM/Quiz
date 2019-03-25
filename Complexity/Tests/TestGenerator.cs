@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Domain;
+using Domain.Entities.TaskGenerators;
+using Domain.Values;
 
 namespace Tests
 {

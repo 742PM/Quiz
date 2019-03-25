@@ -5,6 +5,8 @@ using Application;
 using Application.Info;
 using DataBase;
 using Domain;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using FluentAssertions;
 using NUnit.Framework;
 

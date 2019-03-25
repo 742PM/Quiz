@@ -1,6 +1,7 @@
 ﻿using System;
+using Domain.Entities.TaskGenerators;
 
-namespace Domain
+namespace Domain.Entities
 {
     /// <summary>
     /// Subtopic for some topic

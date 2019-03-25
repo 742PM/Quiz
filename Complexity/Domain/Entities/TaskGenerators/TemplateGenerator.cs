@@ -1,6 +1,7 @@
 ﻿using System;
+using Domain.Values;
 
-namespace Domain
+namespace Domain.Entities.TaskGenerators
 {
     public class TemplateTaskGenerator : TaskGenerator
     {

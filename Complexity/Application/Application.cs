@@ -81,7 +81,7 @@ namespace Application
         //    return GetTopicProgress(userId, user.Progress.CurrentTopicId, user.Progress.CurrentTask.Difficulty);
         //}
 
-        public TaskInfo GetTask(Guid userId, Guid topicId, int difficulty)
+        public TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId)
         {
             return new TaskInfo("?", new[] { "a", "b", "c" });
             //var user = FindOrInsertUser(userId);

@@ -45,7 +45,7 @@ namespace Application
         /// <returns>
         /// Описание задачи с вариантами ответов
         /// </returns>
-        TaskInfo GetTask(Guid userId, Guid topicId, int difficulty);
+        TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение следующей задачи из текущих темы и уровня

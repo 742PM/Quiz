@@ -45,7 +45,7 @@ namespace Tests
             };
 
             userRepository = new TestUserRepository();
-            userId = AddUserWithProgress();
+            //userId = AddUserWithProgress();
 
             applicationWithoutTopics = new Application.Application(new Topic[0], userRepository);
 
@@ -472,32 +472,31 @@ namespace Tests
             application.GetHint(userId).Should().Be(generators.First().GetTask(Random).Hints.First());
         }
 
-        private Guid AddUserWithProgress()
-        {
-            var id = Guid.NewGuid();
-            var startedTopics = new[]
-            {
-                GetTopicEntity(topics[0], generators.Select(GetTaskEntity).ToArray()),
-                GetTopicEntity(topics[1], generators.Take(3).Select(GetTaskEntity).ToArray()),
-                GetTopicEntity(topics[2], generators.Take(2).Select(GetTaskEntity).ToArray()),
-                GetTopicEntity(topics[3], new TaskEntity[0])
-            };
-            var progress = new ProgressEntity { Topics = startedTopics };
-            userRepository.Insert(new UserEntity(id, progress));
-            return id;
-        }
+        //private Guid AddUserWithProgress()
+        //{
+        //    var id = Guid.NewGuid();
+        //    var startedTopics = new[]
+        //    {
+        //        GetTopicEntity(topics[0], generators.Select(GetTaskEntity).ToArray()),
+        //        GetTopicEntity(topics[1], generators.Take(3).Select(GetTaskEntity).ToArray()),
+        //        GetTopicEntity(topics[2], generators.Take(2).Select(GetTaskEntity).ToArray()),
+        //        GetTopicEntity(topics[3], new TaskEntity[0])
+        //    };
+        //    var progress = new ProgressEntity { Topics = startedTopics };
+        //    userRepository.Insert(new UserEntity(id, progress));
+        //    return id;
+        //}
 
         private Topic CreateTopic(int number) => new Topic(Guid.NewGuid(), $"t{number}", $"d{number}", new Level[0]); // change
 
-        private static TopicEntity GetTopicEntity(Topic topic, TaskEntity[] tasks)
-        {
-            return new TopicEntity { Name = topic.Name, Tasks = tasks, TopicId = topic.Id };
-        }
+        //private static TopicEntity GetTopicEntity(Topic topic, TaskEntity[] tasks)
+        //{
+        //    return new TopicEntity { Name = topic.Name, Tasks = tasks, TopicId = topic.Id };
+        //}
 
-        private static TaskEntity GetTaskEntity(TaskGenerator generator)
-        {
-            return generator.GetTask(Random).ToEntity(generator);
-        }
+        //private static TaskEntity GetTaskEntity(TaskGenerator generator)
+        //{
+        //    return generator.GetTask(Random).ToEntity(generator);
+        //}
     }
-}  }
 }

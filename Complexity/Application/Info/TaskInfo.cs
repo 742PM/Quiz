@@ -1,8 +1,8 @@
-﻿namespace Application
+﻿namespace Application.Info
 {
-    public class TaskDescription
+    public class TaskInfo
     {
-        public TaskDescription(string question, string[] answers)
+        public TaskInfo(string question, string[] answers)
         {
             Question = question;
             Answers = answers;

@@ -3,11 +3,13 @@ using Domain.Values;
 
 namespace Domain.Entities.TaskGenerators
 {
-    [Entity] //Should it be Entity?
+    [Entity]
     [MustBeSaved]
     public abstract class TaskGenerator : Entity<Guid>
     {
         public abstract  Task GetTask(Random randomSeed);
+
+
 
 
         /// <inheritdoc />

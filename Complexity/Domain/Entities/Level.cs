@@ -4,10 +4,10 @@ using Domain.Entities.TaskGenerators;
 namespace Domain.Entities
 {
     /// <summary>
-    /// Subtopic for some topic
+    /// Subtopic for some topic;
     /// </summary>
     [MustBeSaved]
-    [Entity] //Should it be Entity?
+    [Entity] 
     public class Level : Entity<Guid>
     {
         public Level(Guid id, string description, (TaskGenerator,int)[] generators) : base(id)

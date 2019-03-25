@@ -62,13 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTransferObjects\GeneratorEntity.cs" />
-    <Compile Include="DataTransferObjects\GeneratorEntities\TemplateGeneratorEntity.cs" />
-    <Compile Include="DataTransferObjects\LevelEntity.cs" />
-    <Compile Include="DataTransferObjects\Progress.cs" />
+    <Compile Include="DatabaseEntities\GeneratorEntity.cs" />
+    <Compile Include="DatabaseEntities\GeneratorEntities\TemplateGeneratorEntity.cs" />
+    <Compile Include="DatabaseEntities\LevelEntity.cs" />
+    <Compile Include="DatabaseEntities\Progress.cs" />
+    <Compile Include="ITaskRepository.cs" />
     <Compile Include="MongoUserRepository.cs" />
-    <Compile Include="DataTransferObjects\TopicEntity.cs" />
-    <Compile Include="DataTransferObjects\UserEntity.cs" />
+    <Compile Include="DatabaseEntities\TopicEntity.cs" />
+    <Compile Include="DatabaseEntities\UserEntity.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

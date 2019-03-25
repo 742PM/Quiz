@@ -4,6 +4,7 @@ using System.Linq;
 using Application;
 using Application.Info;
 using DataBase;
+using DataBase.DatabaseEntities;
 using Domain;
 using FluentAssertions;
 using NUnit.Framework;

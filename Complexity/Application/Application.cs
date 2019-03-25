@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Info;
 using DataBase;
+using DataBase.DatabaseEntities;
 using Domain;
 using Ninject;
 

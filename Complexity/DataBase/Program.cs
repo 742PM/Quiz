@@ -1,4 +1,6 @@
 ﻿using System;
+using DataBase.DatabaseEntities;
+using DataBase.DatabaseEntities.GeneratorEntities;
 using MongoDB.Driver;
 
 namespace DataBase

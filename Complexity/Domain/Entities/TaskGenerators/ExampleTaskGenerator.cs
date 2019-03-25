@@ -14,7 +14,6 @@ namespace Domain.Entities.TaskGenerators
                                    Id, new string[0]);
         }
 
-
         public override Task GetTask(Random randomSeed) =>
             exampleTask.With(randomSeed.NextDouble()
                                        .ToString(CultureInfo.InvariantCulture));

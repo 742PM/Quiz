@@ -7,14 +7,11 @@ namespace Domain.Entities.TaskGenerators
     [MustBeSaved]
     public abstract class TaskGenerator : Entity<Guid>
     {
-        public abstract  Task GetTask(Random randomSeed);
-
-
-
-
         /// <inheritdoc />
         protected TaskGenerator(Guid id) : base(id)
         {
         }
+
+        public abstract Task GetTask(Random randomSeed);
     }
 }

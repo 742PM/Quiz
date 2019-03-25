@@ -6,8 +6,7 @@ namespace Domain.Entities
     [MustBeSaved]
     public class Topic : Entity<Guid>
     {
-        public Topic(Guid id, string name, string description,
-                     Level[] levels) : base(id)
+        public Topic(Guid id, string name, string description, Level[] levels) : base(id)
         {
             Name = name;
             Description = description;

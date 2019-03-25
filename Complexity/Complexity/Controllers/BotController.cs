@@ -25,8 +25,6 @@ namespace Complexity.Controllers
         {
             //stab
             return Ok(new[] {"Циклы", "Строки"});
-
-            return Ok(applicationApi.GetTopicNames());
         }
 
         /// <summary>

@@ -228,8 +228,8 @@ namespace Tests
         {
             var user = userRepository.FindById(userId);
             var task = GetTaskEntity(generators[0]);
-            user.Progress.CurrentTask = task;
-            user.Progress.CurrentTopicId = topics[0].Id;
+            user.ProgressEntity.CurrentTask = task;
+            user.ProgressEntity.CurrentTopicId = topics[0].Id;
             userRepository.Update(user);
             application.GetCurrentProgress(userId).Should().Be(100);
         }
@@ -239,8 +239,8 @@ namespace Tests
         {
             var user = userRepository.FindById(userId);
             var task = GetTaskEntity(generators[0]);
-            user.Progress.CurrentTask = task;
-            user.Progress.CurrentTopicId = topics.Last().Id;
+            user.ProgressEntity.CurrentTask = task;
+            user.ProgressEntity.CurrentTopicId = topics.Last().Id;
             userRepository.Update(user);
             application.GetCurrentProgress(userId).Should().Be(0);
         }
@@ -250,8 +250,8 @@ namespace Tests
         {
             var user = userRepository.FindById(userId);
             var task = GetTaskEntity(generators[1]);
-            user.Progress.CurrentTask = task;
-            user.Progress.CurrentTopicId = topics[2].Id;
+            user.ProgressEntity.CurrentTask = task;
+            user.ProgressEntity.CurrentTopicId = topics[2].Id;
             userRepository.Update(user);
             application.GetCurrentProgress(userId).Should().Be(50);
         }
@@ -326,7 +326,7 @@ namespace Tests
             application.GetTask(userId, topic.Id, 1);
             userRepository
                 .FindById(userId)
-                .Progress
+                .ProgressEntity
                 .CurrentTask
                 .Should()
                 .BeEquivalentTo(topic
@@ -343,7 +343,7 @@ namespace Tests
             application.GetTask(userId, topic.Id, 1);
             userRepository
                 .FindById(userId)
-                .Progress
+                .ProgressEntity
                 .CurrentTopicId
                 .Should()
                 .Be(topic.Id);
@@ -480,7 +480,7 @@ namespace Tests
                 GetTopicEntity(topics[2], generators.Take(2).Select(GetTaskEntity).ToArray()),
                 GetTopicEntity(topics[3], new TaskEntity[0])
             };
-            var progress = new Progress { Topics = startedTopics };
+            var progress = new ProgressEntity { Topics = startedTopics };
             userRepository.Insert(new UserEntity(id, progress));
             return id;
         }
@@ -497,4 +497,5 @@ namespace Tests
             return generator.GetTask(Random).ToEntity(generator);
         }
     }
+}  }
 }

@@ -14,10 +14,10 @@ namespace DataBase.DatabaseEntities
             Id = id;
         }
 
-        public UserEntity(Guid id, Progress progress)
+        public UserEntity(Guid id, ProgressEntity progressEntity)
         {
             Id = id;
-            Progress = progress;
+            ProgressEntity = progressEntity;
         }
 
         public Guid Id
@@ -27,6 +27,6 @@ namespace DataBase.DatabaseEntities
             private set;
         }
 
-        public Progress Progress { get; set; }
+        public ProgressEntity ProgressEntity { get; set; }
     }
 }

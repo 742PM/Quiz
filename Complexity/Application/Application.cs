@@ -50,7 +50,7 @@ namespace Application
             var user = FindOrInsertUser(userId);
             var difficulties = GetDifficulties(topicId);
             var startedDifficulties = user
-                .Progress
+                .ProgressEntity
                 .Topics
                 .First(topic => topic.TopicId == topicId)
                 .Tasks
@@ -75,7 +75,7 @@ namespace Application
         {
             var user = FindOrInsertUser(userId);
             CheckCurrentTask(user);
-            return GetTopicProgress(userId, user.Progress.CurrentTopicId, user.Progress.CurrentTask.Difficulty);
+            return GetTopicProgress(userId, user.ProgressEntity.CurrentTopicId, user.ProgressEntity.CurrentTask.Difficulty);
         }
 
         public TaskInfo GetTask(Guid userId, Guid topicId, int difficulty)
@@ -96,18 +96,18 @@ namespace Application
         {
             var user = FindOrInsertUser(userId);
             CheckCurrentTask(user);
-            var generators = GetTopic(user.Progress.CurrentTopicId)
+            var generators = GetTopic(user.ProgressEntity.CurrentTopicId)
                 .Generators
-                .Where(generator => generator.Difficulty == user.Progress.CurrentTask.Difficulty)
+                .Where(generator => generator.Difficulty == user.ProgressEntity.CurrentTask.Difficulty)
                 .ToArray();
             var nextGenerators = generators
-                .SkipWhile(generator => generator.Id != user.Progress.CurrentTask.GeneratorId)
+                .SkipWhile(generator => generator.Id != user.ProgressEntity.CurrentTask.GeneratorId)
                 .ToList();
             var nextGenerator = nextGenerators.Count > 1
                 ? nextGenerators.Skip(1).First()
                 : generators.First();
             var task = nextGenerator.GetTask(random);
-            UpdateUserCurrentTask(user, user.Progress.CurrentTopicId, task, nextGenerator);
+            UpdateUserCurrentTask(user, user.ProgressEntity.CurrentTopicId, task, nextGenerator);
             return task.ToInfo();
         }
 
@@ -115,11 +115,11 @@ namespace Application
         {
             var user = FindOrInsertUser(userId);
             CheckCurrentTask(user);
-            var taskGenerator = GetTopic(user.Progress.CurrentTopicId)
+            var taskGenerator = GetTopic(user.ProgressEntity.CurrentTopicId)
                 .Generators
-                .First(generator => generator.Id == user.Progress.CurrentTask.GeneratorId);
+                .First(generator => generator.Id == user.ProgressEntity.CurrentTask.GeneratorId);
             var task = taskGenerator.GetTask(random);
-            UpdateUserCurrentTask(user, user.Progress.CurrentTopicId, task, taskGenerator);
+            UpdateUserCurrentTask(user, user.ProgressEntity.CurrentTopicId, task, taskGenerator);
             return task.ToInfo();
         }
 
@@ -127,7 +127,7 @@ namespace Application
         {
             var user = FindOrInsertUser(userId);
             CheckCurrentTask(user);
-            var expected = user.Progress.CurrentTask.RightAnswer;
+            var expected = user.ProgressEntity.CurrentTask.RightAnswer;
             return expected == answer;
         }
 
@@ -135,19 +135,19 @@ namespace Application
         {
             var user = FindOrInsertUser(userId);
             CheckCurrentTask(user);
-            return user.Progress.CurrentTask.Hints.First();
+            return user.ProgressEntity.CurrentTask.Hints.First();
         }
 
         private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Task task, TaskGenerator generator)
         {
-            user.Progress.CurrentTask = task.ToEntity(generator);
-            user.Progress.CurrentTopicId = topicId;
+            user.ProgressEntity.CurrentTask = task.ToEntity(generator);
+            user.ProgressEntity.CurrentTopicId = topicId;
             userRepository.Update(user);
         }
 
         private static void CheckCurrentTask(UserEntity user)
         {
-            if (user.Progress.CurrentTask is null)
+            if (user.ProgressEntity.CurrentTask is null)
                 throw new AccessDeniedException($"User {user.Id} hadn't started any task");
         }
 
@@ -161,7 +161,7 @@ namespace Application
         {
             var user = FindOrInsertUser(userId);
             var solvedTasksCount = user
-                .Progress
+                .ProgressEntity
                 .Topics
                 .First(topic => topic.TopicId == topicId)
                 .Tasks
@@ -176,7 +176,7 @@ namespace Application
 
         private UserEntity FindOrInsertUser(Guid userId)
         {
-            var progress = new Progress
+            var progress = new ProgressEntity
             {
                 Topics = topics.Select(topic => new TopicEntity
                     {
@@ -202,4 +202,5 @@ namespace Application
             }
         }
     }
+}  }
 }

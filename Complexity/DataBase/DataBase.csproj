@@ -62,10 +62,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseEntities\GeneratorEntity.cs" />
+    <Compile Include="DatabaseEntities\GeneratorEntities\GeneratorEntity.cs" />
     <Compile Include="DatabaseEntities\GeneratorEntities\TemplateGeneratorEntity.cs" />
     <Compile Include="DatabaseEntities\LevelEntity.cs" />
-    <Compile Include="DatabaseEntities\Progress.cs" />
+    <Compile Include="DatabaseEntities\ProgressEntity.cs" />
     <Compile Include="ITaskRepository.cs" />
     <Compile Include="MongoUserRepository.cs" />
     <Compile Include="DatabaseEntities\TopicEntity.cs" />

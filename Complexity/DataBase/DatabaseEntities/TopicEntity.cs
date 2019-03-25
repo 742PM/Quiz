@@ -1,7 +1,6 @@
 using System;
-using System.Threading.Tasks;
 
-namespace DataBase
+namespace DataBase.DatabaseEntities
 {
     public class TopicEntity
     {

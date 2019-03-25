@@ -1,4 +1,4 @@
-namespace DataBase
+namespace DataBase.DatabaseEntities
 {
     public class LevelEntity
     {

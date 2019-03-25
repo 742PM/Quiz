@@ -1,4 +1,5 @@
 using System;
+using DataBase.DatabaseEntities;
 
 namespace DataBase
 {
@@ -6,6 +7,7 @@ namespace DataBase
     {
         UserEntity Insert(UserEntity user);
         UserEntity FindById(Guid id);
+
         void Update(UserEntity user);
         UserEntity UpdateOrInsert(UserEntity user);
         void Delete(Guid id);

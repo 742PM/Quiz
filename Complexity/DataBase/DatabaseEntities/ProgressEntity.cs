@@ -1,8 +1,8 @@
 using System;
 
-namespace DataBase
+namespace DataBase.DatabaseEntities
 {
-    public class Progress
+    public class ProgressEntity
     {
         public Guid CurrentTopicId { get; set; }
         public LevelEntity CurrentLevel { get; set; }

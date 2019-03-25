@@ -1,4 +1,4 @@
-namespace DataBase
+namespace DataBase.DatabaseEntities.GeneratorEntities
 {
     public class TemplateGeneratorEntity : IGeneratorEntity
     {

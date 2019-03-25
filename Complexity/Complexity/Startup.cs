@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Application;
+using Application.Info;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +47,13 @@ namespace Complexity
                 app.UseDeveloperExceptionPage();
             else
                 app.UseHsts();
-
+            
+            Mapper.Initialize(cfg=>
+            {
+                cfg.CreateMap<TaskInfo, TaskInfoDTO>();
+                cfg.CreateMap<LevelInfo, LevelInfoDTO>();
+                cfg.CreateMap<TopicInfo, TopicInfoDTO>();
+            });
 
             app.UseSwagger();
 

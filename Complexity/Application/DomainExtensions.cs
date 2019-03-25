@@ -18,7 +18,7 @@ namespace Application
             var (question, hints, rightAnswer) = task;
             return new TaskEntity
             {
-                Difficulty = generator.Difficulty,
+                //Difficulty = generator.Difficulty,
                 GeneratorId = generator.Id,
                 Hints = hints,
                 Question = question,

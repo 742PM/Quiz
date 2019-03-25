@@ -1,6 +1,6 @@
 using System;
 
-namespace DataBase
+namespace DataBase.DatabaseEntities
 {
     public class UserEntity
     {
@@ -13,12 +13,11 @@ namespace DataBase
         {
             Id = id;
         }
-        
 
-        public UserEntity(Guid id, Progress progress)
+        public UserEntity(Guid id, ProgressEntity progressEntity)
         {
             Id = id;
-            Progress = progress;
+            ProgressEntity = progressEntity;
         }
 
         public Guid Id
@@ -28,6 +27,6 @@ namespace DataBase
             private set;
         }
 
-        public Progress Progress { get; set; }
+        public ProgressEntity ProgressEntity { get; set; }
     }
 }

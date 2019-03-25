@@ -62,13 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTransferObjects\AnswerEntity.cs" />
+    <Compile Include="DatabaseEntities\GeneratorEntities\GeneratorEntity.cs" />
+    <Compile Include="DatabaseEntities\GeneratorEntities\TemplateGeneratorEntity.cs" />
+    <Compile Include="DatabaseEntities\LevelEntity.cs" />
+    <Compile Include="DatabaseEntities\ProgressEntity.cs" />
+    <Compile Include="ITaskRepository.cs" />
     <Compile Include="MongoUserRepository.cs" />
-    <Compile Include="Progress.cs" />
-    <Compile Include="DataTransferObjects\TaskEntity.cs" />
-    <Compile Include="DataTransferObjects\LevelEntity.cs" />
-    <Compile Include="DataTransferObjects\TopicEntity.cs" />
-    <Compile Include="DataTransferObjects\UserEntity.cs" />
+    <Compile Include="DatabaseEntities\TopicEntity.cs" />
+    <Compile Include="DatabaseEntities\UserEntity.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,7 +77,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

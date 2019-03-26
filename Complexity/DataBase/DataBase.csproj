@@ -65,7 +65,10 @@
     <Compile Include="DatabaseEntities\GeneratorEntities\GeneratorEntity.cs" />
     <Compile Include="DatabaseEntities\GeneratorEntities\TemplateGeneratorEntity.cs" />
     <Compile Include="DatabaseEntities\LevelEntity.cs" />
+    <Compile Include="DatabaseEntities\LevelProgressEntity.cs" />
     <Compile Include="DatabaseEntities\ProgressEntity.cs" />
+    <Compile Include="DatabaseEntities\TaskInfoEntity.cs" />
+    <Compile Include="DatabaseEntities\TopicProgressEntity.cs" />
     <Compile Include="ITaskRepository.cs" />
     <Compile Include="MongoUserRepository.cs" />
     <Compile Include="DatabaseEntities\TopicEntity.cs" />
@@ -73,9 +76,16 @@
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MongoTaskRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{dcf0c8ae-330c-4698-b4df-4093769d729b}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

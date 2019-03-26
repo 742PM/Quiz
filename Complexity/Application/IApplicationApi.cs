@@ -31,13 +31,13 @@ namespace Application
         /// </returns>
         IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId);
 
-        ///// <summary>
-        ///// Прогресс пользователя в текущих теме и уровне сложности
-        ///// </summary>
-        ///// <returns>
-        ///// 
-        ///// </returns>
-        //int GetCurrentProgress(Guid userId);
+        /// <summary>
+        /// Прогресс пользователя в текущих теме и уровне
+        /// </summary>
+        /// <returns>
+        /// Отношение решенных (набран полный стрик) задач ко всем
+        /// </returns>
+        double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение задачи из конкретных темы и уровня

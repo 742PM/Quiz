@@ -5,7 +5,8 @@ namespace DataBase.DatabaseEntities
     public class TaskInfoEntity
     {
         public string Question { get; set; }
-        public string[] Answers { get; set; }
+
+        public string Answer { get; set; }
 
         public string[] Hints { get; set; }
 

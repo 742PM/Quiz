@@ -1,16 +1,17 @@
 using System;
 using DataBase.DatabaseEntities;
 using DataBase.DatabaseEntities.GeneratorEntities;
+using Domain.Entities;
 using MongoDB.Driver;
 
 namespace DataBase
 {
-    internal class TaskRepository : ITaskRepository
+    internal class MongoTaskRepository : ITaskRepository
     {
         private const string CollectionName = "topics";
         private readonly IMongoCollection<TopicEntity> topicCollection;
 
-        public TaskRepository(IMongoDatabase database)
+        public MongoTaskRepository(IMongoDatabase database)
         {
             topicCollection = database.GetCollection<TopicEntity>(CollectionName);
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace DataBase.DatabaseEntities
 {
@@ -6,8 +7,11 @@ namespace DataBase.DatabaseEntities
     {
         public Guid CurrentTopicId { get; set; }
         public Guid CurrentLevelId { get; set; }
-        public Guid[] TopicsId { get; set; }
-        public LevelProgressEntity[] LevelsProgress { get; set; }
+
+        /// <summary>
+        /// Maps Topic Id to progress of the Topic
+        /// </summary>
+        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; set; }
 
         public TaskInfoEntity CurrentTask { get; set; }
     }

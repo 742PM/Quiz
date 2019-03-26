@@ -6,9 +6,8 @@ namespace DataBase
 {
     public class MongoUserRepository : IUserRepository
     {
-        private readonly IMongoCollection<UserEntity> userCollection;
-        
         public const string CollectionName = "users";
+        private readonly IMongoCollection<UserEntity> userCollection;
 
         public MongoUserRepository(IMongoDatabase database)
         {
@@ -23,7 +22,8 @@ namespace DataBase
 
         public UserEntity FindById(Guid id)
         {
-            return userCollection.Find(u => u.Id == id).SingleOrDefault();
+            return userCollection.Find(u => u.Id == id)
+                                 .SingleOrDefault();
         }
 
         public void Update(UserEntity user)
@@ -38,13 +38,7 @@ namespace DataBase
 
         public UserEntity UpdateOrInsert(UserEntity user)
         {
-            userCollection.ReplaceOne(
-                u => u.Id == user.Id,
-                user,
-                new UpdateOptions
-                {
-                    IsUpsert = true,
-                });
+            userCollection.ReplaceOne(u => u.Id == user.Id, user, new UpdateOptions {IsUpsert = true});
             return user;
         }
     }

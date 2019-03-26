@@ -1,13 +1,12 @@
-using DataBase.DatabaseEntities.GeneratorEntities;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace DataBase.DatabaseEntities
+namespace DataBase.DatabaseEntities.GeneratorEntities
 {
     [BsonDiscriminator(RootClass = true)]
     [BsonKnownTypes(typeof(TemplateGeneratorEntity))]
     public abstract class GeneratorEntity
     {
-        string Description { get; set; }
-        int Streak { get; set; }
+        private string Description { get; set; }
+        private int Streak { get; set; }
     }
 }

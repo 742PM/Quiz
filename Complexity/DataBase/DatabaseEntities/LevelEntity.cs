@@ -1,3 +1,5 @@
+using DataBase.DatabaseEntities.GeneratorEntities;
+
 namespace DataBase.DatabaseEntities
 {
     public class LevelEntity

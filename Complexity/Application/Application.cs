@@ -22,24 +22,29 @@ namespace Application
                 .WithConstructorArgument("hint", "Wow"); //Какое-то странное что-то, просто пример
         }
 
-        private readonly IEnumerable<Topic> topics;
+        private readonly ITaskRepository taskRepository;
         private readonly IUserRepository userRepository;
+        private readonly ITaskGeneratorSelector generatorSelector;
         private readonly Random random = new Random();
 
-        public Application(IEnumerable<Topic> topics, IUserRepository userRepository)
+        public Application(
+            IUserRepository userRepository,
+            ITaskRepository taskRepository,
+            ITaskGeneratorSelector generatorSelector)
         {
-            this.topics = topics;
             this.userRepository = userRepository;
+            this.taskRepository = taskRepository;
+            this.generatorSelector = generatorSelector;
         }
 
         public IEnumerable<TopicInfo> GetTopicsInfo()
         {
-            return topics.Select(topic => topic.ToInfo());
+            throw new NotImplementedException();
         }
 
         public IEnumerable<LevelInfo> GetLevels(Guid topicId)
         {
-            return new LevelInfo[0];
+            throw new NotImplementedException();
             //return GetTopic(topicId)
             //    .Generators
             //    .Select(generator => generator.Difficulty)
@@ -49,7 +54,7 @@ namespace Application
 
         public IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            return new LevelInfo[0];
+            throw new NotImplementedException();
             //var user = FindOrInsertUser(userId);
             //var difficulties = GetLevels(topicId);
             //var startedDifficulties = user
@@ -64,6 +69,11 @@ namespace Application
             //var maxStartedDifficulty = startedDifficulties.Max();
             //var difficultyStep = GetTopicProgress(userId, topicId, maxStartedDifficulty) == 100 ? 1 : 0;
             //return difficulties.TakeWhile(difficulty => difficulty <= maxStartedDifficulty + difficultyStep);
+        }
+
+        public double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        {
+            throw new NotImplementedException();
         }
 
         //public IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty)
@@ -83,7 +93,7 @@ namespace Application
 
         public TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId)
         {
-            return new TaskInfo("?", new[] { "a", "b", "c" });
+            throw new NotImplementedException();
             //var user = FindOrInsertUser(userId);
             //if (!GetAvailableLevels(userId, topicId).Contains(difficulty))
             //    throw new AccessDeniedException(
@@ -98,7 +108,7 @@ namespace Application
 
         public TaskInfo GetNextTask(Guid userId)
         {
-            return new TaskInfo("?", new[] { "a", "b", "c" });
+            throw new NotImplementedException();
             //var user = FindOrInsertUser(userId);
             //CheckCurrentTask(user);
             //var generators = GetTopic(user.Progress.CurrentTopicId)
@@ -118,7 +128,7 @@ namespace Application
 
         public bool CheckAnswer(Guid userId, string answer)
         {
-            return false;
+            throw new NotImplementedException();
             //var user = FindOrInsertUser(userId);
             //CheckCurrentTask(user);
             //var expected = user.Progress.CurrentTask.RightAnswer;
@@ -127,7 +137,7 @@ namespace Application
 
         public string GetHint(Guid userId)
         {
-            return "";
+            throw new NotImplementedException();
             //var user = FindOrInsertUser(userId);
             //CheckCurrentTask(user);
             //return user.Progress.CurrentTask.Hints.First();
@@ -197,4 +207,4 @@ namespace Application
         //    }
         //}
     }
-}  
+}

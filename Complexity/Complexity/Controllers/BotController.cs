@@ -4,8 +4,6 @@ using System.Linq;
 using Application;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Newtonsoft.Json;
 
 namespace Complexity.Controllers
 {
@@ -31,7 +29,7 @@ namespace Complexity.Controllers
             return Ok(new[] {new TopicInfoDTO("Complexity", Guid.NewGuid())});
             return Ok(applicationApi.GetTopicsInfo().Select(Mapper.Map<TopicInfoDTO>));
         }
-        
+
         /// <summary>
         ///     Возвращает всех список уровней в теме.
         /// </summary>
@@ -42,7 +40,7 @@ namespace Complexity.Controllers
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
         [HttpGet("getLevels/{topicId}")]
-        public ActionResult<IEnumerable<TopicInfoDTO>> GetLevels(Guid topicId)
+        public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
         {
             //stab
             return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
@@ -63,129 +61,94 @@ namespace Complexity.Controllers
         {
             //stab
             return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
-            
+
             return Ok(applicationApi.GetAvailableLevels(userId, topicId).Select(Mapper.Map<LevelInfoDTO>));
         }
 
-//        /// <summary>
-//        ///     Возвращает максимальный доступный уровень доступа (сложности) по данной теме
-//        /// </summary>
-//        /// <remarks>
-//        ///     Sample request:
-//        ///     GET api/1/1/getTopicAccessLevel
-//        /// </remarks>
-//        /// <response code="200"> Уровень доступа по теме</response>
-//        /// <response code="204"> Уровень доступа по теме не найден, возможно тема не существует</response>
-//        [HttpGet("{userId}/{topicId}/getTopicAccessLevel")]
-//        public ActionResult<int> GetMaxAvailableDifficultyOfOfTopic(int userId, int topicId)
-//        {
-//            //stab
-//            if (topicId == 0)
-//                return Ok(5);
-//
-//            //должно быть преобразование tocken в guid потом вызов GetAvailableDifficulties
-//
-//            return NoContent();
-//            
-//            
-//        }
-//
-//
-//        /// <summary>
-//        ///     Возвращает информацию о уровне.
-//        /// </summary>
-//        /// <remarks>
-//        ///     Sample request:
-//        ///     GET api/1/1/1/getLevelInfo
-//        /// </remarks>
-//        /// <response code="200"> Возвращает информацию уровня</response>
-//        [HttpGet("{userId}/{topic}/{level}/getLevelInfo")]
-//        public JsonResult GetLevelInfo(int userId, int topicId, int difficulty)
-//        {
-//            //stab
-//            if (topicId == 1 && difficulty == 1)
-//                return new JsonResult(new LevelDTO());
-//
-//            return new JsonResult(null);
-//
-//            //переписать DTO таска, адаптировать ее под TaskDescription 
-//            //TaskDescription GetTask(Guid userId, Guid topicId, int difficulty);
-//        }
-//
-//        /// <summary>
-//        ///     Возвращает информацию о уровне из такого же состояния (тема + сложность).
-//        /// </summary>
-//        /// <remarks>
-//        ///     Sample request:
-//        ///     GET api/1/getNextLevelInfo
-//        /// </remarks>
-//        /// <response code="200"> Возвращает информацию уровня</response>
-//        [HttpGet("{userId}/getNextLevelInfo")]
-//        public JsonResult GetNextLevelInfo(int userId)
-//        {
-//            //stab
-//            return new JsonResult(new LevelDTO());
-//
-//            //TaskDescription GetNextTask(Guid userId);
-//            //анологично GetLevelInfo
-//        }
-//
-//        /// <summary>
-//        ///     Возвращает информацию о следующем уровне из текущго состояние (тема + сложность).
-//        /// </summary>
-//        /// <remarks>
-//        ///     Sample request:
-//        ///     GET api/1/getSimilarLevelInfo
-//        /// </remarks>
-//        /// <response code="200"> Возвращает информацию уровня</response>
-//        [HttpGet("{userId}/getSimilarLevelInfo")]
-//        public JsonResult GetSimilarLevelInfo(int userId)
-//        {
-//            //stab
-//            return new JsonResult(new LevelDTO());
-//
-//            //TaskDescription GetSimilarTask(Guid userId);
-//            //анологично GetLevelInfo
-//        }
-//
-//
-//        /// <summary>
-//        ///     Возвращает подсказку на заданный уровень.
-//        /// </summary>
-//        /// <remarks>
-//        ///     Sample request:
-//        ///     GET api/0/getHint
-//        /// </remarks>
-//        /// <response code="200"> Возвращает подсказку на уровень</response>
-//        /// <response code="204"> Подсказка не найдена</response>
-//        [HttpGet("{userId}/getHint")]
-//        public ActionResult<string> GetHint(int userId)
-//        {
-//            //stab
-//            return Ok("Подсказок больше нет");
-//
-//            //string GetHint(Guid userId);
-//        }
-//
-//
-//        /// <summary>
-//        ///     Отправить ответ на сервер.
-//        /// </summary>
-//        /// <remarks>
-//        ///     Sample request:
-//        ///     POST api/0/sendAnswer
-//        ///     {
-//        ///     "key": "right answer"
-//        ///     }
-//        /// </remarks>
-//        /// <response code="200"> Возвращает bool верный ли ответ</response>
-//        [HttpPost("{userId}/sendAnswer")]
-//        public ActionResult<bool> PostAnswer([FromBody] AnswerDTO value, int userId)
-//        {
-//            //stab
-//            return Ok(true);
-//
-//            //bool CheckAnswer(Guid userId, string answer);
-//        }
+        /// <summary>
+        ///     Возвращает прогресс пользователя по текущему Level.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     GET api/0/getCurrentProgress/0/0
+        /// </remarks>
+        /// <response code="200"> Отношение решенных задач к общему колличеству задач.</response>
+        [HttpGet("{userId}/getCurrentProgress/{topicId}/{levelId}")]
+        public ActionResult<double> GetAvailableLevels(Guid userId, Guid topicId, Guid levelId)
+        {
+            //stab
+            return Ok(0.5);
+
+            return Ok(applicationApi.GetCurrentProgress(userId, topicId, levelId));
+        }
+
+        /// <summary>
+        ///     Возвращает информацию о уровне.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     GET api/1/1/1/getLevelInfo
+        /// </remarks>
+        /// <response code="200"> Возвращает информацию о уровне</response>
+        [HttpGet("{userId}/{topicId}/{levelId}/getLevelInfo")]
+        public ActionResult<TaskInfoDTO> GetLevelInfo(Guid userId, Guid topicId, Guid levelId)
+        {
+            //stab
+            return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
+
+            return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetTask(userId, topicId, levelId)));
+        }
+
+        /// <summary>
+        ///     Возвращает информацию о уровне из такого же состояния (тема + сложность).
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     GET api/1/getNextLevelInfo
+        /// </remarks>
+        /// <response code="200"> Возвращает информацию уровня</response>
+        [HttpGet("{userId}/getNextLevelInfo")]
+        public ActionResult<TaskInfoDTO> GetNextLevelInfo(Guid userId)
+        {
+            //stab
+            return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
+
+            return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetNextTask(userId)));
+        }
+
+        /// <summary>
+        ///     Выдает подсказку на заданный уровень.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     GET api/0/getHint
+        /// </remarks>
+        /// <response code="200"> Возвращает подсказку на уровень</response>
+        /// <response code="204"> Подсказка не найдена</response>
+        [HttpGet("{userId}/getHint")]
+        public ActionResult<string> GetHint(Guid userId)
+        {
+            //stab
+            return Ok("Подсказок больше нет");
+            return Ok(applicationApi.GetHint(userId));
+        }
+
+
+        /// <summary>
+        ///     Отправить ответ на сервер.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     POST api/0/sendAnswer
+        ///     "O(1)"
+        /// </remarks>
+        /// <response code="200"> Возвращает bool верный ли ответ</response>
+        [HttpPost("{userId}/sendAnswer")]
+        public ActionResult<bool> CheckAnswer([FromBody] string answer, Guid userId)
+        {
+            //stab
+            return Ok(true);
+            return Ok(applicationApi.CheckAnswer(userId, answer));
+        }
     }
 }

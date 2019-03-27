@@ -1,9 +1,10 @@
-﻿using Domain.Entities.TaskGenerators;
+﻿using System.Collections.Generic;
+using Domain.Entities.TaskGenerators;
 
 namespace Application
 {
     public interface ITaskGeneratorSelector
     {
-        TaskGenerator Select((TaskGenerator, int)[] generators); //add more parameters?
+        TaskGenerator Select(IEnumerable<TaskGenerator> generators);
     }
 }

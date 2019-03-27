@@ -12,9 +12,9 @@ namespace Domain
     /// Базовый класс всех DDD сущностей.
     /// </summary>
     /// <typeparam name="TId">Тип идентификатора</typeparam>
-    public class Entity<TId>
+    public abstract class Entity<TId>
     {
-        public Entity(TId id)
+        protected Entity(TId id)
         {
             Id = id;
         }

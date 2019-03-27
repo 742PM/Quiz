@@ -9,7 +9,7 @@ namespace Tests
 {
     public class TestGenerator : TaskGenerator
     {
-        public TestGenerator(int difficulty) : base(Guid.NewGuid())
+        public TestGenerator(int difficulty) : base(Guid.NewGuid(),0)
         {
             Difficulty = difficulty;
         }

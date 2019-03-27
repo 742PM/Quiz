@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application.Info;
+using JetBrains.Annotations;
 
 namespace Application
 {
@@ -20,7 +21,7 @@ namespace Application
         /// <returns>
         /// Уровни сложности
         /// </returns>
-        IEnumerable<int> GetDifficulties(Guid topicId);
+        IEnumerable<LevelInfo> GetLevels(Guid topicId);
 
         /// <summary>
         /// Получение доступных уровней сложности в данной теме для данного уровня 
@@ -28,46 +29,31 @@ namespace Application
         /// <returns>
         /// Доступные уровни сложности для пользователя
         /// </returns>
-        IEnumerable<int> GetAvailableDifficulties(Guid userId, Guid topicId);
+        IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId);
 
-
-        /// <summary>
-        /// Получение перечисления описаний заданий в данной теме в конкретном уровню сложности
-        /// </summary>
-        /// <returns>
-        /// Перечисление информации о возможных заданиях
-        /// </returns>
-        IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty);
-
-        /// <summary>
-        /// Прогресс пользователя в текущих теме и уровне сложности
-        /// </summary>
-        /// <returns>
-        /// Прогресс в процентах
-        /// </returns>
-        int GetCurrentProgress(Guid userId);
+        ///// <summary>
+        ///// Прогресс пользователя в текущих теме и уровне сложности
+        ///// </summary>
+        ///// <returns>
+        ///// 
+        ///// </returns>
+        //int GetCurrentProgress(Guid userId);
 
         /// <summary>
-        /// Получение задачи из конкретной темы по данной сложности
+        /// Получение задачи из конкретных темы и уровня
         /// </summary>
         /// <returns>
         /// Описание задачи с вариантами ответов
         /// </returns>
-        TaskInfo GetTask(Guid userId, Guid topicId, int difficulty);
+        TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
-        /// Получение следующей задачи из текущих темы и уровня сложности
+        /// Получение следующей задачи из текущих темы и уровня
         /// </summary>
         /// <returns>
         /// Описание задачи с вариантами ответов
         /// </returns>
         TaskInfo GetNextTask(Guid userId);
-
-        /// <summary>
-        /// Получение подобной задачи от текущего генератора
-        /// </summary>
-        /// <returns>Описание задачи с вариантами ответов</returns>
-        TaskInfo GetSimilarTask(Guid userId);
 
         /// <summary>
         /// Проверка правильности ответа на текущую задачу
@@ -77,6 +63,7 @@ namespace Application
         /// <summary>
         /// Получение подсказки для текущей задачи
         /// </summary>
+        [CanBeNull]
         string GetHint(Guid userId);
     }
 }

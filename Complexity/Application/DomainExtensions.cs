@@ -13,17 +13,17 @@ namespace Application
 
         public static TopicInfo ToInfo(this Topic topic) => new TopicInfo(topic.Name, topic.Id);
 
-        public static TaskEntity ToEntity(this Task task, TaskGenerator generator)
-        {
-            var (question, hints, rightAnswer) = task;
-            return new TaskEntity
-            {
-                Difficulty = generator.Difficulty,
-                GeneratorId = generator.Id,
-                Hints = hints,
-                Question = question,
-                RightAnswer = rightAnswer
-            };
-        }
+        //public static TaskEntity ToEntity(this Task task, TaskGenerator generator)
+        //{
+        //    var (question, hints, rightAnswer) = task;
+        //    return new TaskEntity
+        //    {
+        //        //Difficulty = generator.Difficulty,
+        //        GeneratorId = generator.Id,
+        //        Hints = hints,
+        //        Question = question,
+        //        Answer = rightAnswer
+        //    };
+        //}
     }
 }

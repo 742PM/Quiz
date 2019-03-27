@@ -1,7 +1,9 @@
-﻿namespace Domain
+﻿using Domain.Entities.TaskGenerators;
+
+namespace Application
 {
     public interface ITaskGeneratorSelector
     {
-        TasGenerator Select((TasGenerator, int)[] generators); //add more parameters?
+        TaskGenerator Select((TaskGenerator, int)[] generators); //add more parameters?
     }
 }

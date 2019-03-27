@@ -46,7 +46,7 @@ namespace Application
         {
             throw new NotImplementedException();
             //return GetTopic(topicId)
-            //    .Generators
+            //    .GetGeneratorsFromLevel
             //    .Select(generator => generator.Difficulty)
             //    .Distinct()
             //    .OrderBy(difficulty => difficulty);
@@ -59,7 +59,7 @@ namespace Application
             //var difficulties = GetLevels(topicId);
             //var startedDifficulties = user
             //    .Progress
-            //    .Topics
+            //    .GetTopics
             //    .First(topic => topic.TopicId == topicId)
             //    .Tasks
             //    .Select(task => task.Difficulty)
@@ -79,7 +79,7 @@ namespace Application
         //public IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty)
         //{
         //    return GetTopic(topicId)
-        //        .Generators
+        //        .GetGeneratorsFromLevel
         //        .Where(generator => generator.Difficulty == difficulty)
         //        .Select(generator => generator.Description);
         //}
@@ -99,7 +99,7 @@ namespace Application
             //    throw new AccessDeniedException(
             //        $"User {userId} doesn't have access to difficulty {difficulty} in topic {topicId}");
             //var taskGenerator = GetTopic(topicId)
-            //    .Generators
+            //    .GetGeneratorsFromLevel
             //    .First(generator => generator.Difficulty == difficulty);
             //var task = taskGenerator.GetTask(random);
             //UpdateUserCurrentTask(user, topicId, task, taskGenerator);
@@ -112,7 +112,7 @@ namespace Application
             //var user = FindOrInsertUser(userId);
             //CheckCurrentTask(user);
             //var generators = GetTopic(user.Progress.CurrentTopicId)
-            //    .Generators
+            //    .GetGeneratorsFromLevel
             //    .Where(generator => generator.Difficulty == user.Progress.CurrentTask.Difficulty)
             //    .ToArray();
             //var nextGenerators = generators
@@ -131,7 +131,7 @@ namespace Application
             throw new NotImplementedException();
             //var user = FindOrInsertUser(userId);
             //CheckCurrentTask(user);
-            //var expected = user.Progress.CurrentTask.RightAnswer;
+            //var expected = user.Progress.CurrentTask.Answer;
             //return expected == answer;
         }
 
@@ -167,13 +167,13 @@ namespace Application
         //    var user = FindOrInsertUser(userId);
         //    var solvedTasksCount = user
         //        .Progress
-        //        .Topics
+        //        .GetTopics
         //        .First(topic => topic.TopicId == topicId)
         //        .Tasks
         //        .Distinct(new TaskGeneratorIdEqualityComparer())
         //        .Count(task => task.Difficulty == difficulty);
         //    var allTasksCount = GetTopic(topicId)
-        //        .Generators
+        //        .GetGeneratorsFromLevel
         //        .Count(generator => generator.Difficulty == difficulty);
         //    var progress = (double) solvedTasksCount / allTasksCount * 100;
         //    return (int) progress;
@@ -183,7 +183,7 @@ namespace Application
         //{
         //    var progress = new Progress
         //    {
-        //        Topics = topics.Select(topic => new TopicEntity
+        //        GetTopics = topics.Select(topic => new TopicEntity
         //            {
         //                Name = topic.Name,
         //                TopicId = topic.Id,

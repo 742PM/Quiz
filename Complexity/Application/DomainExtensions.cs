@@ -22,7 +22,7 @@ namespace Application
         //        GeneratorId = generator.Id,
         //        Hints = hints,
         //        Question = question,
-        //        RightAnswer = rightAnswer
+        //        Answer = rightAnswer
         //    };
         //}
     }

@@ -10,7 +10,8 @@ namespace Domain.Entities.TaskGenerators
             string[] possibleAnswers,
             string templateCode,
             string[] hints,
-            string answer) : base(id)
+            string answer,
+            int streak) : base(id, streak)
         {
             PossibleAnswers = possibleAnswers;
             TemplateCode = templateCode;
@@ -31,7 +32,7 @@ namespace Domain.Entities.TaskGenerators
         public string Answer { get; }
 
         /// <inheritdoc />
-        public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, null);
+        public new Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, null);
 
         private string Randomize(Random randomSeed) =>
             TemplateCode.Replace("$i$", ((char) randomSeed.Next('a', 'z')).ToString());

@@ -9,7 +9,7 @@ namespace Domain.Values
         public Task(
             string question,
             string[] hints,
-            string rightAnswer,
+            string answer,
             Guid generatorId,
             string[] possibleAnswers)
         {
@@ -17,7 +17,7 @@ namespace Domain.Values
             ParentGeneratorId = generatorId;
             PossibleAnswers = possibleAnswers;
             Hints = hints;
-            RightAnswer = rightAnswer;
+            Answer = answer;
         }
 
         public Task With(string answer) => new Task(Question, Hints, answer, ParentGeneratorId, PossibleAnswers);
@@ -27,25 +27,25 @@ namespace Domain.Values
 
         public string[] Hints { get; }
 
-        public string RightAnswer { get; }
+        public string Answer { get; }
 
         public bool Equals(Task other) =>
-            (Question, Hints, RightAnswer).Equals((other.Question, other.Hints, other.RightAnswer));
+            (Question, Hints, Answer).Equals((other.Question, other.Hints, other.Answer));
 
-        public Task With(string[] answers) => new Task(Question, Hints, RightAnswer, ParentGeneratorId, answers);
+        public Task With(string[] answers) => new Task(Question, Hints, Answer, ParentGeneratorId, answers);
 
-        public void Deconstruct(out string question, out string[] hints, out string rightAnswer)
+        public void Deconstruct(out string question, out string[] hints, out string answer)
         {
             question = Question;
             hints = Hints;
-            rightAnswer = RightAnswer;
+            answer = Answer;
         }
 
         public Guid ParentGeneratorId { get; }
 
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 
-        public override int GetHashCode() => (Question, Hints, RightAnswer).GetHashCode();
+        public override int GetHashCode() => (Question, Hints, Answer).GetHashCode();
 
         public static bool operator ==(Task left, Task right) => Equals(left, right);
 

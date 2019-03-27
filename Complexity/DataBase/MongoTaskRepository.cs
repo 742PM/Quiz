@@ -1,7 +1,6 @@
 using System;
-using DataBase.DatabaseEntities;
-using DataBase.DatabaseEntities.GeneratorEntities;
 using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using MongoDB.Driver;
 
 namespace DataBase
@@ -9,45 +8,47 @@ namespace DataBase
     internal class MongoTaskRepository : ITaskRepository
     {
         private const string CollectionName = "topics";
-        private readonly IMongoCollection<TopicEntity> topicCollection;
+        private readonly IMongoCollection<Topic> topicCollection;
 
         public MongoTaskRepository(IMongoDatabase database)
         {
-            topicCollection = database.GetCollection<TopicEntity>(CollectionName);
+            topicCollection = database.GetCollection<Topic>(CollectionName);
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Gently;
-        /// </summary>
-        public TopicEntity Insert(TopicEntity topic)
-        {
-            topicCollection.InsertOne(topic);
-            return topic;
-        }
+        public Topic[] GetTopics() => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public TopicEntity Find(Guid id) => throw new NotImplementedException();
+        public Level[] GetLevelsFromTopic(Guid topicId) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public LevelEntity InsertAt(Guid topicId, LevelEntity level) => throw new NotImplementedException();
+        public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public LevelEntity UpdateAt(Guid topicId, LevelEntity level) => throw new NotImplementedException();
+        public Topic InsertTopic(Topic topic) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public LevelEntity FindLevel(Guid topicId, Guid levelId) => throw new NotImplementedException();
+        public Topic UpdateTopic(Topic topic) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public GeneratorEntity InsertAt(Guid topicId, Guid levelId, GeneratorEntity entity) =>
-            throw new NotImplementedException();
+        public Topic FindTopic(Guid topicId) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public GeneratorEntity UpdateAt(Guid topicId, Guid levelId, GeneratorEntity entity) =>
-            throw new NotImplementedException();
+        public Level InsertLevel(Guid topicId, Level level) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public GeneratorEntity FindGenerator(Guid topicId, Guid levelId, Guid generatorId) =>
-            throw new NotImplementedException();
+        public Level UpdateLevel(Guid topicId, Level level) => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public Level FindLevel(Guid topicId, Guid levelId) => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity) => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity) => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId) => throw new NotImplementedException();
     }
 }

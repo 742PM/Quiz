@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataBase.DatabaseEntities
+namespace DataBase.Entities
 {
-    public class ProgressEntity
+    public class UserProgressEntity
     {
         public Guid CurrentTopicId { get; set; }
         public Guid CurrentLevelId { get; set; }
 
+        public Guid UserId { get; set; }
+
         /// <summary>
-        /// Maps Topic Id to progress of the Topic
+        ///     Maps Topic Id to progress of the Topic
         /// </summary>
         public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; set; }
 

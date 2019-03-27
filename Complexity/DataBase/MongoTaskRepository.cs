@@ -18,6 +18,11 @@ namespace DataBase
         /// <inheritdoc />
         public Topic[] GetTopics { get; }
 
+        Topic[] ITaskRepository.GetTopics()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc />
         public Level[] GetLevelsFromTopic(Guid topicId) => throw new NotImplementedException();
 

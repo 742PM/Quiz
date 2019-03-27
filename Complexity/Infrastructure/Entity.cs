@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace Domain
 {
-    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class EntityAttribute : Attribute
     {
     }
+
     /// <summary>
     /// Базовый класс всех DDD сущностей.
     /// </summary>
@@ -19,7 +20,11 @@ namespace Domain
         }
 
         [MustBeSaved]
-        public TId Id { get; }
+        public TId Id
+        {
+            get; // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local For MongoDB
+            private set;
+        }
 
         protected bool Equals(Entity<TId> other)
         {
@@ -31,7 +36,7 @@ namespace Domain
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Entity<TId>)obj);
+            return Equals((Entity<TId>) obj);
         }
 
         public override int GetHashCode()

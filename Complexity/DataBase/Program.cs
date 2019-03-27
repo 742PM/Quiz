@@ -23,8 +23,8 @@ namespace DataBase.Entities
                 tg.SetIsRootClass(true);
             });
 
-            BsonClassMap.RegisterClassMap<TaskGenerator>();
             BsonClassMap.RegisterClassMap<TemplateTaskGenerator>();
+            BsonClassMap.RegisterClassMap<ExampleTaskGenerator>();
 
             BsonClassMap.RegisterClassMap<LevelProgressEntity>(lpe =>
             {
@@ -49,14 +49,43 @@ namespace DataBase.Entities
                     new DictionaryInterfaceImplementerSerializer<Dictionary<Guid, TopicProgressEntity>>(
                         DictionaryRepresentation.ArrayOfDocuments));
             });
+
             var levelProgressEntity = new LevelProgressEntity
-                {CurrentLevelStreaks = new Dictionary<Guid, int>{{new Guid(), 10 }}};
-            
+            {
+                LevelId = Guid.NewGuid(),
+                CurrentLevelStreaks = new Dictionary<Guid, int>
+                {
+                    {
+                        Guid.NewGuid(), 10
+                    }
+                }
+            };
+
             var topicProgressEntity = new TopicProgressEntity
-                {LevelProgressEntities = new Dictionary<Guid, LevelProgressEntity>{{new Guid(), levelProgressEntity }}};
+            {
+                TopicId = Guid.NewGuid(),
+                LevelProgressEntities = new Dictionary<Guid, LevelProgressEntity>
+                {
+                    {
+                        Guid.NewGuid(), levelProgressEntity
+                    }
+                }
+            };
+            
             var userProgress = new UserProgressEntity
-                {TopicsProgress = new Dictionary<Guid, TopicProgressEntity> {{new Guid(), topicProgressEntity}}};
-            var user = new UserEntity(new Guid(), userProgress);
+            {
+                UserId = Guid.NewGuid(),
+                CurrentLevelId = Guid.NewGuid(),
+                CurrentTopicId = Guid.NewGuid(),
+                TopicsProgress = new Dictionary<Guid, TopicProgressEntity>
+                {
+                    {
+                        Guid.NewGuid(), topicProgressEntity
+                    }
+                }
+            };
+            
+            var user = new UserEntity(Guid.NewGuid(), userProgress);
 
             userRepo.Insert(user);
         }

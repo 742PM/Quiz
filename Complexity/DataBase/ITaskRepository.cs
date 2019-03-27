@@ -6,25 +6,27 @@ namespace DataBase
 {
     public interface ITaskRepository
     {
-        Topic[] Topics { get; }
+        Topic[] GetTopics { get; }
 
-        Level[] Levels(Guid topicId);
+        Level[] GetLevelsFromTopic(Guid topicId);
 
-        TaskGenerator[] Generators(Guid topicId, Guid levelId);
+        TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId);
 
-        Topic Insert(Topic topic);
+        Topic InsertTopic(Topic topic);
 
-        Topic Find(Guid id);
+        Topic UpdateTopic(Topic topic);
 
-        Level InsertAt(Guid topicId, Level level);
+        Topic FindTopic(Guid topicId);
 
-        Level UpdateAt(Guid topicId, Level level);
+        Level InsertLevel(Guid topicId, Level level);
+
+        Level UpdateLevel(Guid topicId, Level level);
 
         Level FindLevel(Guid topicId, Guid levelId);
 
-        TaskGenerator InsertAt(Guid topicId, Guid levelId, TaskGenerator entity);
+        TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity);
 
-        TaskGenerator UpdateAt(Guid topicId, Guid levelId, TaskGenerator entity);
+        TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity);
 
         TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId);
     }

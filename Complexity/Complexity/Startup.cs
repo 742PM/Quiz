@@ -47,8 +47,8 @@ namespace Complexity
                 app.UseDeveloperExceptionPage();
             else
                 app.UseHsts();
-            
-            Mapper.Initialize(cfg=>
+
+            Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
                 cfg.CreateMap<LevelInfo, LevelInfoDTO>();

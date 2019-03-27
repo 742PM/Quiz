@@ -18,14 +18,14 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/getTopics
+        ///     GET api/topics
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
         /// <response code="204"> Темы не найдены</response>
-        [HttpGet("getTopics")]
+        [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
-            //stab
+            //ToDo: stab
             return Ok(new[] {new TopicInfoDTO("Complexity", Guid.NewGuid())});
             return Ok(applicationApi.GetTopicsInfo().Select(Mapper.Map<TopicInfoDTO>));
         }
@@ -35,14 +35,14 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/getLevels/0
+        ///     GET api/levels/0
         /// </remarks>
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
-        [HttpGet("getLevels/{topicId}")]
+        [HttpGet("levels/{topicId}")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
         {
-            //stab
+            //ToDo: stab
             return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
             return Ok(applicationApi.GetLevels(topicId).Select(Mapper.Map<LevelInfoDTO>));
         }
@@ -52,14 +52,14 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/0/getAvailableLevels/0
+        ///     GET api/0/availableLevels/0
         /// </remarks>
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
-        [HttpGet("{userId}/getAvailableLevels/{topicId}")]
-        public ActionResult<IEnumerable<TopicInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
+        [HttpGet("{userId}/availableLevels/{topicId}")]
+        public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            //stab
+            //ToDo: stab
             return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
 
             return Ok(applicationApi.GetAvailableLevels(userId, topicId).Select(Mapper.Map<LevelInfoDTO>));
@@ -70,47 +70,47 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/0/getCurrentProgress/0/0
+        ///     GET api/0/currentProgress/0/0
         /// </remarks>
         /// <response code="200"> Отношение решенных задач к общему колличеству задач.</response>
-        [HttpGet("{userId}/getCurrentProgress/{topicId}/{levelId}")]
-        public ActionResult<double> GetAvailableLevels(Guid userId, Guid topicId, Guid levelId)
+        [HttpGet("{userId}/currentProgress/{topicId}/{levelId}")]
+        public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            //stab
+            //ToDo: stab
             return Ok(0.5);
 
             return Ok(applicationApi.GetCurrentProgress(userId, topicId, levelId));
         }
 
         /// <summary>
-        ///     Возвращает информацию о уровне.
+        ///     Получить информацию о задании.
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/1/1/1/getLevelInfo
+        ///     GET api/1/task/1/1
         /// </remarks>
-        /// <response code="200"> Возвращает информацию о уровне</response>
-        [HttpGet("{userId}/{topicId}/{levelId}/getLevelInfo")]
-        public ActionResult<TaskInfoDTO> GetLevelInfo(Guid userId, Guid topicId, Guid levelId)
+        /// <response code="200"> Возвращает информацию о задании</response>
+        [HttpGet("{userId}/task/{topicId}/{levelId}")]
+        public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId)
         {
-            //stab
+            //ToDo: stab
             return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
 
             return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetTask(userId, topicId, levelId)));
         }
 
         /// <summary>
-        ///     Возвращает информацию о уровне из такого же состояния (тема + сложность).
+        ///     Возвращает информацию о уровне из такого же состояния (тема + уровень).
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/1/getNextLevelInfo
+        ///     GET api/1/nextTask
         /// </remarks>
         /// <response code="200"> Возвращает информацию уровня</response>
-        [HttpGet("{userId}/getNextLevelInfo")]
-        public ActionResult<TaskInfoDTO> GetNextLevelInfo(Guid userId)
+        [HttpGet("{userId}/nextTask")]
+        public ActionResult<TaskInfoDTO> GetNextTaskInfo(Guid userId)
         {
-            //stab
+            //ToDo: stab
             return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
 
             return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetNextTask(userId)));
@@ -125,10 +125,10 @@ namespace Complexity.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает подсказку на уровень</response>
         /// <response code="204"> Подсказка не найдена</response>
-        [HttpGet("{userId}/getHint")]
+        [HttpGet("{userId}/hint")]
         public ActionResult<string> GetHint(Guid userId)
         {
-            //stab
+            //ToDo: stab
             return Ok("Подсказок больше нет");
             return Ok(applicationApi.GetHint(userId));
         }
@@ -144,9 +144,9 @@ namespace Complexity.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает bool верный ли ответ</response>
         [HttpPost("{userId}/sendAnswer")]
-        public ActionResult<bool> CheckAnswer([FromBody] string answer, Guid userId)
+        public ActionResult<bool> SendAnswer([FromBody] string answer, Guid userId)
         {
-            //stab
+            //ToDo: stab
             return Ok(true);
             return Ok(applicationApi.CheckAnswer(userId, answer));
         }

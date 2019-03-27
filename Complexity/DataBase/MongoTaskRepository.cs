@@ -16,13 +16,13 @@ namespace DataBase
         }
 
         /// <inheritdoc />
-        public Topic[] Topics { get; }
+        public Topic[] GetTopics { get; }
 
         /// <inheritdoc />
-        public Level[] Levels(Guid topicId) => throw new NotImplementedException();
+        public Level[] GetLevelsFromTopic(Guid topicId) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public TaskGenerator[] Generators(Guid topicId, Guid levelId) => throw new NotImplementedException();
+        public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId) => throw new NotImplementedException();
 
         /// <inheritdoc />
         /// <summary>
@@ -38,7 +38,7 @@ namespace DataBase
         public Topic Find(Guid id) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public Level InsertAt(Guid topicId, Level level) => throw new NotImplementedException();
+        public Level InsertLevel(Guid topicId, Level level) => throw new NotImplementedException();
 
         /// <inheritdoc />
         public Level UpdateAt(Guid topicId, Level level) => throw new NotImplementedException();

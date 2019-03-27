@@ -286,7 +286,7 @@ namespace Tests
             //    .GetTask(Guid.NewGuid(), topic.Id, 1)
             //    .Should()
             //    .BeEquivalentTo(topic
-            //        .Generators
+            //        .GetGeneratorsFromLevel
             //        .First()
             //        .GetTask(Random)
             //        .ToInfo());
@@ -300,7 +300,7 @@ namespace Tests
             //    .GetTask(userId, topic.Id, 1)
             //    .Should()
             //    .BeEquivalentTo(topic
-            //        .Generators
+            //        .GetGeneratorsFromLevel
             //        .First()
             //        .GetTask(Random)
             //        .ToInfo());
@@ -314,7 +314,7 @@ namespace Tests
             //    .GetTask(userId, topic.Id, 1)
             //    .Should()
             //    .BeEquivalentTo(topic
-            //        .Generators
+            //        .GetGeneratorsFromLevel
             //        .First()
             //        .GetTask(Random)
             //        .ToInfo());
@@ -331,7 +331,7 @@ namespace Tests
             //    .CurrentTask
             //    .Should()
             //    .BeEquivalentTo(topic
-            //        .Generators
+            //        .GetGeneratorsFromLevel
             //        .First()
             //        .GetTask(Random)
             //        .ToInfo());
@@ -481,7 +481,7 @@ namespace Tests
         //        GetTopicEntity(topics[2], generators.Take(2).Select(GetTaskEntity).ToArray()),
         //        GetTopicEntity(topics[3], new TaskEntity[0])
         //    };
-        //    var progress = new UserProgressEntity { Topics = startedTopics };
+        //    var progress = new UserProgressEntity { GetTopics = startedTopics };
         //    userRepository.Insert(new UserEntity(id, progress));
         //    return id;
         //}

@@ -30,22 +30,22 @@ namespace Domain.Values
         public string Answer { get; }
 
         public bool Equals(Task other) =>
-            (Question, Hints, RightAnswer: Answer).Equals((other.Question, other.Hints, other.Answer));
+            (Question, Hints, Answer).Equals((other.Question, other.Hints, other.Answer));
 
         public Task With(string[] answers) => new Task(Question, Hints, Answer, ParentGeneratorId, answers);
 
-        public void Deconstruct(out string question, out string[] hints, out string rightAnswer)
+        public void Deconstruct(out string question, out string[] hints, out string answer)
         {
             question = Question;
             hints = Hints;
-            rightAnswer = Answer;
+            answer = Answer;
         }
 
         public Guid ParentGeneratorId { get; }
 
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 
-        public override int GetHashCode() => (Question, Hints, RightAnswer: Answer).GetHashCode();
+        public override int GetHashCode() => (Question, Hints, Answer).GetHashCode();
 
         public static bool operator ==(Task left, Task right) => Equals(left, right);
 

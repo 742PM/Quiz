@@ -11,8 +11,7 @@ namespace Domain.Entities.TaskGenerators
             string templateCode,
             string[] hints,
             string answer,
-            int streak,
-            string description) : base(id, streak, description)
+            int streak) : base(id, streak)
         {
             PossibleAnswers = possibleAnswers;
             TemplateCode = templateCode;

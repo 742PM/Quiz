@@ -35,11 +35,11 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/levels/0
+        ///     GET api/0/levels
         /// </remarks>
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
-        [HttpGet("levels/{topicId}")]
+        [HttpGet("{topicId}/levels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
         {
             //ToDo: stab
@@ -52,11 +52,11 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/0/availableLevels/0
+        ///     GET api/0/0/availableLevels
         /// </remarks>
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
-        [HttpGet("{userId}/availableLevels/{topicId}")]
+        [HttpGet("{userId}/{topicId}/availableLevels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
         {
             //ToDo: stab
@@ -70,10 +70,10 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/0/currentProgress/0/0
+        ///     GET api/0/0/0/currentProgress
         /// </remarks>
         /// <response code="200"> Отношение решенных задач к общему колличеству задач.</response>
-        [HttpGet("{userId}/currentProgress/{topicId}/{levelId}")]
+        [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
         public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
             //ToDo: stab
@@ -87,10 +87,10 @@ namespace Complexity.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/1/task/1/1
+        ///     GET api/1/1/1/task
         /// </remarks>
         /// <response code="200"> Возвращает информацию о задании</response>
-        [HttpGet("{userId}/task/{topicId}/{levelId}")]
+        [HttpGet("{userId}/{topicId}/{levelId}/task")]
         public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId)
         {
             //ToDo: stab

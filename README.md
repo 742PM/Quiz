@@ -1,5 +1,5 @@
 # ComplexityBot
-
+[![Build Status](https://travis-ci.org/complexitybot/Quiz.svg?branch=master)](https://travis-ci.org/complexitybot/Quiz)
 ## *Contributors*
 
 | [<img src="https://avatars2.githubusercontent.com/u/31823086?s=460&v=4" width="100px;"/><br /><sub><b>Anton Voitsishevsky </b></sub>](https://github.com/FunFunFine)<br />|

@@ -6,7 +6,7 @@ namespace DataBase
 {
     public interface ITaskRepository
     {
-        Topic[] GetTopics { get; }
+        Topic[] GetTopics();
 
         Level[] GetLevelsFromTopic(Guid topicId);
 

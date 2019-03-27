@@ -1,9 +1,9 @@
 language: csharp
 solution: Complexity.sln
 mono: none
-dotnet: 2.2
+dotnet: 2.0
 before_script:
   - cd Complexity
   - dotnet restore
 script:  
-  - dotnet ./Complexity -c Release -f netcoreapp2.2
+  - dotnet ./Complexity -c Release -f netcoreapp2.0

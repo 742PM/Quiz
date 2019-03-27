@@ -16,7 +16,7 @@ namespace DataBase
         }
 
         /// <inheritdoc />
-        public Topic[] GetTopics { get; }
+        public Topic[] GetTopics() => throw new NotImplementedException();
 
         Topic[] ITaskRepository.GetTopics()
         {

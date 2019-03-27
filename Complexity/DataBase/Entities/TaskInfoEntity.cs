@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataBase.DatabaseEntities
+namespace DataBase.Entities
 {
     public class TaskInfoEntity
     {

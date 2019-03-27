@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Entities
 {
@@ -6,11 +8,11 @@ namespace Domain.Entities
     [MustBeSaved]
     public class Topic : Entity<Guid>
     {
-        public Topic(Guid id, string name, string description, Level[] levels) : base(id)
+        public Topic(Guid id, string name, string description, ICollection<Level> levels) : base(id)
         {
             Name = name;
             Description = description;
-            Levels = levels;
+            Levels = levels.ToArray();
         }
 
         public string Name { get; }

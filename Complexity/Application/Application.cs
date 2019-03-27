@@ -121,7 +121,7 @@ namespace Application
             return false;
             //var user = FindOrInsertUser(userId);
             //CheckCurrentTask(user);
-            //var expected = user.Progress.CurrentTask.RightAnswer;
+            //var expected = user.Progress.CurrentTask.Answer;
             //return expected == answer;
         }
 

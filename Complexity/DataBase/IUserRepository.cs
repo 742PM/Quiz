@@ -1,5 +1,5 @@
 using System;
-using DataBase.DatabaseEntities;
+using DataBase.Entities;
 
 namespace DataBase
 {

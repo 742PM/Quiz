@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Domain.Entities.TaskGenerators;
 
 namespace Domain.Entities
@@ -10,14 +13,14 @@ namespace Domain.Entities
     [Entity]
     public class Level : Entity<Guid>
     {
-        public Level(Guid id, string description, (TaskGenerator, int)[] generators) : base(id)
+        public Level(Guid id, string description, ICollection<TaskGenerator> generators) : base(id)
         {
             Description = description;
-            Generators = generators;
+            Generators = generators.ToArray();
         }
 
         public string Description { get; }
 
-        public (TaskGenerator generator, int streak)[] Generators { get; }
+        public TaskGenerator[] Generators { get; }
     }
 }

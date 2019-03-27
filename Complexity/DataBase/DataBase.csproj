@@ -62,21 +62,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseEntities\GeneratorEntities\GeneratorEntity.cs" />
-    <Compile Include="DatabaseEntities\GeneratorEntities\TemplateGeneratorEntity.cs" />
-    <Compile Include="DatabaseEntities\LevelEntity.cs" />
-    <Compile Include="DatabaseEntities\LevelProgressEntity.cs" />
-    <Compile Include="DatabaseEntities\ProgressEntity.cs" />
-    <Compile Include="DatabaseEntities\TaskInfoEntity.cs" />
-    <Compile Include="DatabaseEntities\TopicProgressEntity.cs" />
     <Compile Include="ITaskRepository.cs" />
+    <Compile Include="Entities\LevelProgressEntity.cs" />
     <Compile Include="MongoUserRepository.cs" />
-    <Compile Include="DatabaseEntities\TopicEntity.cs" />
-    <Compile Include="DatabaseEntities\UserEntity.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Entities\UserProgressEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MongoTaskRepository.cs" />
+    <Compile Include="Entities\TaskInfoEntity.cs" />
+    <Compile Include="Entities\TopicProgressEntity.cs" />
+    <Compile Include="Entities\UserEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -85,6 +81,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{dcf0c8ae-330c-4698-b4df-4093769d729b}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{090B8F0A-4515-489F-8519-FB58B52F276F}</Project>
+      <Name>Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

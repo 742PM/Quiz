@@ -4,7 +4,6 @@ using System.Linq;
 using Application;
 using Application.Info;
 using DataBase;
-using DataBase.DatabaseEntities;
 using Domain;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
@@ -345,7 +344,7 @@ namespace Tests
             //application.GetTask(userId, topic.Id, 1);
             //userRepository
             //    .FindById(userId)
-            //    .ProgressEntity
+            //    .UserProgressEntity
             //    .CurrentTopicId
             //    .Should()
             //    .Be(topic.Id);
@@ -447,7 +446,7 @@ namespace Tests
         {
             //var topic = topics.First();
             //application.GetTask(userId, topic.Id, 1);
-            //application.CheckAnswer(userId, generators.First().GetTask(Random).RightAnswer).Should().BeTrue();
+            //application.CheckAnswer(userId, generators.First().GetTask(Random).Answer).Should().BeTrue();
         }
 
         [Test]
@@ -482,7 +481,7 @@ namespace Tests
         //        GetTopicEntity(topics[2], generators.Take(2).Select(GetTaskEntity).ToArray()),
         //        GetTopicEntity(topics[3], new TaskEntity[0])
         //    };
-        //    var progress = new ProgressEntity { Topics = startedTopics };
+        //    var progress = new UserProgressEntity { Topics = startedTopics };
         //    userRepository.Insert(new UserEntity(id, progress));
         //    return id;
         //}

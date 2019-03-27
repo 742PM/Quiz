@@ -1,26 +1,27 @@
 using System;
-using DataBase.DatabaseEntities;
-using DataBase.DatabaseEntities.GeneratorEntities;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 
 namespace DataBase
 {
     public interface ITaskRepository
     {
-        /// <summary>
-        ///     Inserts user;
-        /// </summary>
-        /// <param name="topic"></param>
-        /// <returns></returns>
-        TopicEntity Insert(TopicEntity topic);
+        Topic[] Topics { get; }
 
-        TopicEntity Find(Guid id);
+        Topic Insert(Topic topic);
 
-        LevelEntity InsertAt(Guid topicId, LevelEntity level);
-        LevelEntity UpdateAt(Guid topicId, LevelEntity level);
-        LevelEntity FindLevel(Guid topicId, Guid levelId);
+        Topic Find(Guid id);
 
-        GeneratorEntity InsertAt(Guid topicId, Guid levelId, GeneratorEntity entity);
-        GeneratorEntity UpdateAt(Guid topicId, Guid levelId, GeneratorEntity entity);
-        GeneratorEntity FindGenerator(Guid topicId, Guid levelId, Guid generatorId);
+        Level InsertAt(Guid topicId, Level level);
+
+        Level UpdateAt(Guid topicId, Level level);
+
+        Level FindLevel(Guid topicId, Guid levelId);
+
+        TaskGenerator InsertAt(Guid topicId, Guid levelId, TaskGenerator entity);
+
+        TaskGenerator UpdateAt(Guid topicId, Guid levelId, TaskGenerator entity);
+
+        TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId);
     }
 }

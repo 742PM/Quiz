@@ -68,7 +68,8 @@ namespace Application
 
         public double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            throw new NotImplementedException();
+            //ToDo stub
+            return default(double);
         }
 
         //public IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty)

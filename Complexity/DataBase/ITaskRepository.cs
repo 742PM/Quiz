@@ -8,6 +8,10 @@ namespace DataBase
     {
         Topic[] Topics { get; }
 
+        Level[] Levels(Guid topicId);
+
+        TaskGenerator[] Generators(Guid topicId, Guid levelId);
+
         Topic Insert(Topic topic);
 
         Topic Find(Guid id);

@@ -1,7 +1,7 @@
 language: csharp
 solution: Complexity.sln
 mono: none
-dotnet: 2.2.105
+dotnet: 2.2.100
 before_script:
   - cd Complexity
   - dotnet restore

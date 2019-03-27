@@ -12,7 +12,7 @@ namespace DataBase
 
         public MongoTaskRepository(IMongoDatabase database)
         {
-            topicCollection = database.GetCollection<TopicEntity>(CollectionName);
+            topicCollection = database.GetCollection<Topic>(CollectionName);
         }
 
         /// <inheritdoc />

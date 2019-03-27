@@ -2,7 +2,8 @@
 
 namespace Domain
 {
-    public class Value : Attribute
+    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Struct)]
+    public class ValueAttribute : Attribute
     {
     }
 }

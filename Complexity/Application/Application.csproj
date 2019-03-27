@@ -4,4 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataBase\DataBase.csproj" />
+    <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+  
 </Project>

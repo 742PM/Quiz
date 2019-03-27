@@ -66,6 +66,11 @@ namespace Application
             //return difficulties.TakeWhile(difficulty => difficulty <= maxStartedDifficulty + difficultyStep);
         }
 
+        public double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        {
+            throw new NotImplementedException();
+        }
+
         //public IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty)
         //{
         //    return GetTopic(topicId)

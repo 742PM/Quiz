@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Info;
 using DataBase;
-using Domain.Entities;
+using DataBase.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using Ninject;
@@ -39,172 +39,158 @@ namespace Application
 
         public IEnumerable<TopicInfo> GetTopicsInfo()
         {
-            throw new NotImplementedException();
+            return taskRepository.GetTopics().Select(topic => topic.ToInfo());
         }
 
         public IEnumerable<LevelInfo> GetLevels(Guid topicId)
         {
-            throw new NotImplementedException();
-            //return GetTopic(topicId)
-            //    .GetGeneratorsFromLevel
-            //    .Select(generator => generator.Difficulty)
-            //    .Distinct()
-            //    .OrderBy(difficulty => difficulty);
+            return taskRepository.GetLevelsFromTopic(topicId).Select(level => level.ToInfo());
         }
 
         public IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            throw new NotImplementedException();
-            //var user = FindOrInsertUser(userId);
-            //var difficulties = GetLevels(topicId);
-            //var startedDifficulties = user
-            //    .Progress
-            //    .GetTopics
-            //    .First(topic => topic.TopicId == topicId)
-            //    .Tasks
-            //    .Select(task => task.Difficulty)
-            //    .ToList();
-            //if (startedDifficulties.Count == 0)
-            //    return GetLevels(topicId).Take(1);
-            //var maxStartedDifficulty = startedDifficulties.Max();
-            //var difficultyStep = GetTopicProgress(userId, topicId, maxStartedDifficulty) == 100 ? 1 : 0;
-            //return difficulties.TakeWhile(difficulty => difficulty <= maxStartedDifficulty + difficultyStep);
+            return FindOrInsertUser(userId)
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities
+                .Select(levelProgress =>
+                    taskRepository
+                        .FindLevel(topicId, levelProgress.Key)
+                        .ToInfo());
         }
 
         public double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            throw new NotImplementedException();
+            var user = FindOrInsertUser(userId);
+            var solved = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId]
+                .CurrentLevelStreaks
+                .Count(pair => pair.Value >= taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
+            return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
         }
-
-        //public IEnumerable<string> GetDifficultyDescription(Guid topicId, int difficulty)
-        //{
-        //    return GetTopic(topicId)
-        //        .GetGeneratorsFromLevel
-        //        .Where(generator => generator.Difficulty == difficulty)
-        //        .Select(generator => generator.Description);
-        //}
-
-        //public int GetCurrentProgress(Guid userId)
-        //{
-        //    var user = FindOrInsertUser(userId);
-        //    CheckCurrentTask(user);
-        //    return GetTopicProgress(userId, user.Progress.CurrentTopicId, user.Progress.CurrentTask.Difficulty);
-        //}
 
         public TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId)
         {
-            throw new NotImplementedException();
-            //var user = FindOrInsertUser(userId);
-            //if (!GetAvailableLevels(userId, topicId).Contains(difficulty))
-            //    throw new AccessDeniedException(
-            //        $"User {userId} doesn't have access to difficulty {difficulty} in topic {topicId}");
-            //var taskGenerator = GetTopic(topicId)
-            //    .GetGeneratorsFromLevel
-            //    .First(generator => generator.Difficulty == difficulty);
-            //var task = taskGenerator.GetTask(random);
-            //UpdateUserCurrentTask(user, topicId, task, taskGenerator);
-            //return task.ToInfo();
+            var user = FindOrInsertUser(userId);
+            if (!GetAvailableLevels(userId, topicId).Select(info => info.Id).Contains(levelId))
+                throw new AccessDeniedException(
+                    $"User {userId} doesn't have access to level {levelId} in topic {topicId}");
+            var task = generatorSelector
+                .Select(taskRepository.GetGeneratorsFromLevel(topicId, levelId))
+                .GetTask(random);
+            UpdateUserCurrentTask(user, topicId, levelId, task);
+            return task.ToInfo();
         }
 
         public TaskInfo GetNextTask(Guid userId)
         {
-            throw new NotImplementedException();
-            //var user = FindOrInsertUser(userId);
-            //CheckCurrentTask(user);
-            //var generators = GetTopic(user.Progress.CurrentTopicId)
-            //    .GetGeneratorsFromLevel
-            //    .Where(generator => generator.Difficulty == user.Progress.CurrentTask.Difficulty)
-            //    .ToArray();
-            //var nextGenerators = generators
-            //    .SkipWhile(generator => generator.Id != user.Progress.CurrentTask.GeneratorId)
-            //    .ToList();
-            //var nextGenerator = nextGenerators.Count > 1
-            //    ? nextGenerators.Skip(1).First()
-            //    : generators.First();
-            //var task = nextGenerator.GetTask(random);
-            //UpdateUserCurrentTask(user, user.Progress.CurrentTopicId, task, nextGenerator);
-            //return task.ToInfo();
+            var user = FindOrInsertUser(userId);
+            CheckCurrentTask(user);
+            if (!user.UserProgressEntity.CurrentTask.IsSolved)
+                throw new AccessDeniedException($"User {userId} should solve current task first");
+            return GetTask(userId, user.UserProgressEntity.CurrentTopicId, user.UserProgressEntity.CurrentLevelId);
         }
 
         public bool CheckAnswer(Guid userId, string answer)
         {
-            throw new NotImplementedException();
-            //var user = FindOrInsertUser(userId);
-            //CheckCurrentTask(user);
-            //var expected = user.Progress.CurrentTask.Answer;
-            //return expected == answer;
+            var user = FindOrInsertUser(userId);
+            CheckCurrentTask(user);
+            if (user.UserProgressEntity.CurrentTask.Answer != answer)
+            {
+                UpdateStreakIfNotSolved(user, streak => 0);
+                return false;
+            }
+            user.UserProgressEntity.CurrentTask.IsSolved = true;
+            UpdateStreakIfNotSolved(user, streak => streak + 1);
+            //TODO: if everything solved add next level in progress
+            userRepository.Update(user);
+            return true;
         }
 
         public string GetHint(Guid userId)
         {
-            throw new NotImplementedException();
-            //var user = FindOrInsertUser(userId);
-            //CheckCurrentTask(user);
-            //return user.Progress.CurrentTask.Hints.First();
+            var user = FindOrInsertUser(userId);
+            CheckCurrentTask(user);
+            var hints = user.UserProgressEntity.CurrentTask.Hints;
+            var currentHintIndex = user.UserProgressEntity.CurrentTask.HintsTaken;
+            if (currentHintIndex >= hints.Length)
+                return null;
+            user.UserProgressEntity.CurrentTask.HintsTaken++;
+            userRepository.Update(user);
+            return hints[currentHintIndex];
         }
 
-        //private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Task task, TaskGenerator generator)
-        //{
-        //    user.Progress.CurrentTask = task.ToEntity(generator);
-        //    user.Progress.CurrentTopicId = topicId;
-        //    userRepository.Update(user);
-        //}
+        private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
+        {
+            user.UserProgressEntity.CurrentTopicId = topicId;
+            user.UserProgressEntity.CurrentLevelId = levelId;
+            user.UserProgressEntity.CurrentTask = new TaskInfoEntity
+            {
+                Question = task.Question,
+                Answer = task.Answer,
+                Hints = task.Hints,
+                HintsTaken = 0,
+                IsSolved = false,
+                ParentGeneratorId = task.ParentGeneratorId
+            };
+            userRepository.Update(user);
+        }
 
-        //private static void CheckCurrentTask(UserEntity user)
-        //{
-        //    if (user.Progress.CurrentTask is null)
-        //        throw new AccessDeniedException($"User {user.Id} hadn't started any task");
-        //}
+        private void UpdateStreakIfNotSolved(UserEntity user, Func<int, int> updateFunc)
+        {
+            var topicId = user.UserProgressEntity.CurrentTopicId;
+            var levelId = user.UserProgressEntity.CurrentLevelId;
+            var generatorId = user.UserProgressEntity.CurrentTask.ParentGeneratorId;
+            var currentStreak = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId]
+                .CurrentLevelStreaks[generatorId];
+            if (currentStreak < taskRepository.FindGenerator(topicId, levelId, generatorId).Streak)
+            {
+                user.UserProgressEntity
+                    .TopicsProgress[topicId]
+                    .LevelProgressEntities[levelId]
+                    .CurrentLevelStreaks[generatorId] = updateFunc(currentStreak);
+            }
+        }
 
-        //private Topic GetTopic(Guid topicId)
-        //{
-        //    return topics.FirstOrDefault(t => t.Id == topicId) ??
-        //           throw new ArgumentException($"No topic with with id {topicId}");
-        //}
+        private static void CheckCurrentTask(UserEntity user)
+        {
+            if (user.UserProgressEntity.CurrentTask is null)
+                throw new AccessDeniedException($"User {user.Id} hadn't started any task");
+        }
 
-        //private int GetTopicProgress(Guid userId, Guid topicId, int difficulty)
-        //{
-        //    var user = FindOrInsertUser(userId);
-        //    var solvedTasksCount = user
-        //        .Progress
-        //        .GetTopics
-        //        .First(topic => topic.TopicId == topicId)
-        //        .Tasks
-        //        .Distinct(new TaskGeneratorIdEqualityComparer())
-        //        .Count(task => task.Difficulty == difficulty);
-        //    var allTasksCount = GetTopic(topicId)
-        //        .GetGeneratorsFromLevel
-        //        .Count(generator => generator.Difficulty == difficulty);
-        //    var progress = (double) solvedTasksCount / allTasksCount * 100;
-        //    return (int) progress;
-        //}
-
-        //private UserEntity FindOrInsertUser(Guid userId)
-        //{
-        //    var progress = new Progress
-        //    {
-        //        GetTopics = topics.Select(topic => new TopicEntity
-        //            {
-        //                Name = topic.Name,
-        //                TopicId = topic.Id,
-        //                Tasks = new TaskEntity[0]
-        //            })
-        //            .ToArray()
-        //    };
-        //    return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
-        //}
-
-        //private class TaskGeneratorIdEqualityComparer : IEqualityComparer<TaskEntity>
-        //{
-        //    public bool Equals(TaskEntity x, TaskEntity y)
-        //    {
-        //        return y != null && x != null && x.GeneratorId == y.GeneratorId;
-        //    }
-
-        //    public int GetHashCode(TaskEntity obj)
-        //    {
-        //        return obj.GeneratorId.GetHashCode();
-        //    }
-        //}
+        private UserEntity FindOrInsertUser(Guid userId)
+        {
+            var progress = new UserProgressEntity
+            {
+                TopicsProgress = taskRepository
+                    .GetTopics()
+                    .ToDictionary(
+                        topic => topic.Id,
+                        topic => new TopicProgressEntity
+                        {
+                            TopicId = topic.Id,
+                            //TODO: add only available levels
+                            LevelProgressEntities = taskRepository
+                                .GetLevelsFromTopic(topic.Id)
+                                .ToDictionary(
+                                    level => level.Id,
+                                    level => new LevelProgressEntity
+                                    {
+                                        LevelId = level.Id,
+                                        CurrentLevelStreaks = taskRepository
+                                            .GetGeneratorsFromLevel(topic.Id, level.Id)
+                                            .ToDictionary(
+                                                generator => generator.Id,
+                                                generator => 0)
+                                    })
+                        })
+            };
+            return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
+        }
     }
 }

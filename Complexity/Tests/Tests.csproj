@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Complexity\ComplexityWebApi.csproj" />
+    <ProjectReference Include="..\ComplexityWeb\ComplexityWebApi.csproj" />
     <ProjectReference Include="..\DataBase\DataBase.csproj" />
   </ItemGroup>
 

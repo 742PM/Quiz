@@ -1,20 +1,161 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using Application;
-//using Application.Info;
-//using DataBase;
-//using Domain;
-//using Domain.Entities;
-//using Domain.Entities.TaskGenerators;
-//using FluentAssertions;
-//using NUnit.Framework;
+﻿using System;
+using Application;
+using DataBase;
+using DataBase.Entities;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
+using FluentAssertions;
+using NUnit.Framework;
+using Tests.Mocks;
 
-//namespace Tests
-//{
-//    [TestFixture]
-//    public class ApplicationTests
-//    {
+namespace Tests
+{
+    [TestFixture]
+    public class ApplicationTests
+    {
+        private IApplicationApi application;
+        private IUserRepository userRepository;
+        private ITaskRepository taskRepository;
+        private ITaskGeneratorSelector selector;
+
+        [SetUp]
+        public void SetUp()
+        {
+            userRepository = new TestUserRepository();
+            taskRepository = new TestTaskRepository();
+            selector = new TestTaskGeneratorSelector();
+            application = new Application.Application(userRepository, taskRepository, selector);
+        }
+
+        #region DoesNotThrowException
+
+        [Test]
+        public void GetTopicsInfo_DoesNotThrowException_WhenNoTopics()
+        {
+            Action action = () => application.GetTopicsInfo();
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetLevels_DoesNotThrowException_WhenNoTopics()
+        {
+            Action action = () => application.GetLevels(Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetLevels_DoesNotThrowException_WhenNoLevels()
+        {
+            var id = Guid.NewGuid();
+            taskRepository.InsertTopic(new Topic(id, "", "", new Level[0]));
+            Action action = () => application.GetLevels(id);
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetAvailableLevels_DoesNotThrowException_WhenNoUsers()
+        {
+            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetAvailableLevels_DoesNotThrowException_WhenNoTopics()
+        {
+            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetAvailableLevels_DoesNotThrowException_WhenNoLevels()
+        {
+            var id = Guid.NewGuid();
+            taskRepository.InsertTopic(new Topic(id, "", "", new Level[0]));
+            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), id);
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetCurrentProgress_DoesNotThrowException_WhenNoUsers()
+        {
+            Action action = () => application.GetCurrentProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetCurrentProgress_DoesNotThrowException_WhenNoTopics()
+        {
+            Action action = () => application.GetCurrentProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetCurrentProgress_DoesNotThrowException_WhenNoLevels()
+        {
+            var id = Guid.NewGuid();
+            taskRepository.InsertTopic(new Topic(id, "", "", new Level[0]));
+            Action action = () => application.GetCurrentProgress(Guid.NewGuid(), id, Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetTask_DoesNotThrowException_WhenNoUsers()
+        {
+            Action action = () => application.GetTask(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetTask_DoesNotThrowException_WhenNoTopics()
+        {
+            Action action = () => application.GetTask(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetTask_DoesNotThrowException_WhenNoLevels()
+        {
+            var id = Guid.NewGuid();
+            taskRepository.InsertTopic(new Topic(id, "", "", new Level[0]));
+            Action action = () => application.GetTask(Guid.NewGuid(), id, Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        [Test]
+        public void GetTask_DoesNotThrowException_WhenNoGenerators()
+        {
+            var topicId = Guid.NewGuid();
+            var levelId = Guid.NewGuid();
+            var level = new Level(levelId, "", new TaskGenerator[0]);
+            taskRepository.InsertTopic(new Topic(topicId, "", "", new[] { level }));
+            Action action = () => application.GetTask(Guid.NewGuid(), topicId, Guid.NewGuid());
+            action.Should().NotThrow();
+        }
+
+        #endregion
+
+        #region ThrowsAccessDeniedException
+
+        [Test]
+        public void GetTask_ThrowsAccessDeniedException_WhenLevelNotAvailable()
+        {
+            var topicId = Guid.NewGuid();
+            var levelId = Guid.NewGuid();
+            taskRepository.InsertTopic(new Topic(topicId, "", "", new[]
+            {
+                new Level(Guid.NewGuid(), "", new TaskGenerator[0]),
+                new Level(levelId, "", new TaskGenerator[0])
+            }));
+            var user = userRepository.FindOrInsertUser(Guid.NewGuid(), taskRepository);
+            Action action = () => application.GetTask(user.Id, topicId, levelId);
+            action.Should().Throw<AccessDeniedException>();
+        }
+
+
+
+        #endregion
+    }
+}
 //        private static readonly Random Random = new Random();
 
 //        private readonly TaskGenerator[] generators =

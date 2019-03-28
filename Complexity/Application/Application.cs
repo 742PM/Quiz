@@ -6,7 +6,6 @@ using DataBase;
 using DataBase.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
-using Ninject;
 
 namespace Application
 {
@@ -15,11 +14,9 @@ namespace Application
         //TODO: build asp.net, database etc.
         static Application()
         {
-            var container = new StandardKernel();
 
-            container.Bind<TaskGenerator>()
-                .To<ExampleTaskGenerator>()
-                .WithConstructorArgument("hint", "Wow"); //Какое-то странное что-то, просто пример
+            
+            //Какое-то странное что-то, просто пример
         }
 
         private readonly ITaskRepository taskRepository;

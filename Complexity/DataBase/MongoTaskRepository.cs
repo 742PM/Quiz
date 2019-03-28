@@ -15,14 +15,14 @@ namespace DataBase
             topicCollection = database.GetCollection<Topic>(CollectionName);
         }
 
-        /// <inheritdoc />
-        public Topic[] GetTopics() => throw new NotImplementedException();
+        Topic[] ITaskRepository.GetTopics() => throw new NotImplementedException();
 
         /// <inheritdoc />
         public Level[] GetLevelsFromTopic(Guid topicId) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId) => throw new NotImplementedException();
+        public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId) =>
+            throw new NotImplementedException();
 
         /// <inheritdoc />
         public Topic InsertTopic(Topic topic) => throw new NotImplementedException();
@@ -43,12 +43,18 @@ namespace DataBase
         public Level FindLevel(Guid topicId, Guid levelId) => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity) => throw new NotImplementedException();
+        public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity) =>
+            throw new NotImplementedException();
 
         /// <inheritdoc />
-        public TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity) => throw new NotImplementedException();
+        public TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity) =>
+            throw new NotImplementedException();
 
         /// <inheritdoc />
-        public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId) => throw new NotImplementedException();
+        public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId) =>
+            throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public Topic[] GetTopics() => throw new NotImplementedException();
     }
 }

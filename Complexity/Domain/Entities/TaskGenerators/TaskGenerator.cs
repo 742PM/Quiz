@@ -11,16 +11,17 @@ namespace Domain.Entities.TaskGenerators
 //  [BsonDiscriminator(RootClass = true)]
 //  [BsonKnownTypes(typeof(TemplateTaskGenerator))]
 // TODO: research with issue about outer serialization
-    public class TaskGenerator : Entity<Guid>
+    public abstract class TaskGenerator : Entity<Guid>
     {
         /// <inheritdoc />
         protected TaskGenerator(Guid id, int streak) : base(id)
         {
             Streak = streak;
         }
-        public int Streak { get; }
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local MongoDB
+        public int Streak { get; private set; }
 
 
-        public Task GetTask(Random randomSeed) => throw new NotSupportedException("You can not use this class. Use derived ones;");
+        public abstract Task GetTask(Random randomSeed);// => throw new NotSupportedException("You can not use this class. Use derived ones;");
     }
 }

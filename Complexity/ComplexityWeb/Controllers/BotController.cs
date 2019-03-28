@@ -5,7 +5,7 @@ using Application;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Complexity.Controllers
+namespace ComplexityWebApi.Controllers
 {
     [Route("api")]
     [ApiController]

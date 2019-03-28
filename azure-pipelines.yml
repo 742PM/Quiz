@@ -12,7 +12,9 @@ pool:
 variables:
   buildConfiguration: 'Release'
   projectName: 'Complexity'
+  framework: netcoreapp2.2
+
 
 steps:
-- script: dotnet build $(projectName) --configuration $(buildConfiguration)
+- script: dotnet build $(projectName) --configuration $(buildConfiguration) --framework $(framework)
   displayName: 'dotnet build $(buildConfiguration)'

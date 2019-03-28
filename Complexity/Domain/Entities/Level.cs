@@ -13,12 +13,13 @@ namespace Domain.Entities
     [Entity]
     public class Level : Entity<Guid>
     {
-        public Level(Guid id, string description, ICollection<TaskGenerator> generators) : base(id)
+        public Level(Guid id, string description, ICollection<TaskGenerator> generators, Guid[] nextLevels) : base(id)
         {
             Description = description;
+            NextLevels = nextLevels;
             Generators = generators.ToArray();
         }
-
+        public Guid[] NextLevels { get; }
         public string Description { get; }
 
         public TaskGenerator[] Generators { get; }

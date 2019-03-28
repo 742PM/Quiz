@@ -1,11 +1,14 @@
 using System;
+using System.Linq;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using MongoDB.Driver;
+using MongoDB.Driver.Core;
+using MongoDB.Driver.Linq;
 
 namespace DataBase
 {
-    internal class MongoTaskRepository : ITaskRepository
+    public class MongoTaskRepository : ITaskRepository
     {
         private const string CollectionName = "topics";
         private readonly IMongoCollection<Topic> topicCollection;
@@ -16,6 +19,18 @@ namespace DataBase
         }
 
         Topic[] ITaskRepository.GetTopics() => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public Level[] GetNextLevels(Guid topicId, Guid levelId)
+        {
+            var topic = topicCollection.Find(t => t.Id == topicId)
+                                       .FirstOrDefault();
+            var levels = topic?.Levels?.FirstOrDefault(l => l.Id == levelId)
+                              ?.NextLevels ??
+                         new Guid[0];
+            return topic?.Levels?.Where(l => levels.Contains(l.Id))
+                        .ToArray();
+        }
 
         /// <inheritdoc />
         public Level[] GetLevelsFromTopic(Guid topicId) => throw new NotImplementedException();
@@ -54,7 +69,6 @@ namespace DataBase
         public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId) =>
             throw new NotImplementedException();
 
-        /// <inheritdoc />
         public Topic[] GetTopics() => throw new NotImplementedException();
     }
 }

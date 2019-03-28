@@ -1,6 +1,9 @@
 # ComplexityBot
-[![Build Status](https://travis-ci.org/complexitybot/Quiz.svg?branch=master)](https://travis-ci.org/complexitybot/Quiz)
-## *Contributors*
+[![Build Status](https://dev.azure.com/Funfunfine/QuizBot/_apis/build/status/complexitybot.Quiz?branchName=master)](https://dev.azure.com/Funfunfine/QuizBot/_build/latest?definitionId=1&branchName=master)
+
+__
+
+### *Contributors*
 
 | [<img src="https://avatars2.githubusercontent.com/u/31823086?s=460&v=4" width="100px;"/><br /><sub><b>Anton Voitsishevsky </b></sub>](https://github.com/FunFunFine)<br />|
   [<img src="https://avatars1.githubusercontent.com/u/38810090?s=460&v=4" width="100px;"/><br /><sub><b>Artemy Izakov </b></sub>](https://github.com/CGOptimum)<br />|  

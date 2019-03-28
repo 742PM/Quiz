@@ -16,5 +16,6 @@ variables:
 
 
 steps:
-- script: dotnet build $(projectName) --configuration $(buildConfiguration) --framework $(framework)
+- script: dotnet restore Complexity
+- script: dotnet build $(projectName) --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'

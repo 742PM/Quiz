@@ -37,7 +37,7 @@ namespace Application
         /// <returns>
         /// Отношение решенных (набран полный стрик) задач ко всем
         /// </returns>
-        double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
+        double? GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение задачи из конкретных темы и уровня

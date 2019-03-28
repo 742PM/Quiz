@@ -11,9 +11,8 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  projectName: 'Complexity'
 
 steps:
-- script: 
-  - cd Complexity
-  - dotnet build --configuration $(buildConfiguration)
+- script: dotnet build $(projectName) --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'

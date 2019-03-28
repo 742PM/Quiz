@@ -13,6 +13,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   projectName: 'Complexity'
+  testProjectName: 'Tests'
   framework: netcoreapp2.2
 
 
@@ -23,3 +24,9 @@ steps:
     command: build
     projects: '$(projectName)/**/*.csproj'
     arguments: '--configuration $(buildConfiguration)' 
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: '$(testProjectName)**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'

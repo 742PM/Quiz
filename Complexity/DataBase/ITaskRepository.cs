@@ -10,8 +10,6 @@ namespace DataBase
 
         Level[] GetLevelsFromTopic(Guid topicId);
 
-        Level[] GetNextLevels(Guid topicId, Guid levelId);
-
         TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId);
 
         Topic InsertTopic(Topic topic);

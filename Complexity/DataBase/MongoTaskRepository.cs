@@ -20,8 +20,6 @@ namespace DataBase
         /// <inheritdoc />
         public Level[] GetLevelsFromTopic(Guid topicId) => throw new NotImplementedException();
 
-        public Level[] GetNextLevels(Guid topicId, Guid levelId) => throw new NotImplementedException();
-
         /// <inheritdoc />
         public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId) =>
             throw new NotImplementedException();

@@ -18,12 +18,12 @@ namespace Tests.Mocks
 
         public Level[] GetLevelsFromTopic(Guid topicId)
         {
-            return topics[topicId].Levels;
+            return topics.TryGetValue(topicId, out var topic) ? topic.Levels : null;
         }
 
         public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId)
         {
-            return topics[topicId].Levels.FirstOrDefault(l => l.Id == levelId)?.Generators ?? new TaskGenerator[0];
+            return GetLevelsFromTopic(topicId)?.FirstOrDefault(l => l.Id == levelId)?.Generators;
         }
 
         public Topic InsertTopic(Topic topic)
@@ -39,7 +39,7 @@ namespace Tests.Mocks
 
         public Topic FindTopic(Guid topicId)
         {
-            return topics[topicId];
+            return topics.TryGetValue(topicId, out var topic) ? topic : null;
         }
 
         public Level InsertLevel(Guid topicId, Level level)
@@ -64,7 +64,7 @@ namespace Tests.Mocks
 
         public Level FindLevel(Guid topicId, Guid levelId)
         {
-            return topics[topicId].Levels.First(l => l.Id == levelId);
+            return GetLevelsFromTopic(topicId)?.FirstOrDefault(l => l.Id == levelId);
         }
 
         public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity)
@@ -99,7 +99,7 @@ namespace Tests.Mocks
 
         public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            return FindLevel(topicId, levelId).Generators.First(g => g.Id == generatorId);
+            return FindLevel(topicId, levelId)?.Generators.FirstOrDefault(g => g.Id == generatorId);
         }
     }
 }

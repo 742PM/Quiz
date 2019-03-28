@@ -14,8 +14,6 @@ namespace Application
         //TODO: build asp.net, database etc.
         static Application()
         {
-
-            
             //Какое-то странное что-то, просто пример
         }
 
@@ -64,7 +62,7 @@ namespace Application
                 .TopicsProgress[topicId]
                 .LevelProgressEntities[levelId]
                 .CurrentLevelStreaks
-                .Count(pair => pair.Value >= taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
+                .Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
             return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
         }
 
@@ -101,7 +99,7 @@ namespace Application
             }
             user.UserProgressEntity.CurrentTask.IsSolved = true;
             UpdateStreakIfNotSolved(user, streak => streak + 1);
-            //TODO: if everything solved add next level in progress
+            UpdateProgressIfLevelSolved(user);
             userRepository.Update(user);
             return true;
         }
@@ -117,6 +115,50 @@ namespace Application
             user.UserProgressEntity.CurrentTask.HintsTaken++;
             userRepository.Update(user);
             return hints[currentHintIndex];
+        }
+
+        private void UpdateProgressIfLevelSolved(UserEntity user)
+        {
+            var topicId = user.UserProgressEntity.CurrentTopicId;
+            var levelId = user.UserProgressEntity.CurrentLevelId;
+            var allSolved = taskRepository
+                .GetGeneratorsFromLevel(topicId, levelId)
+                .All(generator => IsGeneratorSolved(user, topicId, levelId, generator.Id));
+            if (!allSolved)
+                return;
+            var level = taskRepository
+                .GetLevelsFromTopic(topicId)
+                .SkipWhile(l => l.Id != levelId)
+                .Skip(1)
+                .FirstOrDefault();
+            if (level is null)
+                return;
+            user.UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[level.Id] = GetLevelProgressEntity(levelId, topicId);
+        }
+
+        private LevelProgressEntity GetLevelProgressEntity(Guid levelId, Guid topicId)
+        {
+            return new LevelProgressEntity
+            {
+                LevelId = levelId,
+                CurrentLevelStreaks = taskRepository
+                    .GetGeneratorsFromLevel(topicId, levelId)
+                    .ToDictionary(
+                        generator => generator.Id,
+                        generator => 0)
+            };
+        }
+
+        private bool IsGeneratorSolved(UserEntity user, Guid topicId, Guid levelId, Guid generatorId)
+        {
+            var currentStreak = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId]
+                .CurrentLevelStreaks[generatorId];
+            return currentStreak >= taskRepository.FindGenerator(topicId, levelId, generatorId).Streak;
         }
 
         private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
@@ -145,7 +187,7 @@ namespace Application
                 .TopicsProgress[topicId]
                 .LevelProgressEntities[levelId]
                 .CurrentLevelStreaks[generatorId];
-            if (currentStreak < taskRepository.FindGenerator(topicId, levelId, generatorId).Streak)
+            if (!IsGeneratorSolved(user, topicId, levelId, generatorId))
             {
                 user.UserProgressEntity
                     .TopicsProgress[topicId]
@@ -171,20 +213,12 @@ namespace Application
                         topic => new TopicProgressEntity
                         {
                             TopicId = topic.Id,
-                            //TODO: add only available levels
                             LevelProgressEntities = taskRepository
                                 .GetLevelsFromTopic(topic.Id)
+                                .Take(1)
                                 .ToDictionary(
                                     level => level.Id,
-                                    level => new LevelProgressEntity
-                                    {
-                                        LevelId = level.Id,
-                                        CurrentLevelStreaks = taskRepository
-                                            .GetGeneratorsFromLevel(topic.Id, level.Id)
-                                            .ToDictionary(
-                                                generator => generator.Id,
-                                                generator => 0)
-                                    })
+                                    level => GetLevelProgressEntity(level.Id, topic.Id))
                         })
             };
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));

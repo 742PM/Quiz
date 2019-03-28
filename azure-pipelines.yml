@@ -17,33 +17,9 @@ variables:
 
 
 steps:
-- script: dotnet restore $(projectName)
-- script: dotnet build $(projectName) --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
     command: build
     projects: '$(projectName)/**/*.csproj'
-    arguments: '--configuration Release' # Update this to match your need
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: '$(projectName)/Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-
-- script: dotnet test $(projectName)/Tests --logger trx
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: publish
-    publishWebProjects: True
-    arguments: '$(projectName) --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
+    arguments: '--configuration $(buildConfiguration)' 

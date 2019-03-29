@@ -31,123 +31,101 @@ namespace Tests
 
         //TODO: change to result
 
-        #region DoesNotThrowException
-
         [Test]
-        public void GetTopicsInfo_DoesNotThrowException_WhenNoTopics()
+        public void GetTopicsInfo_ReturnsSuccess_WhenNoTopics()
         {
-            Action action = () => application.GetTopicsInfo();
-            action.Should().NotThrow();
+            application.GetTopicsInfo().IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetLevels_DoesNotThrowException_WhenNoLevels()
+        public void GetLevels_ReturnsSuccess_WhenNoLevels()
         {
             var id = AddEmptyTopic();
-            Action action = () => application.GetLevels(id);
-            action.Should().NotThrow();
+            application.GetLevels(id).IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetAvailableLevels_DoesNotThrowException_WhenNoUsers()
+        public void GetAvailableLevels_ReturnsSuccess_WhenNoUsers()
         {
             var id = AddEmptyTopic();
-            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), id);
-            action.Should().NotThrow();
+            application.GetAvailableLevels(Guid.NewGuid(), id).IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetAvailableLevels_DoesNotThrowException_WhenNoLevels()
+        public void GetAvailableLevels_ReturnsSuccess_WhenNoLevels()
         {
             var id = AddEmptyTopic();
-            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), id);
-            action.Should().NotThrow();
+            application.GetAvailableLevels(Guid.NewGuid(), id).IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetCurrentProgress_DoesNotThrowException_WhenNoUsers()
+        public void GetCurrentProgress_ReturnsSuccess_WhenNoUsers()
         {
             var (topicId, levelId) = AddTopicWithLevel();
-            Action action = () => application.GetCurrentProgress(Guid.NewGuid(), topicId, levelId);
-            action.Should().NotThrow();
+            application.GetCurrentProgress(Guid.NewGuid(), topicId, levelId).IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetTask_DoesNotThrowException_WhenNoUsers()
+        public void GetTask_ReturnsSuccess_WhenNoUsers()
         {
             var (topicId, levelId) = AddTopicWithLevel();
-            Action action = () => application.GetTask(Guid.NewGuid(), topicId, levelId);
-            action.Should().NotThrow();
+            application.GetTask(Guid.NewGuid(), topicId, levelId).IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetTask_DoesNotThrowException_WhenNoGenerators()
+        public void GetTask_ReturnsSuccess_WhenNoGenerators()
         {
             var (topicId, levelId) = AddTopicWithLevel();
-            Action action = () => application.GetTask(Guid.NewGuid(), topicId, levelId);
-            action.Should().NotThrow();
+            application.GetTask(Guid.NewGuid(), topicId, levelId).IsSuccess.Should().BeTrue();
         }
 
-        #endregion
-
-        #region ThrowsException
-
         [Test]
-        public void GetLevels_ThrowsTopicNotFoundException_WhenNoTopics()
+        public void GetLevels_ReturnsFailure_WhenNoTopics()
         {
-            Action action = () => application.GetLevels(Guid.NewGuid());
-            action.Should().Throw<TopicNotFoundException>();
+            application.GetLevels(Guid.NewGuid()).IsFailure.Should().BeTrue();
         }
 
         [Test]
-        public void GetAvailableLevels_ThrowsTopicNotFoundException_WhenNoTopics()
+        public void GetAvailableLevels_ReturnsFailure_WhenNoTopics()
         {
-            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid());
-            action.Should().Throw<TopicNotFoundException>();
+            application.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid()).IsFailure.Should().BeTrue();
         }
 
         [Test]
-        public void GetCurrentProgress_ThrowsTopicNotFoundException_WhenNoTopics()
+        public void GetCurrentProgress_ReturnsFailure_WhenNoTopics()
         {
-            Action action = () => application.GetCurrentProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
-            action.Should().Throw<TopicNotFoundException>();
+            application.GetCurrentProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()).IsFailure.Should().BeTrue();
         }
 
         [Test]
-        public void GetCurrentProgress_ThrowsLevelNotFoundException_WhenNoLevels()
+        public void GetCurrentProgress_ReturnsFailure_WhenNoLevels()
         {
             var id = AddEmptyTopic();
-            Action action = () => application.GetCurrentProgress(Guid.NewGuid(), id, Guid.NewGuid());
-            action.Should().Throw<LevelNotFoundException>();
+            application.GetCurrentProgress(Guid.NewGuid(), id, Guid.NewGuid()).IsFailure.Should().BeTrue();
         }
 
         [Test]
-        public void GetTask_ThrowsTopicNotFoundException_WhenNoTopics()
+        public void GetTask_ReturnsFailure_WhenNoTopics()
         {
-            Action action = () => application.GetTask(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
-            action.Should().Throw<TopicNotFoundException>();
+            application.GetTask(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()).IsFailure.Should().BeTrue();
         }
 
         [Test]
-        public void GetTask_ThrowsLevelNotFoundException_WhenNoLevels()
+        public void GetTask_ReturnsFailure_WhenNoLevels()
         {
             var id = AddEmptyTopic();
-            Action action = () => application.GetTask(Guid.NewGuid(), id, Guid.NewGuid());
-            action.Should().Throw<LevelNotFoundException>();
+            application.GetTask(Guid.NewGuid(), id, Guid.NewGuid()).IsFailure.Should().BeTrue();
         }
 
         [Test]
-        public void GetTask_ThrowsAccessDeniedException_WhenLevelNotAvailable()
+        public void GetTask_ReturnsFailure_WhenLevelNotAvailable()
         {
             var (topicId, _) = AddTopicWithLevel();
             var levelId = Guid.NewGuid();
             taskRepository.InsertLevel(topicId, CreateLevel(levelId));
             var user = userRepository.FindOrInsertUser(Guid.NewGuid(), taskRepository);
-            Action action = () => application.GetTask(user.Id, topicId, levelId);
-            action.Should().Throw<AccessDeniedException>();
+            application.GetTask(user.Id, topicId, levelId).IsFailure.Should().BeTrue();
         }
-
-        #endregion
 
         [Test]
         public void GetTopicsInfo_ReturnsAllTopics()

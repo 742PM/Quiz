@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Application.Exceptions;
 using Application.Info;
 using Infrastructure.Result;
-using JetBrains.Annotations;
 
 namespace Application
 {
@@ -11,59 +11,50 @@ namespace Application
         /// <summary>
         /// Получение списка названий тем
         /// </summary>
-        /// <returns>
-        /// Название и id темы
-        /// </returns>
         Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo();
 
         /// <summary>
         /// Получение возможных уровней сложностей в данной теме 
         /// </summary>
-        /// <returns>
-        /// Уровни сложности
-        /// </returns>
+        /// <exception cref="ArgumentException">Неизвестный id темы</exception>
         Result<IEnumerable<LevelInfo>, Exception> GetLevels(Guid topicId);
 
         /// <summary>
         /// Получение доступных уровней сложности в данной теме для данного уровня 
         /// </summary>
-        /// <returns>
-        /// Доступные уровни сложности для пользователя
-        /// </returns>
+        /// <exception cref="ArgumentException">Неизвестный id темы</exception>
         Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId);
 
         /// <summary>
         /// Прогресс пользователя в текущих теме и уровне
         /// </summary>
-        /// <returns>
-        /// Отношение решенных (набран полный стрик) задач ко всем
-        /// </returns>
+        /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
         Result<double, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение задачи из конкретных темы и уровня
         /// </summary>
-        /// <returns>
-        /// Описание задачи с вариантами ответов
-        /// </returns>
+        /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
+        /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<TaskInfo, Exception> GetTask(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение следующей задачи из текущих темы и уровня
         /// </summary>
-        /// <returns>
-        /// Описание задачи с вариантами ответов
-        /// </returns>
+        /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<TaskInfo, Exception> GetNextTask(Guid userId);
 
         /// <summary>
         /// Проверка правильности ответа на текущую задачу
         /// </summary>
+        /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<bool, Exception> CheckAnswer(Guid userId, string answer);
 
         /// <summary>
         /// Получение подсказки для текущей задачи
         /// </summary>
+        /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
+        /// <exception cref="OutOfHintsException">Подсказки кончились</exception>
         Result<string, Exception> GetHint(Guid userId);
     }
 }

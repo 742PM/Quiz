@@ -16,6 +16,11 @@ namespace Tests.Mocks
             return topics.Values.ToArray();
         }
 
+        public Level[] GetNextLevels(Guid topicId, Guid levelId)
+        {
+            return FindLevel(topicId, levelId).NextLevels.Select(id => FindLevel(topicId, id)).ToArray();
+        }
+
         public Level[] GetLevelsFromTopic(Guid topicId)
         {
             return topics.TryGetValue(topicId, out var topic) ? topic.Levels : null;
@@ -91,7 +96,8 @@ namespace Tests.Mocks
                                 .Generators
                                 .Where(g => g.Id != entity.Id)
                                 .Concat(new[] { entity })
-                                .ToArray())
+                                .ToArray(),
+                            level.NextLevels)
                     })
                     .ToArray()));
             return entity;

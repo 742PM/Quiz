@@ -168,7 +168,7 @@ namespace Application
                 return;
             user.UserProgressEntity
                 .TopicsProgress[topicId]
-                .LevelProgressEntities[level.Id] = taskRepository.GetLevelProgressEntity(levelId, topicId);
+                .LevelProgressEntities[level.Id] = level.ToProgressEntity();
         }
 
         private bool IsGeneratorSolved(UserEntity user, Guid topicId, Guid levelId, Guid generatorId)

@@ -18,28 +18,15 @@ namespace Application
                         topic => new TopicProgressEntity
                         {
                             TopicId = topic.Id,
-                            LevelProgressEntities = taskRepository
-                                .GetLevelsFromTopic(topic.Id)
+                            LevelProgressEntities = topic
+                                .Levels
                                 .Take(1)
                                 .ToDictionary(
                                     level => level.Id,
-                                    level => taskRepository.GetLevelProgressEntity(level.Id, topic.Id))
+                                    level => level.ToProgressEntity())
                         })
             };
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
-        }
-
-        public static LevelProgressEntity GetLevelProgressEntity(this ITaskRepository taskRepository, Guid levelId, Guid topicId)
-        {
-            return new LevelProgressEntity
-            {
-                LevelId = levelId,
-                CurrentLevelStreaks = taskRepository
-                    .GetGeneratorsFromLevel(topicId, levelId)
-                    .ToDictionary(
-                        generator => generator.Id,
-                        generator => 0)
-            };
         }
     }
 }

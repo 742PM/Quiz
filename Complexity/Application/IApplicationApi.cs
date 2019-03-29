@@ -9,7 +9,7 @@ namespace Application
     public interface IApplicationApi
     {
         /// <summary>
-        /// Получение списка названий тем
+        /// Получение списка тем
         /// </summary>
         Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo();
 
@@ -54,7 +54,7 @@ namespace Application
         /// Получение подсказки для текущей задачи
         /// </summary>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
-        /// <exception cref="OutOfHintsException">Подсказки кончились</exception>
+        /// <exception cref="OutOfHintsException">Подсказки отсутствуют или кончились</exception>
         Result<string, Exception> GetHint(Guid userId);
     }
 }

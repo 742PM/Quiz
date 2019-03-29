@@ -1,5 +1,6 @@
 using System;
 using Domain;
+using Infrastructure;
 
 namespace DataBase.Entities
 {

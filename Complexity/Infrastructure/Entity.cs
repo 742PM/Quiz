@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain
+namespace Infrastructure
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class EntityAttribute : Attribute

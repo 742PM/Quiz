@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DataBase.Entities;
 using Domain;
 using Domain.Entities.TaskGenerators;
+using Infrastructure;
 using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
 using static MongoDB.Bson.Serialization.BsonClassMap;

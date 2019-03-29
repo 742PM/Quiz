@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Entities.TaskGenerators;
+using Infrastructure;
 
 namespace Domain.Entities
 {

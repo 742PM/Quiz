@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DataBase;
 using DataBase.Entities;
 
-namespace Tests
+namespace Tests.Mocks
 {
     public class TestUserRepository : IUserRepository
     {

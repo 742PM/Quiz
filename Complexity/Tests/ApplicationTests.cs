@@ -2,500 +2,203 @@
 using System.Collections.Generic;
 using System.Linq;
 using Application;
-using Application.Info;
+using Application.Exceptions;
 using DataBase;
-using Domain;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using FluentAssertions;
 using NUnit.Framework;
+using Tests.Mocks;
 
 namespace Tests
 {
     [TestFixture]
     public class ApplicationTests
     {
-        private static readonly Random Random = new Random();
-
-        private readonly TaskGenerator[] generators =
-        {
-            new TestGenerator(1),
-            new TestGenerator(2),
-            new TestGenerator(2),
-            new TestGenerator(3)
-        };
-
-        private Topic[] topics;
         private IApplicationApi application;
-        private IApplicationApi applicationWithoutTopics;
-        private IApplicationApi applicationWithoutGenerators;
         private IUserRepository userRepository;
-        private Guid userId;
+        private ITaskRepository taskRepository;
+        private ITaskGeneratorSelector selector;
 
         [SetUp]
         public void SetUp()
         {
-            topics = new[]
-            {
-                CreateTopic(1),
-                CreateTopic(2),
-                CreateTopic(3),
-                CreateTopic(4)
-            };
-
             userRepository = new TestUserRepository();
-            //userId = AddUserWithProgress();
+            taskRepository = new TestTaskRepository();
+            selector = new TestTaskGeneratorSelector();
+            application = new Application.Application(userRepository, taskRepository, selector);
+        }
 
-            applicationWithoutTopics = new Application.Application(new Topic[0], userRepository);
+        //TODO: change to result
 
-            applicationWithoutGenerators = new Application.Application(
-                new[] { new Topic(Guid.NewGuid(), "n", "d", new Level[0]) }, // change
-                userRepository);
-
-            application = new Application.Application(topics, userRepository);
+        [Test]
+        public void GetTopicsInfo_ReturnsSuccess_WhenNoTopics()
+        {
+            application.GetTopicsInfo().IsSuccess.Should().BeTrue();
         }
 
         [Test]
-        public void GetTopicsInfo_ReturnsNoTopicsInfo_WhenNoTopicsInApplication()
+        public void GetLevels_ReturnsSuccess_WhenNoLevels()
         {
-            applicationWithoutTopics.GetTopicsInfo().Should().BeEmpty();
+            var id = AddEmptyTopic();
+            application.GetLevels(id).IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetAvailableLevels_ReturnsSuccess_WhenNoUsers()
+        {
+            var id = AddEmptyTopic();
+            application.GetAvailableLevels(Guid.NewGuid(), id).IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetAvailableLevels_ReturnsSuccess_WhenNoLevels()
+        {
+            var id = AddEmptyTopic();
+            application.GetAvailableLevels(Guid.NewGuid(), id).IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetCurrentProgress_ReturnsSuccess_WhenNoUsers()
+        {
+            var (topicId, levelId) = AddTopicWithLevel();
+            application.GetCurrentProgress(Guid.NewGuid(), topicId, levelId).IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetTask_ReturnsSuccess_WhenNoUsers()
+        {
+            var (topicId, levelId) = AddTopicWithLevel();
+            application.GetTask(Guid.NewGuid(), topicId, levelId).IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetTask_ReturnsSuccess_WhenNoGenerators()
+        {
+            var (topicId, levelId) = AddTopicWithLevel();
+            application.GetTask(Guid.NewGuid(), topicId, levelId).IsSuccess.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetLevels_ReturnsFailure_WhenNoTopics()
+        {
+            application.GetLevels(Guid.NewGuid()).IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetAvailableLevels_ReturnsFailure_WhenNoTopics()
+        {
+            application.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid()).IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetCurrentProgress_ReturnsFailure_WhenNoTopics()
+        {
+            application.GetCurrentProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()).IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetCurrentProgress_ReturnsFailure_WhenNoLevels()
+        {
+            var id = AddEmptyTopic();
+            application.GetCurrentProgress(Guid.NewGuid(), id, Guid.NewGuid()).IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetTask_ReturnsFailure_WhenNoTopics()
+        {
+            application.GetTask(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()).IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetTask_ReturnsFailure_WhenNoLevels()
+        {
+            var id = AddEmptyTopic();
+            application.GetTask(Guid.NewGuid(), id, Guid.NewGuid()).IsFailure.Should().BeTrue();
+        }
+
+        [Test]
+        public void GetTask_ReturnsFailure_WhenLevelNotAvailable()
+        {
+            var (topicId, _) = AddTopicWithLevel();
+            var levelId = Guid.NewGuid();
+            taskRepository.InsertLevel(topicId, CreateLevel(levelId));
+            var user = userRepository.FindOrInsertUser(Guid.NewGuid(), taskRepository);
+            application.GetTask(user.Id, topicId, levelId).IsFailure.Should().BeTrue();
         }
 
         [Test]
         public void GetTopicsInfo_ReturnsAllTopics()
         {
-            //application
-            //    .GetTopicsInfo()
-            //    .Should()
-            //    .BeEquivalentTo(topics.Select(topic => new TopicInfo(topic.Name)),
-            //        options => options.Excluding(topic => topic.Id));
+            var ids = new List<Guid>();
+            for (var i = 0; i < 5; i++)
+                ids.Add(AddEmptyTopic());
+            application.GetTopicsInfo().Value.Select(t => t.Id).Should().BeEquivalentTo(ids);
         }
 
         [Test]
-        public void GetDifficulties_ThrowsArgumentException_WhenNoTopics()
+        public void GetLevels_ReturnsAllLevels()
         {
-            Action action = () => applicationWithoutTopics.GetLevels(Guid.NewGuid());
-            action.Should().Throw<ArgumentException>();
+            var topicId = AddEmptyTopic();
+            var ids = AddLevels(topicId);
+            application.GetLevels(topicId).Value.Select(l => l.Id).Should().BeEquivalentTo(ids);
         }
 
         [Test]
-        public void GetDifficulties_ThrowsArgumentException_WhenNoSuchTopicId()
+        public void GetAvailableLevels_AddsNewUser_WhenNoUser()
         {
-            Action action = () => application.GetLevels(Guid.NewGuid());
-            action.Should().Throw<ArgumentException>();
+            var userId = Guid.NewGuid();
+            var topicId = AddEmptyTopic();
+            Assert.IsNull(userRepository.FindById(userId));
+            application.GetAvailableLevels(userId, topicId);
+            userRepository.FindById(userId).Should().NotBeNull();
         }
 
         [Test]
-        public void GetDifficulties_ReturnsNoDifficulties_WhenTopicIsEmpty()
+        public void GetAvailableLevels_ReturnsFirstLevel_WhenNoProgress()
         {
-            var id = applicationWithoutGenerators.GetTopicsInfo().First().Id;
-            applicationWithoutGenerators.GetLevels(id).Should().BeEmpty();
+            var topicId = AddEmptyTopic();
+            var ids = AddLevels(topicId);
+            application.GetAvailableLevels(Guid.NewGuid(), topicId).Value.First().Id.Should().Be(ids.First());
         }
 
-        [Test]
-        public void GetDifficulties_ReturnsAllDifficulties()
+        private IEnumerable<Guid> AddLevels(Guid topicId)
         {
-            //application
-            //    .GetLevels(topics.First().Id)
-            //    .Should()
-            //    .BeEquivalentTo(generators.Select(g => g.Difficulty).Distinct());
+            var ids = new List<Guid>();
+            for (var i = 0; i < 5; i++)
+                ids.Add(AddEmptyLevel(topicId));
+            return ids;
         }
 
-        [Test]
-        public void GetDifficulties_ReturnsDifficultiesInAscendingOrder()
+        private (Guid topicId, Guid levelId) AddTopicWithLevel()
         {
-            application
-                .GetLevels(topics.First().Id)
-                .Should()
-                .BeInAscendingOrder();
+            var topicId = Guid.NewGuid();
+            var levelId = Guid.NewGuid();
+            var level = CreateLevel(levelId, new[] { new TestGenerator(42) });
+            taskRepository.InsertTopic(new Topic(topicId, "", "", new[] { level }));
+            return (topicId, levelId);
         }
 
-        [Test]
-        public void GetAvailableDifficulties_ThrowsArgumentException_WhenNoTopics()
+        private Guid AddEmptyTopic()
         {
-            Action action = () => applicationWithoutTopics.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid());
-            action.Should().Throw<ArgumentException>();
+            var id = Guid.NewGuid();
+            taskRepository.InsertTopic(new Topic(id, "", "", new Level[0]));
+            return id;
         }
 
-        [Test]
-        public void GetAvailableDifficulties_ThrowsArgumentException_WhenNoSuchTopicId()
+        private Guid AddEmptyLevel(Guid topicId)
         {
-            Action action = () => application.GetAvailableLevels(Guid.NewGuid(), Guid.NewGuid());
-            action.Should().Throw<ArgumentException>();
+            return taskRepository.InsertLevel(topicId, CreateLevel()).Id;
         }
 
-        [Test]
-        public void GetAvailableDifficulties_ReturnsNoDifficulties_WhenTopicIsEmpty()
-        {
-            var id = applicationWithoutGenerators.GetTopicsInfo().First().Id;
-            applicationWithoutGenerators.GetAvailableLevels(Guid.NewGuid(), id).Should().BeEmpty();
-        }
+        private static Level CreateLevel(Guid id, IEnumerable<TaskGenerator> generators, IEnumerable<Guid> nextLevels) => 
+            new Level(id, $"{id}", generators.ToArray(), nextLevels.ToArray());
 
-        [Test]
-        public void GetAvailableDifficulties_ReturnsOne_WhenUserIsNew()
-        {
-            var id = application.GetTopicsInfo().First().Id;
-            application.GetAvailableLevels(Guid.NewGuid(), id).Count().Should().Be(1);
-        }
+        private static Level CreateLevel(Guid id, IEnumerable<TaskGenerator> generators) =>
+            CreateLevel(id, generators, new Guid[0]);
 
-        [Test]
-        public void GetAvailableDifficulties_ReturnsMin_WhenUserIsNew()
-        {
-            var id = application.GetTopicsInfo().First().Id;
-            var minDifficulty = application.GetLevels(id).Min();
-            application.GetAvailableLevels(Guid.NewGuid(), id).First().Should().Be(minDifficulty);
-        }
+        private static Level CreateLevel(Guid id) => CreateLevel(id, new TaskGenerator[0]);
 
-        [Test]
-        public void GetAvailableDifficulties_ReturnsOne_WhenTopicIsNew()
-        {
-            var topicId = application.GetTopicsInfo().Last().Id;
-            application.GetAvailableLevels(userId, topicId).Count().Should().Be(1);
-        }
-
-        [Test]
-        public void GetAvailableDifficulties_ReturnsMin_WhenTopicIsNew()
-        {
-            var topicId = application.GetTopicsInfo().Last().Id;
-
-            var minDifficulty = application.GetLevels(topicId).Min();
-            application.GetAvailableLevels(userId, topicId).Last().Should().Be(minDifficulty);
-        }
-
-        [Test]
-        public void GetAvailableDifficulties_ReturnsAllStarted_WhenSomeDifficultiesAreStarted()
-        {
-            var topicId = application.GetTopicsInfo().Skip(2).First().Id;
-
-            application.GetAvailableLevels(userId, topicId).Count().Should().Be(2);
-        }
-
-        [Test]
-        public void GetAvailableDifficulties_ReturnsStarted_WhenDifficultyIsStarted()
-        {
-            var topicId = application.GetTopicsInfo().Skip(2).First().Id;
-            application.GetAvailableLevels(userId, topicId).Last().Should().Be(2);
-        }
-
-        [Test]
-        public void GetAvailableDifficulties_ReturnsNew_WhenDifficultyIsFinished()
-        {
-            var topicId = application.GetTopicsInfo().Skip(1).First().Id;
-            application.GetAvailableLevels(userId, topicId).Last().Should().Be(3);
-        }
-
-        [Test]
-        public void GetDifficultyDescription_ThrowsArgumentException_WhenNoTopics()
-        {
-            //Action action = () => applicationWithoutTopics.GetDifficultyDescription(Guid.NewGuid(), int.MaxValue);
-            //action.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void GetDifficultyDescription_ThrowsArgumentException_WhenNoSuchTopicId()
-        {
-            //Action action = () => application.GetDifficultyDescription(Guid.NewGuid(), int.MaxValue);
-            //action.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void GetDifficultyDescription_ReturnsAllDescriptions()
-        {
-            //var topicId = application.GetTopicsInfo().First().Id;
-            //application
-            //    .GetDifficultyDescription(topicId, 2)
-            //    .Should()
-            //    .BeEquivalentTo(generators
-            //        .Where(g => g.Difficulty == 2)
-            //        .Select(g => g.Description));
-        }
-
-        [Test]
-        public void GetCurrentProgress_ThrowsAccessDeniedException_WhenNewUser()
-        {
-            //Action action = () => applicationWithoutTopics.GetCurrentProgress(Guid.NewGuid());
-            //action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetCurrentProgress_ThrowsAccessDeniedException_WhenNoCurrentTask()
-        {
-            //Action action = () => applicationWithoutTopics.GetCurrentProgress(userId);
-            //action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetCurrentProgress_Returns100_WhenAllAreSolved()
-        {
-            //var user = userRepository.FindById(userId);
-            //var task = GetTaskEntity(generators[0]);
-            //user.Progress.CurrentTask = task;
-            //user.Progress.CurrentTopicId = topics[0].Id;
-            //userRepository.Update(user);
-            //application.GetCurrentProgress(userId).Should().Be(100);
-        }
-
-        [Test]
-        public void GetCurrentProgress_Returns0_WhenNoSolvedTasks()
-        {
-            //var user = userRepository.FindById(userId);
-            //var task = GetTaskEntity(generators[0]);
-            //user.Progress.CurrentTask = task;
-            //user.Progress.CurrentTopicId = topics.Last().Id;
-            //userRepository.Update(user);
-            //application.GetCurrentProgress(userId).Should().Be(0);
-        }
-
-        [Test]
-        public void GetCurrentProgress_Returns50_WhenHalfIsSolved()
-        {
-            //var user = userRepository.FindById(userId);
-            //var task = GetTaskEntity(generators[1]);
-            //user.Progress.CurrentTask = task;
-            //user.Progress.CurrentTopicId = topics[2].Id;
-            //userRepository.Update(user);
-            //application.GetCurrentProgress(userId).Should().Be(50);
-        }
-
-        [Test]
-        public void GetTask_ThrowsArgumentException_WhenNoTopics()
-        {
-            //Action action = () => applicationWithoutTopics.GetTask(Guid.NewGuid(), Guid.NewGuid(), int.MaxValue);
-            //action.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void GetTask_ThrowsArgumentException_WhenNoSuchTopicId()
-        {
-            //Action action = () => application.GetTask(Guid.NewGuid(), Guid.NewGuid(), int.MaxValue);
-            //action.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void GetTask_ThrowsAccessDeniedException_WhenDifficultyIsNotAvailable()
-        {
-            //Action action = () => application.GetTask(Guid.NewGuid(), topics.First().Id, 2);
-            //action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetTask_ReturnsTaskWithMinDifficulty_WhenUserIsNew()
-        {
-            //var topic = topics.First();
-            //application
-            //    .GetTask(Guid.NewGuid(), topic.Id, 1)
-            //    .Should()
-            //    .BeEquivalentTo(topic
-            //        .GetGeneratorsFromLevel
-            //        .First()
-            //        .GetTask(Random)
-            //        .ToInfo());
-        }
-
-        [Test]
-        public void GetTask_ReturnsTaskWithMinDifficulty_WhenTopicIsNew()
-        {
-            //var topic = topics.Last();
-            //application
-            //    .GetTask(userId, topic.Id, 1)
-            //    .Should()
-            //    .BeEquivalentTo(topic
-            //        .GetGeneratorsFromLevel
-            //        .First()
-            //        .GetTask(Random)
-            //        .ToInfo());
-        }
-
-        [Test]
-        public void GetTask_ReturnsTask_WhenDifficultyIsAvailable()
-        {
-            //var topic = topics.First();
-            //application
-            //    .GetTask(userId, topic.Id, 1)
-            //    .Should()
-            //    .BeEquivalentTo(topic
-            //        .GetGeneratorsFromLevel
-            //        .First()
-            //        .GetTask(Random)
-            //        .ToInfo());
-        }
-
-        [Test]
-        public void GetTask_SetsCurrentTask()
-        {
-            //var topic = topics.Last();
-            //application.GetTask(userId, topic.Id, 1);
-            //userRepository
-            //    .FindById(userId)
-            //    .Progress
-            //    .CurrentTask
-            //    .Should()
-            //    .BeEquivalentTo(topic
-            //        .GetGeneratorsFromLevel
-            //        .First()
-            //        .GetTask(Random)
-            //        .ToInfo());
-        }
-
-        [Test]
-        public void GetTask_SetsCurrentTopic()
-        {
-            //var topic = topics.Last();
-            //application.GetTask(userId, topic.Id, 1);
-            //userRepository
-            //    .FindById(userId)
-            //    .UserProgressEntity
-            //    .CurrentTopicId
-            //    .Should()
-            //    .Be(topic.Id);
-        }
-
-        [Test]
-        public void GetNextTask_ThrowsAccessDeniedException_WhenUserIsNew()
-        {
-            Action action = () => application.GetNextTask(Guid.NewGuid());
-            action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetNextTask_ThrowsAccessDeniedException_WhenNoCurrentTask()
-        {
-            Action action = () => application.GetNextTask(userId);
-            action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetNextTask_ReturnsTaskFromSameDifficulty()
-        {
-            //var topic = topics[2];
-            //application.GetTask(userId, topic.Id, 2);
-            //application.GetNextTask(userId).Should().BeEquivalentTo(generators[2].GetTask(Random).ToInfo());
-        }
-
-        [Test]
-        public void GetNextTask_ReturnsOtherTaskFromSameDifficulty()
-        {
-            //var topic = topics[2];
-            //application.GetTask(userId, topic.Id, 2);
-            //application.GetNextTask(userId).Should().NotBe(generators[2].GetTask(Random).ToInfo());
-        }
-
-        [Test]
-        public void GetNextTask_CyclicallyReturnsTaskFromSameDifficulty_WhenCurrentIsLast()
-        {
-            //var topic = topics[2];
-            //var first = application.GetTask(userId, topic.Id, 2);
-            //application.GetNextTask(userId);
-            //application.GetNextTask(userId).Should().BeEquivalentTo(first);
-        }
-
-        [Test]
-        public void GetSimilarTask_ThrowsAccessDeniedException_WhenUserIsNew()
-        {
-            //Action action = () => application.GetSimilarTask(Guid.NewGuid());
-            //action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetSimilarTask_ThrowsAccessDeniedException_WhenNoCurrentTask()
-        {
-            //Action action = () => application.GetSimilarTask(userId);
-            //action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetSimilarTask_ReturnsTaskFromSameGenerator()
-        {
-            //var topic = topics.First();
-            //application.GetTask(userId, topic.Id, 2);
-            //application.GetSimilarTask(userId).Should().BeEquivalentTo(generators[1].GetTask(Random).ToInfo());
-        }
-
-        [Test]
-        public void CheckAnswer_ThrowsAccessDeniedException_WhenUserIsNew()
-        {
-            Action action = () => application.CheckAnswer(Guid.NewGuid(), "");
-            action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void CheckAnswer_ThrowsAccessDeniedException_WhenNoCurrentTask()
-        {
-            Action action = () => application.CheckAnswer(userId, "");
-            action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void CheckAnswer_ReturnsFalse_WhenAnswerIsNull()
-        {
-            //var topic = topics.First();
-            //application.GetTask(userId, topic.Id, 1);
-            //application.CheckAnswer(userId, null).Should().BeFalse();
-        }
-
-        [Test]
-        public void CheckAnswer_ReturnsFalse_WhenIncorrectAnswer()
-        {
-            //var topic = topics.First();
-            //application.GetTask(userId, topic.Id, 1);
-            //application.CheckAnswer(userId, "").Should().BeFalse();
-        }
-
-        [Test]
-        public void CheckAnswer_ReturnsTrue_WhenCorrectAnswer()
-        {
-            //var topic = topics.First();
-            //application.GetTask(userId, topic.Id, 1);
-            //application.CheckAnswer(userId, generators.First().GetTask(Random).Answer).Should().BeTrue();
-        }
-
-        [Test]
-        public void GetHint_ThrowsAccessDeniedException_WhenUserIsNew()
-        {
-            Action action = () => application.GetHint(Guid.NewGuid());
-            action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetHint_ThrowsAccessDeniedException_WhenNoCurrentTask()
-        {
-            Action action = () => application.GetHint(userId);
-            action.Should().Throw<AccessDeniedException>();
-        }
-
-        [Test]
-        public void GetHint_ReturnsFirstTask_WhenCalledFirstTime()
-        {
-            //var topic = topics.First();
-            //application.GetTask(userId, topic.Id, 1);
-            //application.GetHint(userId).Should().Be(generators.First().GetTask(Random).Hints.First());
-        }
-
-        //private Guid AddUserWithProgress()
-        //{
-        //    var id = Guid.NewGuid();
-        //    var startedTopics = new[]
-        //    {
-        //        GetTopicEntity(topics[0], generators.Select(GetTaskEntity).ToArray()),
-        //        GetTopicEntity(topics[1], generators.Take(3).Select(GetTaskEntity).ToArray()),
-        //        GetTopicEntity(topics[2], generators.Take(2).Select(GetTaskEntity).ToArray()),
-        //        GetTopicEntity(topics[3], new TaskEntity[0])
-        //    };
-        //    var progress = new UserProgressEntity { GetTopics = startedTopics };
-        //    userRepository.Insert(new UserEntity(id, progress));
-        //    return id;
-        //}
-
-        private Topic CreateTopic(int number) => new Topic(Guid.NewGuid(), $"t{number}", $"d{number}", new Level[0]); // change
-
-        //private static TopicEntity GetTopicEntity(Topic topic, TaskEntity[] tasks)
-        //{
-        //    return new TopicEntity { Name = topic.Name, Tasks = tasks, TopicId = topic.Id };
-        //}
-
-        //private static TaskEntity GetTaskEntity(TaskGenerator generator)
-        //{
-        //    return generator.GetTask(Random).ToEntity(generator);
-        //}
+        private static Level CreateLevel() => CreateLevel(Guid.NewGuid());
     }
 }

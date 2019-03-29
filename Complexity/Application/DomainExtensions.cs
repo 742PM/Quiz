@@ -1,29 +1,30 @@
-﻿using Application.Info;
-using DataBase;
-using Domain;
+﻿using System.Linq;
+using Application.Info;
+using DataBase.Entities;
 using Domain.Entities;
-using Domain.Entities.TaskGenerators;
 using Domain.Values;
 
 namespace Application
 {
     public static class DomainExtensions
     {
-        public static TaskInfo ToInfo(this Task task) => new TaskInfo(task.Question, null); //TODO: remove stub
-
         public static TopicInfo ToInfo(this Topic topic) => new TopicInfo(topic.Name, topic.Id);
 
-        //public static TaskEntity ToEntity(this Task task, TaskGenerator generator)
-        //{
-        //    var (question, hints, rightAnswer) = task;
-        //    return new TaskEntity
-        //    {
-        //        //Difficulty = generator.Difficulty,
-        //        GeneratorId = generator.Id,
-        //        Hints = hints,
-        //        Question = question,
-        //        Answer = rightAnswer
-        //    };
-        //}
+        public static LevelInfo ToInfo(this Level level) => new LevelInfo(level.Id, level.Description);
+
+        public static TaskInfo ToInfo(this Task task) => new TaskInfo(task.Question, task.PossibleAnswers);
+
+        public static LevelProgressEntity ToProgressEntity(this Level level)
+        {
+            return new LevelProgressEntity
+            {
+                LevelId = level.Id,
+                CurrentLevelStreaks = level
+                    .Generators
+                    .ToDictionary(
+                        generator => generator.Id,
+                        generator => 0)
+            };
+        }
     }
 }

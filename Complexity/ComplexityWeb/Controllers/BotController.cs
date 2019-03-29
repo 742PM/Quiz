@@ -27,7 +27,7 @@ namespace ComplexityWebApi.Controllers
         {
             //ToDo: stab
             return Ok(new[] {new TopicInfoDTO("Complexity", Guid.NewGuid())});
-            return Ok(applicationApi.GetTopicsInfo().Select(Mapper.Map<TopicInfoDTO>));
+            //return Ok(applicationApi.GetTopicsInfo().Select(Mapper.Map<TopicInfoDTO>));
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace ComplexityWebApi.Controllers
         {
             //ToDo: stab
             return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
-            return Ok(applicationApi.GetLevels(topicId).Select(Mapper.Map<LevelInfoDTO>));
+            //return Ok(applicationApi.GetLevels(topicId).Select(Mapper.Map<LevelInfoDTO>));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace ComplexityWebApi.Controllers
             //ToDo: stab
             return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
 
-            return Ok(applicationApi.GetAvailableLevels(userId, topicId).Select(Mapper.Map<LevelInfoDTO>));
+            //return Ok(applicationApi.GetAvailableLevels(userId, topicId).Select(Mapper.Map<LevelInfoDTO>));
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace ComplexityWebApi.Controllers
             //ToDo: stab
             return Ok(0.5);
 
-            return Ok(applicationApi.GetCurrentProgress(userId, topicId, levelId));
+            //return Ok(applicationApi.GetCurrentProgress(userId, topicId, levelId));
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace ComplexityWebApi.Controllers
             //ToDo: stab
             return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
 
-            return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetTask(userId, topicId, levelId)));
+            //return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetTask(userId, topicId, levelId)));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace ComplexityWebApi.Controllers
             //ToDo: stab
             return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
 
-            return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetNextTask(userId)));
+            //return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetNextTask(userId)));
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace ComplexityWebApi.Controllers
         {
             //ToDo: stab
             return Ok("Подсказок больше нет");
-            return Ok(applicationApi.GetHint(userId));
+            //return Ok(applicationApi.GetHint(userId));
         }
 
 
@@ -148,7 +148,7 @@ namespace ComplexityWebApi.Controllers
         {
             //ToDo: stab
             return Ok(true);
-            return Ok(applicationApi.CheckAnswer(userId, answer));
+            //return Ok(applicationApi.CheckAnswer(userId, answer));
         }
     }
 }

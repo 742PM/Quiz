@@ -141,7 +141,7 @@ namespace Tests
         {
             var (topicId, _) = AddTopicWithLevel();
             var levelId = Guid.NewGuid();
-            taskRepository.InsertLevel(topicId, new Level(levelId, "", new TaskGenerator[0]));
+            taskRepository.InsertLevel(topicId, CreateLevel(levelId));
             var user = userRepository.FindOrInsertUser(Guid.NewGuid(), taskRepository);
             Action action = () => application.GetTask(user.Id, topicId, levelId);
             action.Should().Throw<AccessDeniedException>();
@@ -155,7 +155,7 @@ namespace Tests
             var ids = new List<Guid>();
             for (var i = 0; i < 5; i++)
                 ids.Add(AddEmptyTopic());
-            application.GetTopicsInfo().Select(t => t.Id).Should().BeEquivalentTo(ids);
+            application.GetTopicsInfo().Value.Select(t => t.Id).Should().BeEquivalentTo(ids);
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace Tests
         {
             var topicId = AddEmptyTopic();
             var ids = AddLevels(topicId);
-            application.GetLevels(topicId).Select(l => l.Id).Should().BeEquivalentTo(ids);
+            application.GetLevels(topicId).Value.Select(l => l.Id).Should().BeEquivalentTo(ids);
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace Tests
         {
             var topicId = AddEmptyTopic();
             var ids = AddLevels(topicId);
-            application.GetAvailableLevels(Guid.NewGuid(), topicId).First().Id.Should().Be(ids.First());
+            application.GetAvailableLevels(Guid.NewGuid(), topicId).Value.First().Id.Should().Be(ids.First());
         }
 
         private IEnumerable<Guid> AddLevels(Guid topicId)
@@ -196,7 +196,7 @@ namespace Tests
         {
             var topicId = Guid.NewGuid();
             var levelId = Guid.NewGuid();
-            var level = new Level(levelId, "", new[] { new TestGenerator(42) });
+            var level = CreateLevel(levelId, new[] { new TestGenerator(42) });
             taskRepository.InsertTopic(new Topic(topicId, "", "", new[] { level }));
             return (topicId, levelId);
         }
@@ -210,7 +210,17 @@ namespace Tests
 
         private Guid AddEmptyLevel(Guid topicId)
         {
-            return taskRepository.InsertLevel(topicId, new Level(Guid.NewGuid(), "", new TaskGenerator[0])).Id;
+            return taskRepository.InsertLevel(topicId, CreateLevel()).Id;
         }
+
+        private static Level CreateLevel(Guid id, IEnumerable<TaskGenerator> generators, IEnumerable<Guid> nextLevels) => 
+            new Level(id, $"{id}", generators.ToArray(), nextLevels.ToArray());
+
+        private static Level CreateLevel(Guid id, IEnumerable<TaskGenerator> generators) =>
+            CreateLevel(id, generators, new Guid[0]);
+
+        private static Level CreateLevel(Guid id) => CreateLevel(id, new TaskGenerator[0]);
+
+        private static Level CreateLevel() => CreateLevel(Guid.NewGuid());
     }
 }

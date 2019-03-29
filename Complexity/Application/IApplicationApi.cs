@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application.Info;
+using Infrastructure.Result;
 using JetBrains.Annotations;
 
 namespace Application
@@ -13,7 +14,7 @@ namespace Application
         /// <returns>
         /// Название и id темы
         /// </returns>
-        IEnumerable<TopicInfo> GetTopicsInfo();
+        Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo();
 
         /// <summary>
         /// Получение возможных уровней сложностей в данной теме 
@@ -21,7 +22,7 @@ namespace Application
         /// <returns>
         /// Уровни сложности
         /// </returns>
-        IEnumerable<LevelInfo> GetLevels(Guid topicId);
+        Result<IEnumerable<LevelInfo>, Exception> GetLevels(Guid topicId);
 
         /// <summary>
         /// Получение доступных уровней сложности в данной теме для данного уровня 
@@ -29,7 +30,7 @@ namespace Application
         /// <returns>
         /// Доступные уровни сложности для пользователя
         /// </returns>
-        IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId);
+        Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId);
 
         /// <summary>
         /// Прогресс пользователя в текущих теме и уровне
@@ -37,7 +38,7 @@ namespace Application
         /// <returns>
         /// Отношение решенных (набран полный стрик) задач ко всем
         /// </returns>
-        double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
+        Result<double, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение задачи из конкретных темы и уровня
@@ -45,7 +46,7 @@ namespace Application
         /// <returns>
         /// Описание задачи с вариантами ответов
         /// </returns>
-        TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId);
+        Result<TaskInfo, Exception> GetTask(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         /// Получение следующей задачи из текущих темы и уровня
@@ -53,17 +54,16 @@ namespace Application
         /// <returns>
         /// Описание задачи с вариантами ответов
         /// </returns>
-        TaskInfo GetNextTask(Guid userId);
+        Result<TaskInfo, Exception> GetNextTask(Guid userId);
 
         /// <summary>
         /// Проверка правильности ответа на текущую задачу
         /// </summary>
-        bool CheckAnswer(Guid userId, string answer);
+        Result<bool, Exception> CheckAnswer(Guid userId, string answer);
 
         /// <summary>
         /// Получение подсказки для текущей задачи
         /// </summary>
-        [CanBeNull]
-        string GetHint(Guid userId);
+        Result<string, Exception> GetHint(Guid userId);
     }
 }

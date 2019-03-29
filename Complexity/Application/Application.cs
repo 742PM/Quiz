@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application.Exceptions;
 using Application.Info;
 using DataBase;
 using DataBase.Entities;
 using Domain.Values;
 using Infrastructure.Result;
-using static Infrastructure.Result.Result;
 
 namespace Application
 {
@@ -16,17 +14,6 @@ namespace Application
         //TODO: build asp.net, database etc.
         static Application()
         {
-        }
-
-        public Result<Topic, ArgumentException> GetExample(Guid id) 
-            //Написал пример, добавил касты неявные, чтобы не писать ОК ФЭЙЛ итд
-            //TODO: remove this example
-        {
-
-            if (id == Guid.Empty)
-                return new ArgumentException();
-
-            return default(Topic);
         }
 
         private readonly ITaskRepository taskRepository;
@@ -44,33 +31,39 @@ namespace Application
             this.generatorSelector = generatorSelector;
         }
 
-        public IEnumerable<TopicInfo> GetTopicsInfo()
+        public Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo()
         {
-            return taskRepository.GetTopics().Select(topic => topic.ToInfo());
+            return taskRepository.GetTopics().Select(topic => topic.ToInfo()).Ok();
         }
 
-        public IEnumerable<LevelInfo> GetLevels(Guid topicId)
+        public Result<IEnumerable<LevelInfo>, Exception> GetLevels(Guid topicId)
         {
-            CheckTopic(topicId);
-            return taskRepository.GetLevelsFromTopic(topicId).Select(level => level.ToInfo());
+            return !TopicExists(topicId) 
+                ? new ArgumentException(nameof(topicId)) 
+                : taskRepository.GetLevelsFromTopic(topicId).Select(level => level.ToInfo()).Ok();
         }
 
-        public IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId)
+        public Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            CheckTopic(topicId);
-            return userRepository.FindOrInsertUser(userId, taskRepository)
+            return !TopicExists(topicId)
+            ? new ArgumentException(nameof(topicId))
+            : userRepository.FindOrInsertUser(userId, taskRepository)
                 .UserProgressEntity
                 .TopicsProgress[topicId]
                 .LevelProgressEntities
                 .Select(levelProgress =>
                     taskRepository
                         .FindLevel(topicId, levelProgress.Key)
-                        .ToInfo());
+                        .ToInfo())
+                .Ok();
         }
 
-        public double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        public Result<double, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            CheckLevel(topicId, levelId);
+            if (!TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             var solved = user
                 .UserProgressEntity
@@ -81,11 +74,17 @@ namespace Application
             return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
         }
 
-        public TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId)
+        public Result<TaskInfo, Exception> GetTask(Guid userId, Guid topicId, Guid levelId)
         {
-            CheckLevel(topicId, levelId);
+            if (!TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
-            if (!GetAvailableLevels(userId, topicId).Select(info => info.Id).Contains(levelId))
+            var (_, isFailure, levels) = GetAvailableLevels(userId, topicId);
+            if (isFailure)
+                Console.WriteLine(); // TODO smth
+            if (!levels.Select(info => info.Id).Contains(levelId))
                 throw new AccessDeniedException(
                     $"User {userId} doesn't have access to level {levelId} in topic {topicId}");
             var task = generatorSelector
@@ -95,7 +94,7 @@ namespace Application
             return task.ToInfo();
         }
 
-        public TaskInfo GetNextTask(Guid userId)
+        public Result<TaskInfo, Exception> GetNextTask(Guid userId)
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             CheckCurrentTask(user);
@@ -104,7 +103,7 @@ namespace Application
             return GetTask(userId, user.UserProgressEntity.CurrentTopicId, user.UserProgressEntity.CurrentLevelId);
         }
 
-        public bool CheckAnswer(Guid userId, string answer)
+        public Result<bool, Exception> CheckAnswer(Guid userId, string answer)
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             CheckCurrentTask(user);
@@ -120,14 +119,14 @@ namespace Application
             return true;
         }
 
-        public string GetHint(Guid userId)
+        public Result<string, Exception> GetHint(Guid userId)
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             CheckCurrentTask(user);
             var hints = user.UserProgressEntity.CurrentTask.Hints;
             var currentHintIndex = user.UserProgressEntity.CurrentTask.HintsTaken;
             if (currentHintIndex >= hints.Length)
-                return null;
+                return new Exception("out of hints");
             user.UserProgressEntity.CurrentTask.HintsTaken++;
             userRepository.Update(user);
             return hints[currentHintIndex];
@@ -199,18 +198,9 @@ namespace Application
             }
         }
 
-        private void CheckTopic(Guid topicId)
-        {
-            if (taskRepository.FindTopic(topicId) is null)
-                throw new TopicNotFoundException();
-        }
+        private bool TopicExists(Guid topicId) => taskRepository.FindTopic(topicId) != null;
 
-        private void CheckLevel(Guid topicId, Guid levelId)
-        {
-            CheckTopic(topicId);
-            if (taskRepository.FindLevel(topicId, levelId) is null)
-                throw new LevelNotFoundException();
-        }
+        private bool LevelExists(Guid topicId, Guid levelId) => taskRepository.FindLevel(topicId, levelId) != null;
 
         private static void CheckCurrentTask(UserEntity user)
         {

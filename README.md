@@ -1,5 +1,5 @@
 # ComplexityBot
-[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/complexitybot.Quiz?branchName=master)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/complexitybot%20-%201%20-%20CI?branchName=master)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=3&branchName=master)
 
 ___
 

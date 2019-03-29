@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Application.Exceptions;
 using Application.Info;
 using DataBase;
 using DataBase.Entities;
@@ -38,27 +39,26 @@ namespace Application
 
         public IEnumerable<LevelInfo> GetLevels(Guid topicId)
         {
-            return taskRepository.GetLevelsFromTopic(topicId)?.Select(level => level.ToInfo());
+            CheckTopic(topicId);
+            return taskRepository.GetLevelsFromTopic(topicId).Select(level => level.ToInfo());
         }
 
         public IEnumerable<LevelInfo> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            return taskRepository.FindTopic(topicId) is null
-                ? null
-                : userRepository.FindOrInsertUser(userId, taskRepository)
-                    .UserProgressEntity
-                    .TopicsProgress[topicId]
-                    .LevelProgressEntities
-                    .Select(levelProgress =>
-                        taskRepository
-                            .FindLevel(topicId, levelProgress.Key)
-                            .ToInfo());
+            CheckTopic(topicId);
+            return userRepository.FindOrInsertUser(userId, taskRepository)
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities
+                .Select(levelProgress =>
+                    taskRepository
+                        .FindLevel(topicId, levelProgress.Key)
+                        .ToInfo());
         }
 
-        public double? GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        public double GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            if (taskRepository.FindTopic(topicId) is null || taskRepository.FindLevel(topicId, levelId) is null)
-                return null;
+            CheckLevel(topicId, levelId);
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             var solved = user
                 .UserProgressEntity
@@ -71,8 +71,7 @@ namespace Application
 
         public TaskInfo GetTask(Guid userId, Guid topicId, Guid levelId)
         {
-            if (taskRepository.FindTopic(topicId) is null || taskRepository.FindLevel(topicId, levelId) is null)
-                return null;
+            CheckLevel(topicId, levelId);
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             if (!GetAvailableLevels(userId, topicId).Select(info => info.Id).Contains(levelId))
                 throw new AccessDeniedException(
@@ -186,6 +185,19 @@ namespace Application
                     .LevelProgressEntities[levelId]
                     .CurrentLevelStreaks[generatorId] = updateFunc(currentStreak);
             }
+        }
+
+        private void CheckTopic(Guid topicId)
+        {
+            if (taskRepository.FindTopic(topicId) is null)
+                throw new TopicNotFoundException();
+        }
+
+        private void CheckLevel(Guid topicId, Guid levelId)
+        {
+            CheckTopic(topicId);
+            if (taskRepository.FindLevel(topicId, levelId) is null)
+                throw new LevelNotFoundException();
         }
 
         private static void CheckCurrentTask(UserEntity user)

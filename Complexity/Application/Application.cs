@@ -6,6 +6,8 @@ using DataBase;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
+using Infrastructure.Result;
+using static Infrastructure.Result.Result;
 
 namespace Application
 {
@@ -14,9 +16,17 @@ namespace Application
         //TODO: build asp.net, database etc.
         static Application()
         {
+        }
 
-            
-            //Какое-то странное что-то, просто пример
+        public Result<Topic, ArgumentException> GetExample(Guid id) 
+            //Написал пример, добавил касты неявные, чтобы не писать ОК ФЭЙЛ итд
+            //TODO: remove this example
+        {
+
+            if (id == Guid.Empty)
+                return new ArgumentException();
+
+            return default(Topic);
         }
 
         private readonly IEnumerable<Topic> topics;

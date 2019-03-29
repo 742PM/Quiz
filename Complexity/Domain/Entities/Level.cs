@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Entities.TaskGenerators;
 using Infrastructure;
+using Infrastructure.DDD;
 
 namespace Domain.Entities
 {

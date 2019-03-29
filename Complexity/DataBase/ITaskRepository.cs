@@ -8,6 +8,8 @@ namespace DataBase
     {
         Topic[] GetTopics();
 
+        Level[] GetNextLevels(Guid topicId, Guid levelId);
+
         Level[] GetLevelsFromTopic(Guid topicId);
 
         TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId);

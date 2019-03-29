@@ -1,0 +1,472 @@
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Threading.Tasks;
+
+namespace Infrastructure.Result
+{
+    internal class ResultCommonLogic<TError>
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly TError error;
+
+        [DebuggerStepThrough]
+        internal ResultCommonLogic(bool isFailure, TError error)
+        {
+            if (isFailure)
+            {
+                if (error == null)
+                    throw new ArgumentNullException(nameof(error), ResultMessages.ErrorObjectIsNotProvidedForFailure);
+            }
+            else
+            {
+                if (error != null)
+                    throw new ArgumentException(ResultMessages.ErrorObjectIsProvidedForSuccess, nameof(error));
+            }
+
+            IsFailure = isFailure;
+            this.error = error;
+        }
+
+        public bool IsFailure { get; }
+        public bool IsSuccess => !IsFailure;
+
+        public TError Error
+        {
+            [DebuggerStepThrough]
+            get
+            {
+                if (IsSuccess)
+                    throw new ResultSuccessException();
+
+                return error;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("IsFailure", IsFailure);
+            info.AddValue("IsSuccess", IsSuccess);
+            if (IsFailure) info.AddValue("Error", Error);
+        }
+    }
+
+    internal sealed class ResultCommonLogic : ResultCommonLogic<string>
+    {
+        private ResultCommonLogic(bool isFailure, string error) : base(isFailure, error)
+        {
+        }
+
+        [DebuggerStepThrough]
+        public static ResultCommonLogic Create(bool isFailure, string error)
+        {
+            if (isFailure)
+            {
+                if (string.IsNullOrEmpty(error))
+                    throw new ArgumentNullException(nameof(error), ResultMessages.ErrorMessageIsNotProvidedForFailure);
+            }
+            else
+            {
+                if (error != null)
+                    throw new ArgumentException(ResultMessages.ErrorMessageIsProvidedForSuccess, nameof(error));
+            }
+
+            return new ResultCommonLogic(isFailure, error);
+        }
+    }
+
+    internal static class ResultMessages
+    {
+        public static readonly string ErrorIsInaccessibleForSuccess =
+            "You attempted to access the Error property for a successful result. A successful result has no Error.";
+
+        public static readonly string ValueIsInaccessibleForFailure =
+            "You attempted to access the Value property for a failed result. A failed result has no Value.";
+
+        public static readonly string ErrorObjectIsNotProvidedForFailure =
+            "You attempted to create a failure result, which must have an error, but a null error object was passed to the constructor.";
+
+        public static readonly string ErrorObjectIsProvidedForSuccess =
+            "You attempted to create a success result, which cannot have an error, but a non-null error object was passed to the constructor.";
+
+        public static readonly string ErrorMessageIsNotProvidedForFailure =
+            "You attempted to create a failure result, which must have an error, but a null or empty string was passed to the constructor.";
+
+        public static readonly string ErrorMessageIsProvidedForSuccess =
+            "You attempted to create a success result, which cannot have an error, but a non-null string was passed to the constructor.";
+    }
+
+    public struct Result : IResult, ISerializable
+    {
+        private static readonly Result OkResult = new Result(false, null);
+
+        public static string ErrorMessagesSeparator = ", ";
+        public static bool DefaultConfigureAwait = false;
+
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            _logic.GetObjectData(info, context);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ResultCommonLogic _logic;
+
+        public bool IsFailure => _logic.IsFailure;
+        public bool IsSuccess => _logic.IsSuccess;
+        public string Error => _logic.Error;
+
+        [DebuggerStepThrough]
+        private Result(bool isFailure, string error)
+        {
+            _logic = ResultCommonLogic.Create(isFailure, error);
+        }
+
+        [DebuggerStepThrough]
+        public static Result Ok() => OkResult;
+
+        [DebuggerStepThrough]
+        public static Result Fail(string error) => new Result(true, error);
+
+        [DebuggerStepThrough]
+        public static Result Create(bool isSuccess, string error) => isSuccess ? Ok() : Fail(error);
+
+        public static Result Create(Func<bool> predicate, string error) => Create(predicate(), error);
+
+        public static async Task<Result> Create(Func<Task<bool>> predicate, string error)
+        {
+            var isSuccess = await predicate()
+                                .ConfigureAwait(DefaultConfigureAwait);
+            return Create(isSuccess, error);
+        }
+
+        [DebuggerStepThrough]
+        public static Result<T> Ok<T>(T value) => new Result<T>(false, value, null);
+
+        [DebuggerStepThrough]
+        public static Result<T> Fail<T>(string error) => new Result<T>(true, default, error);
+
+        public static Result<T> Create<T>(bool isSuccess, T value, string error) =>
+            isSuccess ? Ok(value) : Fail<T>(error);
+
+        public static Result<T> Create<T>(Func<bool> predicate, T value, string error) =>
+            Create(predicate(), value, error);
+
+        public static async Task<Result<T>> Create<T>(Func<Task<bool>> predicate, T value, string error)
+        {
+            var isSuccess = await predicate()
+                                .ConfigureAwait(DefaultConfigureAwait);
+            return Create(isSuccess, value, error);
+        }
+
+        [DebuggerStepThrough]
+        public static Result<T, E> Ok<T, E>(T value) => new Result<T, E>(false, value, default);
+
+        [DebuggerStepThrough]
+        public static Result<T, E> Fail<T, E>(E error) => new Result<T, E>(true, default, error);
+
+        [DebuggerStepThrough]
+        public static Result<T, E> Create<T, E>(bool isSuccess, T value, E error) =>
+            isSuccess ? Ok<T, E>(value) : Fail<T, E>(error);
+
+        public static Result<T, E> Create<T, E>(Func<bool> predicate, T value, E error) =>
+            predicate() ? Ok<T, E>(value) : Fail<T, E>(error);
+
+        public static async Task<Result<T, E>> Create<T, E>(Func<Task<bool>> predicate, T value, E error)
+        {
+            var isSuccess = await predicate()
+                                .ConfigureAwait(DefaultConfigureAwait);
+            return isSuccess ? Ok<T, E>(value) : Fail<T, E>(error);
+        }
+
+        /// <summary>
+        ///     Returns first failure in the list of <paramref name="results" />. If there is no failure returns success.
+        /// </summary>
+        /// <param name="results">List of results.</param>
+        [DebuggerStepThrough]
+        public static Result FirstFailureOrSuccess(params Result[] results)
+        {
+            foreach (var result in results)
+                if (result.IsFailure)
+                    return Fail(result.Error);
+
+            return Ok();
+        }
+
+        /// <summary>
+        ///     Returns failure which combined from all failures in the <paramref name="results" /> list. Error messages are
+        ///     separated by <paramref name="errorMessagesSeparator" />.
+        ///     If there is no failure returns success.
+        /// </summary>
+        /// <param name="errorMessagesSeparator">Separator for error messages.</param>
+        /// <param name="results">List of results.</param>
+        [DebuggerStepThrough]
+        public static Result Combine(string errorMessagesSeparator, params Result[] results)
+        {
+            var failedResults = results.Where(x => x.IsFailure)
+                                       .ToList();
+
+            if (failedResults.Count == 0)
+                return Ok();
+
+            var errorMessage = string.Join(errorMessagesSeparator, failedResults.Select(x => x.Error)
+                                                                                .ToArray());
+            return Fail(errorMessage);
+        }
+
+        [DebuggerStepThrough]
+        public static Result Combine(params Result[] results) => Combine(ErrorMessagesSeparator, results);
+
+        [DebuggerStepThrough]
+        public static Result Combine<T>(params Result<T>[] results) => Combine(ErrorMessagesSeparator, results);
+
+        [DebuggerStepThrough]
+        public static Result Combine<T>(string errorMessagesSeparator, params Result<T>[] results)
+        {
+            var untyped = results.Select(result => (Result) result)
+                                 .ToArray();
+            return Combine(errorMessagesSeparator, untyped);
+        }
+
+        private static readonly Func<Exception, string> DefaultTryErrorHandler = exc => exc.Message;
+
+        public static Result Try(Action action, Func<Exception, string> errorHandler = null)
+        {
+            errorHandler = errorHandler ?? DefaultTryErrorHandler;
+
+            try
+            {
+                action();
+                return Ok();
+            }
+            catch (Exception exc)
+            {
+                var message = errorHandler(exc);
+                return Fail(message);
+            }
+        }
+
+        public static Result<T> Try<T>(Func<T> func, Func<Exception, string> errorHandler = null)
+        {
+            errorHandler = errorHandler ?? DefaultTryErrorHandler;
+
+            try
+            {
+                return Ok(func());
+            }
+            catch (Exception exc)
+            {
+                var message = errorHandler(exc);
+                return Fail<T>(message);
+            }
+        }
+
+        public static async Task<Result<T>> Try<T>(Func<Task<T>> func, Func<Exception, string> errorHandler = null)
+        {
+            errorHandler = errorHandler ?? DefaultTryErrorHandler;
+
+            try
+            {
+                var result = await func()
+                                 .ConfigureAwait(DefaultConfigureAwait);
+                return Ok(result);
+            }
+            catch (Exception exc)
+            {
+                var message = errorHandler(exc);
+                return Fail<T>(message);
+            }
+        }
+
+        public static Result<T, E> Try<T, E>(Func<T> func, Func<Exception, E> errorHandler) where E : class
+        {
+            try
+            {
+                return Ok<T, E>(func());
+            }
+            catch (Exception exc)
+            {
+                var error = errorHandler(exc);
+                return Fail<T, E>(error);
+            }
+        }
+
+        public static async Task<Result<T, E>> Try<T, E>(Func<Task<T>> func, Func<Exception, E> errorHandler)
+            where E : class
+        {
+            try
+            {
+                var result = await func()
+                                 .ConfigureAwait(DefaultConfigureAwait);
+                return Ok<T, E>(result);
+            }
+            catch (Exception exc)
+            {
+                var error = errorHandler(exc);
+                return Fail<T, E>(error);
+            }
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure, out string error)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+            error = IsFailure ? Error : null;
+        }
+    }
+
+    public struct Result<T> : IResult, ISerializable
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ResultCommonLogic _logic;
+
+        public bool IsFailure => _logic.IsFailure;
+        public bool IsSuccess => _logic.IsSuccess;
+        public string Error => _logic.Error;
+
+        public static implicit operator Result<T>(T value) => Result.Ok(value);
+
+
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            _logic.GetObjectData(info, context);
+
+            if (IsSuccess) info.AddValue("Value", Value);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly T _value;
+
+        public T Value
+        {
+            [DebuggerStepThrough]
+            get
+            {
+                if (!IsSuccess)
+                    throw new ResultFailureException(Error);
+
+                return _value;
+            }
+        }
+
+        [DebuggerStepThrough]
+        internal Result(bool isFailure, T value, string error)
+        {
+            _logic = ResultCommonLogic.Create(isFailure, error);
+            _value = value;
+        }
+
+        public static implicit operator Result(Result<T> result)
+        {
+            if (result.IsSuccess)
+                return Result.Ok();
+            return Result.Fail(result.Error);
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure, out T value)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+            value = IsSuccess ? Value : default;
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure, out T value, out string error)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+            value = IsSuccess ? Value : default;
+            error = IsFailure ? Error : null;
+        }
+    }
+
+    public struct Result<T, E> : IResult, ISerializable
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ResultCommonLogic<E> _logic;
+
+        public bool IsFailure => _logic.IsFailure;
+        public bool IsSuccess => _logic.IsSuccess;
+        public E Error => _logic.Error;
+        public static implicit operator Result<T, E>(T value) => Result.Ok<T, E>(value);
+        public static implicit operator Result<T, E>(E error) => Result.Fail<T, E>(error);
+
+
+       // public static implicit operator Result<T, E>(Result<T> value) => value.IsSuccess ? (Result<T, E>) value.Value : default(E);
+
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            _logic.GetObjectData(info, context);
+
+            if (IsSuccess) info.AddValue("Value", Value);
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly T _value;
+
+        public T Value
+        {
+            [DebuggerStepThrough]
+            get
+            {
+                if (!IsSuccess)
+                    throw new ResultFailureException<E>(Error);
+
+                return _value;
+            }
+        }
+
+        [DebuggerStepThrough]
+        internal Result(bool isFailure, T value, E error)
+        {
+            _logic = new ResultCommonLogic<E>(isFailure, error);
+            _value = value;
+        }
+
+        public static implicit operator Result(Result<T, E> result)
+        {
+            if (result.IsSuccess)
+                return Result.Ok();
+            return Result.Fail(result.Error.ToString());
+        }
+
+        public static implicit operator Result<T>(Result<T, E> result)
+        {
+            if (result.IsSuccess)
+                return Result.Ok(result.Value);
+            return Result.Fail<T>(result.Error.ToString());
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure, out T value)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+            value = IsSuccess ? Value : default;
+        }
+
+        public void Deconstruct(out bool isSuccess, out bool isFailure, out T value, out E error)
+        {
+            isSuccess = IsSuccess;
+            isFailure = IsFailure;
+            value = IsSuccess ? Value : default;
+            error = IsFailure ? Error : default;
+        }
+    }
+}

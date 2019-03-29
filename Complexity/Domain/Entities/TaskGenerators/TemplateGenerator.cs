@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Values;
+using Infrastructure;
 
 namespace Domain.Entities.TaskGenerators
 {

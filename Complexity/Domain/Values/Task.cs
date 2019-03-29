@@ -1,4 +1,6 @@
 ﻿using System;
+using Infrastructure;
+using Infrastructure.DDD;
 
 namespace Domain.Values
 {

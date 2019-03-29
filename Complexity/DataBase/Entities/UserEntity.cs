@@ -1,5 +1,7 @@
 using System;
 using Domain;
+using Infrastructure;
+using Infrastructure.DDD;
 
 namespace DataBase.Entities
 {

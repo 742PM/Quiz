@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Infrastructure;
+using Infrastructure.DDD;
 
 namespace Domain.Entities
 {

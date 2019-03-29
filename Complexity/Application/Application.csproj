@@ -6,19 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DataBase\DataBase.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="JetBrains.Annotations.NetStandard">
-      <HintPath>..\..\..\..\.nuget\packages\jetbrains.annotations\10.2.1\lib\netstandard1.0\JetBrains.Annotations.NetStandard.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
 
 </Project>

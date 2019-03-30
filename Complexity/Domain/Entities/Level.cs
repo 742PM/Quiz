@@ -17,6 +17,8 @@ namespace Domain.Entities
     {
         public Level(Guid id, string description, ICollection<TaskGenerator> generators, Guid[] nextLevels) : base(id)
         {
+            if (nextLevels == null)
+                throw new ArgumentNullException(nameof(nextLevels));
             Description = description;
             if (nextLevels.Contains(id))
                 throw new ArgumentException($"Cyclic reference: one of predecessors equals to this {nameof(Level)}");

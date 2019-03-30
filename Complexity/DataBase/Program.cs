@@ -10,8 +10,7 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING") ??
-                                        "mongodb://localhost:27017";
+            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING");
             var db = new MongoClient(mongoConnectionString).GetDatabase("ComplexityBot");
             var userRepo = SetupDatabase(db);
 

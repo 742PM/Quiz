@@ -12,15 +12,14 @@ namespace Application
 {
     public class Application : IApplicationApi
     {
-        //TODO: build asp.net, database etc.
-        static Application()
-        {
-        }
-
-        private readonly ITaskRepository taskRepository;
-        private readonly IUserRepository userRepository;
         private readonly ITaskGeneratorSelector generatorSelector;
         private readonly Random random = new Random();
+
+        private readonly ITaskRepository taskRepository;
+
+        private readonly IUserRepository userRepository;
+
+        //TODO: build asp.net, database etc.
 
         public Application(
             IUserRepository userRepository,
@@ -35,31 +34,33 @@ namespace Application
         /// <inheritdoc />
         public Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo()
         {
-            return taskRepository.GetTopics().Select(topic => topic.ToInfo()).Ok();
+            return taskRepository.GetTopics()
+                                 .Select(topic => topic.ToInfo())
+                                 .Ok();
         }
 
         /// <inheritdoc />
         public Result<IEnumerable<LevelInfo>, Exception> GetLevels(Guid topicId)
         {
-            return !TopicExists(topicId) 
-                ? new ArgumentException(nameof(topicId)) 
-                : taskRepository.GetLevelsFromTopic(topicId).Select(level => level.ToInfo()).Ok();
+            return !TopicExists(topicId)
+                       ? new ArgumentException(nameof(topicId))
+                       : taskRepository.GetLevelsFromTopic(topicId)
+                                       .Select(level => level.ToInfo())
+                                       .Ok();
         }
 
         /// <inheritdoc />
         public Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId)
         {
             return !TopicExists(topicId)
-            ? new ArgumentException(nameof(topicId))
-            : userRepository.FindOrInsertUser(userId, taskRepository)
-                .UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities
-                .Select(levelProgress =>
-                    taskRepository
-                        .FindLevel(topicId, levelProgress.Key)
-                        .ToInfo())
-                .Ok();
+                       ? new ArgumentException(nameof(topicId))
+                       : userRepository.FindOrInsertUser(userId, taskRepository)
+                                       .UserProgressEntity.TopicsProgress[topicId]
+                                       .LevelProgressEntities.Select(levelProgress => taskRepository
+                                                                                      .FindLevel(topicId,
+                                                                                                 levelProgress.Key)
+                                                                                      .ToInfo())
+                                       .Ok();
         }
 
         /// <inheritdoc />
@@ -71,13 +72,12 @@ namespace Application
                 return new ArgumentException(nameof(levelId));
 
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
-            var solved = user
-                .UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities[levelId]
-                .CurrentLevelStreaks
-                .Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
-            return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
+            var solved = user.UserProgressEntity.TopicsProgress[topicId]
+                             .LevelProgressEntities[levelId]
+                             .CurrentLevelStreaks.Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
+            return (double) solved /
+                   taskRepository.GetGeneratorsFromLevel(topicId, levelId)
+                                 .Length;
         }
 
         /// <inheritdoc />
@@ -89,13 +89,14 @@ namespace Application
                 return new ArgumentException(nameof(levelId));
 
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
-            var levels = GetAvailableLevels(userId, topicId).Value;
-            if (!levels.Select(info => info.Id).Contains(levelId))
-                return new AccessDeniedException(
-                    $"User {userId} doesn't have access to level {levelId} in topic {topicId}");
-            var task = generatorSelector
-                .Select(taskRepository.GetGeneratorsFromLevel(topicId, levelId))
-                .GetTask(random);
+            var levels = GetAvailableLevels(userId, topicId)
+                .Value;
+            if (!levels.Select(info => info.Id)
+                       .Contains(levelId))
+                return new
+                    AccessDeniedException($"User {userId} doesn't have access to level {levelId} in topic {topicId}");
+            var task = generatorSelector.Select(taskRepository.GetGeneratorsFromLevel(topicId, levelId))
+                                        .GetTask(random);
             UpdateUserCurrentTask(user, topicId, levelId, task);
             return task.ToInfo();
         }
@@ -126,7 +127,11 @@ namespace Application
                 UpdateStreakIfNotSolved(user, streak => 0);
                 return false;
             }
-            user.UserProgressEntity.CurrentTask.IsSolved = true;
+
+            user = user.With(user.UserProgressEntity.With(currentTask:
+                                                          user.UserProgressEntity.CurrentTask.With(isSolved: true)));
+
+//            user.UserProgressEntity.CurrentTask.IsSolved = true;
             UpdateStreakIfNotSolved(user, streak => streak + 1);
             UpdateProgressIfLevelSolved(user);
             userRepository.Update(user);
@@ -145,56 +150,52 @@ namespace Application
             var currentHintIndex = user.UserProgressEntity.CurrentTask.HintsTaken;
             if (currentHintIndex >= hints.Length)
                 return new Exception("out of hints");
-            user.UserProgressEntity.CurrentTask.HintsTaken++;
+
+            user = user.With(user.UserProgressEntity.With(currentTask:
+                                                          user.UserProgressEntity.CurrentTask
+                                                              .With(hintsTaken: user.UserProgressEntity.CurrentTask
+                                                                                    .HintsTaken +
+                                                                                1)));
             userRepository.Update(user);
             return hints[currentHintIndex];
         }
 
-        private void UpdateProgressIfLevelSolved(UserEntity user)
+        private UserEntity UpdateProgressIfLevelSolved(UserEntity user)
         {
             var topicId = user.UserProgressEntity.CurrentTopicId;
             var levelId = user.UserProgressEntity.CurrentLevelId;
-            var allSolved = taskRepository
-                .GetGeneratorsFromLevel(topicId, levelId)
-                .All(generator => IsGeneratorSolved(user, topicId, levelId, generator.Id));
+            var allSolved = taskRepository.GetGeneratorsFromLevel(topicId, levelId)
+                                          .All(generator => IsGeneratorSolved(user, topicId, levelId, generator.Id));
             if (!allSolved)
-                return;
-            var level = taskRepository
-                .GetLevelsFromTopic(topicId)
-                .SkipWhile(l => l.Id != levelId)
-                .Skip(1)
-                .FirstOrDefault();
+                return user;
+            var level = taskRepository.GetLevelsFromTopic(topicId)
+                                      .SkipWhile(l => l.Id != levelId)
+                                      .Skip(1)
+                                      .FirstOrDefault();
             if (level is null)
-                return;
-            user.UserProgressEntity
-                .TopicsProgress[topicId]
+                return user;
+            user.UserProgressEntity.TopicsProgress[topicId]
                 .LevelProgressEntities[level.Id] = level.ToProgressEntity();
+            return user;
         }
 
         private bool IsGeneratorSolved(UserEntity user, Guid topicId, Guid levelId, Guid generatorId)
         {
-            var currentStreak = user
-                .UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities[levelId]
-                .CurrentLevelStreaks[generatorId];
-            return currentStreak >= taskRepository.FindGenerator(topicId, levelId, generatorId).Streak;
+            var currentStreak = user.UserProgressEntity.TopicsProgress[topicId]
+                                    .LevelProgressEntities[levelId]
+                                    .CurrentLevelStreaks[generatorId];
+            return currentStreak >=
+                   taskRepository.FindGenerator(topicId, levelId, generatorId)
+                                 .Streak;
         }
 
-        private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
+        private UserEntity UpdateUserCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
         {
-            user.UserProgressEntity.CurrentTopicId = topicId;
-            user.UserProgressEntity.CurrentLevelId = levelId;
-            user.UserProgressEntity.CurrentTask = new TaskInfoEntity
-            {
-                Question = task.Question,
-                Answer = task.Answer,
-                Hints = task.Hints.HasValue ? task.Hints.Value : new string[0],
-                HintsTaken = 0,
-                IsSolved = false,
-                ParentGeneratorId = task.ParentGeneratorId
-            };
+            var taskInfoEntity = task.AsInfoEntity();
+            var pge = user.UserProgressEntity.With(topicId, levelId, currentTask: taskInfoEntity);
+            user = user.With(pge);
             userRepository.Update(user);
+            return user;
         }
 
         private void UpdateStreakIfNotSolved(UserEntity user, Func<int, int> updateFunc)
@@ -202,18 +203,13 @@ namespace Application
             var topicId = user.UserProgressEntity.CurrentTopicId;
             var levelId = user.UserProgressEntity.CurrentLevelId;
             var generatorId = user.UserProgressEntity.CurrentTask.ParentGeneratorId;
-            var currentStreak = user
-                .UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities[levelId]
-                .CurrentLevelStreaks[generatorId];
+            var currentStreak = user.UserProgressEntity.TopicsProgress[topicId]
+                                    .LevelProgressEntities[levelId]
+                                    .CurrentLevelStreaks[generatorId];
             if (!IsGeneratorSolved(user, topicId, levelId, generatorId))
-            {
-                user.UserProgressEntity
-                    .TopicsProgress[topicId]
+                user.UserProgressEntity.TopicsProgress[topicId]
                     .LevelProgressEntities[levelId]
                     .CurrentLevelStreaks[generatorId] = updateFunc(currentStreak);
-            }
         }
 
         private bool TopicExists(Guid topicId) => taskRepository.FindTopic(topicId) != null;

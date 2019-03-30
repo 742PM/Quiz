@@ -11,6 +11,8 @@ namespace DataBase.Entities
         {
         }
 
+        public UserEntity With(UserProgressEntity userProgress) => new UserEntity(Id,userProgress);
+
         public UserEntity(Guid id, UserProgressEntity userProgressEntity) : base(id)
         {
             UserProgressEntity = userProgressEntity;

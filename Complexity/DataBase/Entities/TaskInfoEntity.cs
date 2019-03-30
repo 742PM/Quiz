@@ -6,9 +6,13 @@ namespace DataBase.Entities
     [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
     public class TaskInfoEntity
     {
-        public TaskInfoEntity(string question, string answer, string[] hints, int hintsTaken,
-                              Guid parentGeneratorId,
-                              bool isSolved)
+        public TaskInfoEntity(
+            string question,
+            string answer,
+            string[] hints,
+            int hintsTaken,
+            Guid parentGeneratorId,
+            bool isSolved)
         {
             Question = question;
             Answer = answer;
@@ -29,5 +33,15 @@ namespace DataBase.Entities
         public Guid ParentGeneratorId { get; private set; }
 
         public bool IsSolved { get; private set; }
+
+        public TaskInfoEntity With(
+            string question = default,
+            string answer = default,
+            string[] hints = default,
+            int? hintsTaken = default,
+            Guid? parentGeneratorId = default,
+            bool? isSolved = default) =>
+            new TaskInfoEntity(question ?? Question, answer ?? Answer, hints ?? Hints, hintsTaken ?? HintsTaken,
+                               parentGeneratorId ?? ParentGeneratorId, isSolved ?? IsSolved);
     }
 }

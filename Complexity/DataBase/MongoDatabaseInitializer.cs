@@ -12,15 +12,15 @@ namespace DataBase
 {
     public static class MongoDatabaseInitializer
     {
-        public static IMongoDatabase Connect()
+        public static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
         {
-            var username = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_USERNAME");
-            var password = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_PASSWORD");
+            username = username ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_USERNAME");
+            password = password ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_PASSWORD");
             var client = new MongoClient
             ($"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
              "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
              "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
-             "test?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true");
+             $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true");
             return client.GetDatabase("test");
         }
 

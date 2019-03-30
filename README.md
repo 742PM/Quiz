@@ -8,7 +8,7 @@
 ## Fast Navigation
 
 * [Main Idea of ComplexityBot](#about-the-project)
-* [Wiki](https://github.com/complexitybot/Quiz/wiki/Cozy-Wiki)
+* [Wiki](https://github.com/complexitybot/Quiz/wiki/)
 * [Contributing](#contributing)
 * [Contributors](#contributors)
 

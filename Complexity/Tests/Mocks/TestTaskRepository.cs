@@ -16,8 +16,8 @@ namespace Tests.Mocks
         public Level[] GetNextLevels(Guid topicId, Guid levelId)
         {
             return FindLevel(topicId, levelId)
-                   .NextLevels.Select(id => FindLevel(topicId, id))
-                   .ToArray();
+                .NextLevels.Select(id => FindLevel(topicId, id))
+                .ToArray();
         }
 
         public Level[] GetLevelsFromTopic(Guid topicId) =>
@@ -26,8 +26,8 @@ namespace Tests.Mocks
         public TaskGenerator[] GetGeneratorsFromLevel(Guid topicId, Guid levelId)
         {
             return GetLevelsFromTopic(topicId)
-                   ?.FirstOrDefault(l => l.Id == levelId)
-                   ?.Generators;
+                ?.FirstOrDefault(l => l.Id == levelId)
+                ?.Generators;
         }
 
         public Topic InsertTopic(Topic topic) => UpdateTopic(topic);
@@ -45,16 +45,20 @@ namespace Tests.Mocks
         public Level UpdateLevel(Guid topicId, Level level)
         {
             var topic = topics[topicId];
-            UpdateTopic(new Topic(topic.Id, topic.Name, topic.Description, topic.Levels.Where(l => l.Id != level.Id)
-                                                                                .Concat(new[] {level})
-                                                                                .ToArray()));
+            UpdateTopic(new Topic(
+                topic.Id,
+                topic.Name,
+                topic.Description,
+                topic.Levels
+                    .Where(l => l.Id != level.Id)
+                    .Concat(new[] { level })
+                    .ToArray()));
             return level;
         }
 
         public Level FindLevel(Guid topicId, Guid levelId)
         {
-            return GetLevelsFromTopic(topicId)
-                ?.FirstOrDefault(l => l.Id == levelId);
+            return GetLevelsFromTopic(topicId)?.FirstOrDefault(l => l.Id == levelId);
         }
 
         public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity) =>
@@ -64,31 +68,29 @@ namespace Tests.Mocks
         {
             var topic = topics[topicId];
             var level = FindLevel(topicId, levelId);
-            UpdateTopic(new Topic(topic.Id, topic.Name, topic.Description, topic.Levels.Where(l => l.Id != levelId)
-                                                                                .Concat(new[]
-                                                                                {
-                                                                                    new Level(level.Id,
-                                                                                              level.Description,
-                                                                                              level
-                                                                                                  .Generators
-                                                                                                  .Where(g => g.Id !=
-                                                                                                              entity
-                                                                                                                  .Id)
-                                                                                                  .Concat(new[]
-                                                                                                  {
-                                                                                                      entity
-                                                                                                  })
-                                                                                                  .ToArray(),
-                                                                                              level.NextLevels)
-                                                                                })
-                                                                                .ToArray()));
+            UpdateTopic(new Topic(
+                topic.Id,
+                topic.Name,
+                topic.Description,
+                topic.Levels
+                    .Where(l => l.Id != levelId)
+                    .Concat(new[]
+                    {
+                        new Level(level.Id,
+                            level.Description,
+                            level.Generators
+                                .Where(g => g.Id != entity.Id)
+                                .Concat(new[] { entity })
+                                .ToArray(),
+                            level.NextLevels)
+                    })
+                    .ToArray()));
             return entity;
         }
 
         public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            return FindLevel(topicId, levelId)
-                   ?.Generators.FirstOrDefault(g => g.Id == generatorId);
+            return FindLevel(topicId, levelId)?.Generators.FirstOrDefault(g => g.Id == generatorId);
         }
     }
 }

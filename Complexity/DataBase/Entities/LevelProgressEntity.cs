@@ -5,7 +5,7 @@ namespace DataBase.Entities
 {
     public class LevelProgressEntity
     {
-        public LevelProgressEntity(Dictionary<Guid, int> currentLevelStreaks, Guid levelId)
+        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks )
         {
             CurrentLevelStreaks = currentLevelStreaks;
             LevelId = levelId;

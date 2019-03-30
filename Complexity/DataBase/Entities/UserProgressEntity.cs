@@ -1,20 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DataBase.Entities
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
     public class UserProgressEntity
     {
-        public Guid CurrentTopicId { get; set; }
-        public Guid CurrentLevelId { get; set; }
+        public UserProgressEntity(Guid currentTopicId, Guid currentLevelId, Guid userId, Dictionary<Guid, TopicProgressEntity> topicsProgress,
+                                  TaskInfoEntity currentTask)
+        {
+            CurrentTopicId = currentTopicId;
+            CurrentLevelId = currentLevelId;
+            UserId = userId;
+            TopicsProgress = topicsProgress;
+            CurrentTask = currentTask;
+        }
 
-        public Guid UserId { get; set; }
+        public Guid CurrentTopicId { get; private set; }
+        public Guid CurrentLevelId { get; private set; }
+
+        public Guid UserId { get; private set; }
 
         /// <summary>
         ///     Maps Topic Id to progress of the Topic
         /// </summary>
-        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; set; }
+        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; private set; }
 
-        public TaskInfoEntity CurrentTask { get; set; }
+        public TaskInfoEntity CurrentTask { get; private set; }
     }
 }

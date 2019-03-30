@@ -5,8 +5,16 @@ namespace DataBase.Entities
 {
     public class TopicProgressEntity
     {
-        public Dictionary<Guid, LevelProgressEntity> LevelProgressEntities { get; set; }
+        public TopicProgressEntity(Guid topicId, Dictionary<Guid, LevelProgressEntity> levelProgressEntities)
+        {
+            TopicId = topicId;
+            LevelProgressEntities = levelProgressEntities;
+        }
 
-        public Guid TopicId { get; set; }
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+        public Dictionary<Guid, LevelProgressEntity> LevelProgressEntities { get; private set; }
+
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+        public Guid TopicId { get; private set; }
     }
 }

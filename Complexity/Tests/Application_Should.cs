@@ -13,7 +13,7 @@ using Tests.Mocks;
 namespace Tests
 {
     [TestFixture]
-    public class ApplicationTests
+    public class Application_Should
     {
         private IApplicationApi application;
         private IUserRepository userRepository;

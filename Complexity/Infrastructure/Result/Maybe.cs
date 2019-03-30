@@ -4,27 +4,17 @@ namespace Infrastructure.Result
 {
     public struct Maybe<T> : IEquatable<Maybe<T>>
     {
-        private readonly MaybeValueWrapper _value;
-
-        public T Value
-        {
-            get
-            {
-                if (HasNoValue)
-                    throw new InvalidOperationException();
-
-                return _value.Value;
-            }
-        }
+        private readonly MaybeValueWrapper value;
+        public T Value => HasNoValue ? throw new InvalidOperationException() : value.Value;
 
         public static Maybe<T> None => new Maybe<T>();
 
-        public bool HasValue => _value != null;
+        public bool HasValue => value != null;
         public bool HasNoValue => !HasValue;
 
         private Maybe(T value)
         {
-            _value = value == null ? null : new MaybeValueWrapper(value);
+            this.value = value == null? null : new MaybeValueWrapper(value);
         }
 
         public static implicit operator Maybe<T>(T value)
@@ -41,10 +31,7 @@ namespace Infrastructure.Result
             if (value is Maybe<T>)
                 return maybe.Equals(value);
 
-            if (maybe.HasNoValue)
-                return false;
-
-            return maybe.Value.Equals(value);
+            return !maybe.HasNoValue && maybe.Value.Equals(value);
         }
 
         public static bool operator !=(Maybe<T> maybe, T value) => !(maybe == value);
@@ -60,7 +47,7 @@ namespace Infrastructure.Result
 
             if (obj.GetType() != typeof(Maybe<T>))
             {
-                if (obj is T) obj = new Maybe<T>((T) obj);
+                if (obj is T obj1 ) obj = new Maybe<T>(obj1);
 
                 if (!(obj is Maybe<T>))
                     return false;
@@ -78,23 +65,17 @@ namespace Infrastructure.Result
             if (HasNoValue || other.HasNoValue)
                 return false;
 
-            return _value.Value.Equals(other._value.Value);
+            return value.Value.Equals(other.value.Value);
         }
 
         public override int GetHashCode()
         {
-            if (HasNoValue)
-                return 0;
-
-            return _value.Value.GetHashCode();
+            return HasNoValue ? 0 : value.Value.GetHashCode();
         }
 
         public override string ToString()
         {
-            if (HasNoValue)
-                return "No value";
-
-            return Value.ToString();
+            return HasNoValue ? "No value" : Value.ToString();
         }
 
         private class MaybeValueWrapper

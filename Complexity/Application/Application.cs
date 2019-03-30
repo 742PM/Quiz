@@ -189,7 +189,7 @@ namespace Application
             {
                 Question = task.Question,
                 Answer = task.Answer,
-                Hints = task.Hints,
+                Hints = task.Hints.HasValue ? task.Hints.Value : new string[0],
                 HintsTaken = 0,
                 IsSolved = false,
                 ParentGeneratorId = task.ParentGeneratorId

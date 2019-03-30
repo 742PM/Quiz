@@ -1,6 +1,7 @@
 ﻿using System;
 using Infrastructure;
 using Infrastructure.DDD;
+using Infrastructure.Result;
 
 namespace Domain.Values
 {
@@ -22,12 +23,26 @@ namespace Domain.Values
             Answer = answer;
         }
 
+        private Task(
+            string question,
+            Maybe<string[]> hints,
+            string answer,
+            Guid parentGeneratorId,
+            Maybe<string[]> possibleAnswers)
+        {
+            Question = question;
+            ParentGeneratorId = parentGeneratorId;
+            PossibleAnswers = possibleAnswers;
+            Hints = hints;
+            Answer = answer;
+        }
+
         public Task With(string answer) => new Task(Question, Hints, answer, ParentGeneratorId, PossibleAnswers);
         public string Question { get; }
 
-        public string[] PossibleAnswers { get; }
+        public Maybe<string[]> PossibleAnswers { get; }
 
-        public string[] Hints { get; }
+        public Maybe<string[]> Hints { get; }
 
         public string Answer { get; }
 
@@ -36,11 +51,12 @@ namespace Domain.Values
 
         public Task With(string[] answers) => new Task(Question, Hints, Answer, ParentGeneratorId, answers);
 
-        public void Deconstruct(out string question, out string[] hints, out string answer)
+        public void Deconstruct(out string question, out Maybe<string[]> hints, out string answer, out Maybe<string[]> possibleAnswers)
         {
             question = Question;
             hints = Hints;
             answer = Answer;
+            possibleAnswers = PossibleAnswers;
         }
 
         public Guid ParentGeneratorId { get; }

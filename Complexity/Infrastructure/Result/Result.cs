@@ -332,7 +332,6 @@ namespace Infrastructure.Result
 
         public static implicit operator Result<T>(T value) => Result.Ok(value);
 
-
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             _logic.GetObjectData(info, context);
@@ -402,8 +401,7 @@ namespace Infrastructure.Result
         public static implicit operator Result<T, E>(T value) => Result.Ok<T, E>(value);
         public static implicit operator Result<T, E>(E error) => Result.Fail<T, E>(error);
 
-
-       // public static implicit operator Result<T, E>(Result<T> value) => value.IsSuccess ? (Result<T, E>) value.Value : default(E);
+        // public static implicit operator Result<T, E>(Result<T> value) => value.IsSuccess ? (Result<T, E>) value.Value : default(E);
 
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {

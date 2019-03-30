@@ -12,12 +12,10 @@ namespace Application
 
         public static LevelInfo ToInfo(this Level level) => new LevelInfo(level.Id, level.Description);
 
-        public static TaskInfo ToInfo(this Task task) =>
-            new TaskInfo(task.Question, task.PossibleAnswers.HasNoValue ? new string[0] : task.PossibleAnswers.Value);
+        public static TaskInfo ToInfo(this Task task) => new TaskInfo(task.Question, task.PossibleAnswers);
 
         public static TaskInfoEntity AsInfoEntity(this Task task) =>
-            new TaskInfoEntity(task.Question, task.Answer, task.Hints.HasValue ? task.Hints.Value : new string[0], 0,
-                               task.ParentGeneratorId, false);
+            new TaskInfoEntity(task.Question, task.Answer, task.Hints, 0, task.ParentGeneratorId, false);
 
         public static LevelProgressEntity ToProgressEntity(this Level level)
         {

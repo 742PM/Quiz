@@ -5,7 +5,7 @@ namespace DataBase.Entities
 {
     public class LevelProgressEntity
     {
-        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks )
+        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks)
         {
             CurrentLevelStreaks = currentLevelStreaks;
             LevelId = levelId;
@@ -18,6 +18,6 @@ namespace DataBase.Entities
         ///     Maps Generator Id to current streak in it
         /// </summary>
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-        public Dictionary<Guid, int> CurrentLevelStreaks { get; private set; } 
+        public Dictionary<Guid, int> CurrentLevelStreaks { get; private set; }
     }
 }

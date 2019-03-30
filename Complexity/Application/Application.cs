@@ -57,7 +57,8 @@ namespace Application
                        : userRepository.FindOrInsertUser(userId, taskRepository)
                                        .UserProgressEntity.TopicsProgress[topicId]
                                        .LevelProgressEntities.Select(levelProgress => taskRepository
-                                                                                      .FindLevel(topicId, levelProgress.Key)
+                                                                                      .FindLevel(topicId,
+                                                                                                 levelProgress.Key)
                                                                                       .ToInfo())
                                        .Ok();
         }
@@ -74,7 +75,7 @@ namespace Application
             var solved = user.UserProgressEntity.TopicsProgress[topicId]
                              .LevelProgressEntities[levelId]
                              .CurrentLevelStreaks.Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
-            return (double)solved /
+            return (double) solved /
                    taskRepository.GetGeneratorsFromLevel(topicId, levelId)
                                  .Length;
         }
@@ -89,7 +90,8 @@ namespace Application
 
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 
-            var levels = GetAvailableLevels(userId, topicId).Value;
+            var levels = GetAvailableLevels(userId, topicId)
+                .Value;
             if (!levels.Select(info => info.Id)
                        .Contains(levelId))
                 return new
@@ -130,8 +132,7 @@ namespace Application
                 return false;
             }
 
-            user = user.With(userUserProgress.With(currentTask:
-                                                          currentTask.With(isSolved: true)));
+            user = user.With(userUserProgress.With(currentTask: currentTask.With(isSolved: true)));
 
             user = UpdateStreakIfNotSolved(user, streak => streak + 1);
             user = UpdateProgressIfLevelSolved(user);
@@ -155,9 +156,7 @@ namespace Application
             if (currentHintIndex >= hints.Length)
                 return new Exception("Out of hints");
 
-            user = user.With(userProgress.With(currentTask:
-                                                          currentTask.With(hintsTaken: currentTask
-                                                                                    .HintsTaken + 1)));
+            user = user.With(userProgress.With(currentTask: currentTask.With(hintsTaken: currentTask.HintsTaken + 1)));
             userRepository.Update(user);
             return hints[currentHintIndex];
         }

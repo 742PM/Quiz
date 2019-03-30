@@ -14,7 +14,7 @@ namespace Infrastructure.Result
 
         private Maybe(T value)
         {
-            this.value = value == null? null : new MaybeValueWrapper(value);
+            this.value = value == null ? null : new MaybeValueWrapper(value);
         }
 
         public static implicit operator Maybe<T>(T value)
@@ -47,7 +47,7 @@ namespace Infrastructure.Result
 
             if (obj.GetType() != typeof(Maybe<T>))
             {
-                if (obj is T obj1 ) obj = new Maybe<T>(obj1);
+                if (obj is T obj1) obj = new Maybe<T>(obj1);
 
                 if (!(obj is Maybe<T>))
                     return false;
@@ -68,15 +68,9 @@ namespace Infrastructure.Result
             return value.Value.Equals(other.value.Value);
         }
 
-        public override int GetHashCode()
-        {
-            return HasNoValue ? 0 : value.Value.GetHashCode();
-        }
+        public override int GetHashCode() => HasNoValue ? 0 : value.Value.GetHashCode();
 
-        public override string ToString()
-        {
-            return HasNoValue ? "No value" : Value.ToString();
-        }
+        public override string ToString() => HasNoValue ? "No value" : Value.ToString();
 
         private class MaybeValueWrapper
         {

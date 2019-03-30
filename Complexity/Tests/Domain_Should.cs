@@ -27,7 +27,7 @@ namespace Tests
                                                                           new string[0],
                                                                           $"{whoa}! This is an ANSWER!", 2),
                                                 new ExampleTaskGenerator($"{whoa}!", Guid.Empty)
-                                            },new Guid[0])
+                                            }, new Guid[0])
                               })
                 }.Should()
                  .NotContainNulls()

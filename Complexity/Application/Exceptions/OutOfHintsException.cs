@@ -2,5 +2,7 @@
 
 namespace Application.Exceptions
 {
-    public class OutOfHintsException : Exception { }
+    public class OutOfHintsException : Exception
+    {
+    }
 }

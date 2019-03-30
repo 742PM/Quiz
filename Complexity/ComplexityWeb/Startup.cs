@@ -25,15 +25,15 @@ namespace ComplexityWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "Complexity bot",
-                    Description = "Web API of Complexity bot"
-                });
+                c.SwaggerDoc("v1",
+                             new Info
+                             {
+                                 Version = "v1", Title = "Complexity bot", Description = "Web API of Complexity bot"
+                             });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
@@ -64,7 +64,6 @@ namespace ComplexityWebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 c.RoutePrefix = string.Empty;
             });
-
 
             app.UseHttpsRedirection();
             app.UseMvc();

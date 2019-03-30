@@ -11,16 +11,13 @@ namespace Tests.Mocks
             Difficulty = difficulty;
         }
 
-        public override Task GetTask(Random randomSeed)
-        {
-            return new Task(
+        public int Difficulty { get; }
+
+        public override Task GetTask(Random randomSeed) =>
+            new Task(
                 $"{Id}?",
                 new[] { $"h1{Id}", $"h2{Id}", $"h3{Id}" },
-                $"{Id}!",
-                Id,
+                $"{Id}!", Id,
                 new[] { $"a1{Id}", $"a2{Id}", $"a3{Id}" });
-        }
-
-        public int Difficulty { get; }
     }
 }

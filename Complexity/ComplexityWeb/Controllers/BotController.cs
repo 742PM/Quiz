@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Application;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers
@@ -23,12 +21,8 @@ namespace ComplexityWebApi.Controllers
         /// <response code="200"> Возвращает список тем</response>
         /// <response code="204"> Темы не найдены</response>
         [HttpGet("topics")]
-        public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
-        {
-            //ToDo: stab
-            return Ok(new[] {new TopicInfoDTO("Complexity", Guid.NewGuid())});
-            //return Ok(applicationApi.GetTopicsInfo().Select(Mapper.Map<TopicInfoDTO>));
-        }
+        public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics() =>
+            Ok(new[] {new TopicInfoDTO("Complexity", Guid.NewGuid())});
 
         /// <summary>
         ///     Возвращает всех список уровней в теме.
@@ -40,12 +34,8 @@ namespace ComplexityWebApi.Controllers
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
         [HttpGet("{topicId}/levels")]
-        public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
-        {
-            //ToDo: stab
-            return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
-            //return Ok(applicationApi.GetLevels(topicId).Select(Mapper.Map<LevelInfoDTO>));
-        }
+        public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId) =>
+            Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
 
         /// <summary>
         ///     Возвращает список уровней в теме доступных юзеру.
@@ -57,13 +47,8 @@ namespace ComplexityWebApi.Controllers
         /// <response code="200"> Возвращает список сложностей</response>
         /// <response code="204"> Темы не найдены</response>
         [HttpGet("{userId}/{topicId}/availableLevels")]
-        public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
-        {
-            //ToDo: stab
-            return Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
-
-            //return Ok(applicationApi.GetAvailableLevels(userId, topicId).Select(Mapper.Map<LevelInfoDTO>));
-        }
+        public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId) =>
+            Ok(new[] {new LevelInfoDTO(Guid.NewGuid(), "Complexity")});
 
         /// <summary>
         ///     Возвращает прогресс пользователя по текущему Level.
@@ -74,13 +59,7 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Отношение решенных задач к общему колличеству задач.</response>
         [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
-        public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
-        {
-            //ToDo: stab
-            return Ok(0.5);
-
-            //return Ok(applicationApi.GetCurrentProgress(userId, topicId, levelId));
-        }
+        public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId) => Ok(0.5);
 
         /// <summary>
         ///     Получить информацию о задании.
@@ -91,13 +70,8 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает информацию о задании</response>
         [HttpGet("{userId}/{topicId}/{levelId}/task")]
-        public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId)
-        {
-            //ToDo: stab
-            return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
-
-            //return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetTask(userId, topicId, levelId)));
-        }
+        public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId) =>
+            Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
 
         /// <summary>
         ///     Возвращает информацию о уровне из такого же состояния (тема + уровень).
@@ -108,13 +82,8 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает информацию уровня</response>
         [HttpGet("{userId}/nextTask")]
-        public ActionResult<TaskInfoDTO> GetNextTaskInfo(Guid userId)
-        {
-            //ToDo: stab
-            return Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
-
-            //return Ok(Mapper.Map<TaskInfoDTO>(applicationApi.GetNextTask(userId)));
-        }
+        public ActionResult<TaskInfoDTO> GetNextTaskInfo(Guid userId) =>
+            Ok(new TaskInfoDTO("var a = 1;", new[] {"O(1)", "O(n)"}));
 
         /// <summary>
         ///     Выдает подсказку на заданный уровень.
@@ -126,13 +95,7 @@ namespace ComplexityWebApi.Controllers
         /// <response code="200"> Возвращает подсказку на уровень</response>
         /// <response code="204"> Подсказка не найдена</response>
         [HttpGet("{userId}/hint")]
-        public ActionResult<string> GetHint(Guid userId)
-        {
-            //ToDo: stab
-            return Ok("Подсказок больше нет");
-            //return Ok(applicationApi.GetHint(userId));
-        }
-
+        public ActionResult<string> GetHint(Guid userId) => Ok("Подсказок больше нет");
 
         /// <summary>
         ///     Отправить ответ на сервер.
@@ -144,11 +107,6 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает bool верный ли ответ</response>
         [HttpPost("{userId}/sendAnswer")]
-        public ActionResult<bool> SendAnswer([FromBody] string answer, Guid userId)
-        {
-            //ToDo: stab
-            return Ok(true);
-            //return Ok(applicationApi.CheckAnswer(userId, answer));
-        }
+        public ActionResult<bool> SendAnswer([FromBody] string answer, Guid userId) => Ok(true);
     }
 }

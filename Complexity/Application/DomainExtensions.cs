@@ -14,17 +14,13 @@ namespace Application
 
         public static TaskInfo ToInfo(this Task task) => new TaskInfo(task.Question, task.PossibleAnswers);
 
+        public static TaskInfoEntity AsInfoEntity(this Task task) =>
+            new TaskInfoEntity(task.Question, task.Answer, task.Hints, 0, task.ParentGeneratorId, false);
+
         public static LevelProgressEntity ToProgressEntity(this Level level)
         {
-            return new LevelProgressEntity
-            {
-                LevelId = level.Id,
-                CurrentLevelStreaks = level
-                    .Generators
-                    .ToDictionary(
-                        generator => generator.Id,
-                        generator => 0)
-            };
+            return new LevelProgressEntity(level.Id,
+                                           level.Generators.ToDictionary(generator => generator.Id, generator => 0));
         }
     }
 }

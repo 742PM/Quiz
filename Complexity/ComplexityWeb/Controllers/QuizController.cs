@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application;
 using AutoMapper;
+using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers
@@ -25,10 +26,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
-            var (isSuccess, _, topics) = applicationApi.GetTopicsInfo();
-            if (isSuccess)
-                return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
-            return NotFound("Topics not found");
+            return applicationApi.GetTopicsInfo()
+                                 .OnSuccess(ts => Ok(ts.Select(Mapper.Map<TopicInfoDTO>)))
+                                 .OnFailure(res => NotFound("Topics not found"))
+                                 .Value;
         }
 
         /// <summary>

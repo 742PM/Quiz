@@ -466,5 +466,8 @@ namespace Infrastructure.Result
             value = IsSuccess ? Value : default;
             error = IsFailure ? Error : default;
         }
+
     }
+
+    
 }

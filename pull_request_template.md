@@ -1,6 +1,6 @@
 closes #<number_of_issue>
 
->! closes | fixes | resolves
+> closes | fixes | resolves
 
 # Что сделано?
 

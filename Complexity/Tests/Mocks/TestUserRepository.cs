@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataBase;
-using DataBase.Entities;
+using Application.Repositories;
+using Application.Repositories.Entities;
 
 namespace Tests.Mocks
 {

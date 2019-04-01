@@ -1,7 +1,7 @@
 using System;
 using Infrastructure.DDD;
 
-namespace DataBase.Entities
+namespace Application.Repositories.Entities
 {
     public class UserEntity : Entity<Guid>
     {

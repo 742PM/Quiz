@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using DataBase;
-using DataBase.Entities;
+using Application.Repositories;
+using Application.Repositories.Entities;
 
 namespace Application
 {

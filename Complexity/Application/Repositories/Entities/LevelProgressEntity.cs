@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataBase.Entities
+namespace Application.Repositories.Entities
 {
     public class LevelProgressEntity
     {

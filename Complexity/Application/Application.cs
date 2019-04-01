@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Exceptions;
 using Application.Info;
-using DataBase;
-using DataBase.Entities;
+using Application.Repositories;
+using Application.Repositories.Entities;
 using Domain.Values;
 using Infrastructure.Result;
 

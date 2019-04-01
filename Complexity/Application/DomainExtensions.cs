@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Application.Info;
-using DataBase.Entities;
+using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Values;
 

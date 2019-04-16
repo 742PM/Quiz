@@ -5,6 +5,7 @@ using Infrastructure.DDD;
 
 namespace Domain.Entities.TaskGenerators
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Base class for all TaskGenerators; One should use derived ones;
     /// </summary>
@@ -12,7 +13,6 @@ namespace Domain.Entities.TaskGenerators
     [MustBeSaved]
 //  [BsonDiscriminator(RootClass = true)]
 //  [BsonKnownTypes(typeof(TemplateTaskGenerator))]
-// TODO: research with issue about outer serialization
     public abstract class TaskGenerator : Entity<Guid>
     {
         /// <inheritdoc />

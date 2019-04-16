@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Scriban" Version="2.0.0" />
     <PackageReference Include="StringTemplate4" Version="4.0.8" />
   </ItemGroup>
 

@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
+using Application.Repositories;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using MongoDB.Driver;
-using MongoDB.Driver.Core;
-using MongoDB.Driver.Linq;
 
 namespace DataBase
 {

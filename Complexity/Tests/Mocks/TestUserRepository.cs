@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataBase;
-using DataBase.Entities;
+using Application.Repositories;
+using Application.Repositories.Entities;
 
 namespace Tests.Mocks
 {
@@ -15,10 +15,7 @@ namespace Tests.Mocks
             return user;
         }
 
-        public UserEntity FindById(Guid id)
-        {
-            return users.TryGetValue(id, out var user) ? user : null;
-        }
+        public UserEntity FindById(Guid id) => users.TryGetValue(id, out var user) ? user : null;
 
         public void Update(UserEntity user)
         {

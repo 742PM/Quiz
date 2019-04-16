@@ -9,49 +9,49 @@ namespace Application
     public interface IApplicationApi
     {
         /// <summary>
-        /// Получение списка тем
+        ///     Получение списка тем
         /// </summary>
         Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo();
 
         /// <summary>
-        /// Получение возможных уровней сложностей в данной теме 
+        ///     Получение возможных уровней сложностей в данной теме
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы</exception>
         Result<IEnumerable<LevelInfo>, Exception> GetLevels(Guid topicId);
 
         /// <summary>
-        /// Получение доступных уровней сложности в данной теме для данного уровня 
+        ///     Получение доступных уровней сложности в данной теме для данного уровня
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы</exception>
         Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId);
 
         /// <summary>
-        /// Прогресс пользователя в текущих теме и уровне
+        ///     Прогресс пользователя в текущих теме и уровне
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
         Result<double, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
-        /// Получение задачи из конкретных темы и уровня
+        ///     Получение задачи из конкретных темы и уровня
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<TaskInfo, Exception> GetTask(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
-        /// Получение следующей задачи из текущих темы и уровня
+        ///     Получение следующей задачи из текущих темы и уровня
         /// </summary>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<TaskInfo, Exception> GetNextTask(Guid userId);
 
         /// <summary>
-        /// Проверка правильности ответа на текущую задачу
+        ///     Проверка правильности ответа на текущую задачу
         /// </summary>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<bool, Exception> CheckAnswer(Guid userId, string answer);
 
         /// <summary>
-        /// Получение подсказки для текущей задачи
+        ///     Получение подсказки для текущей задачи
         /// </summary>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         /// <exception cref="OutOfHintsException">Подсказки отсутствуют или кончились</exception>

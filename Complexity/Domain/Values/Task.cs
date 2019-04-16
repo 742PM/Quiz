@@ -1,6 +1,7 @@
 ﻿using System;
 using Infrastructure;
 using Infrastructure.DDD;
+using Infrastructure.Result;
 
 namespace Domain.Values
 {
@@ -31,16 +32,20 @@ namespace Domain.Values
 
         public string Answer { get; }
 
-        public bool Equals(Task other) =>
-            (Question, Hints, Answer).Equals((other.Question, other.Hints, other.Answer));
+        public bool Equals(Task other) => (Question, Hints, Answer).Equals((other.Question, other.Hints, other.Answer));
 
         public Task With(string[] answers) => new Task(Question, Hints, Answer, ParentGeneratorId, answers);
 
-        public void Deconstruct(out string question, out string[] hints, out string answer)
+        public void Deconstruct(
+            out string question,
+            out Maybe<string[]> hints,
+            out string answer,
+            out Maybe<string[]> possibleAnswers)
         {
             question = Question;
             hints = Hints;
             answer = Answer;
+            possibleAnswers = PossibleAnswers;
         }
 
         public Guid ParentGeneratorId { get; }

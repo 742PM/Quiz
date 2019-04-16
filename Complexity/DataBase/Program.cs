@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataBase.Entities;
+using Application.Repositories.Entities;
 using Domain.Entities.TaskGenerators;
 using MongoDB.Driver;
 
@@ -10,30 +10,25 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING") ??
-                                        "mongodb://localhost:27017";
+            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING");
             var db = new MongoClient(mongoConnectionString).GetDatabase("ComplexityBot");
             var userRepo = SetupDatabase(db);
 
-            var levelProgressEntity = new LevelProgressEntity
-            {
-                LevelId = Guid.NewGuid(), CurrentLevelStreaks = new Dictionary<Guid, int> {{Guid.NewGuid(), 10}}
-            };
+            var levelProgressEntity =
+                new LevelProgressEntity(Guid.NewGuid(), new Dictionary<Guid, int> {{Guid.NewGuid(), 10}});
 
-            var topicProgressEntity = new TopicProgressEntity
-            {
-                TopicId = Guid.NewGuid(),
-                LevelProgressEntities = new Dictionary<Guid, LevelProgressEntity>
-                {
-                    {Guid.NewGuid(), levelProgressEntity}
-                }
-            };
+            var topicProgressEntity = new TopicProgressEntity(Guid.NewGuid(),
+                                                              new Dictionary<Guid, LevelProgressEntity>
+                                                              {
+                                                                  {Guid.NewGuid(), levelProgressEntity}
+                                                              });
 
-            var userProgress = new UserProgressEntity
-            {
-                UserId = Guid.NewGuid(), CurrentLevelId = Guid.NewGuid(), CurrentTopicId = Guid.NewGuid(),
-                TopicsProgress = new Dictionary<Guid, TopicProgressEntity> {{Guid.NewGuid(), topicProgressEntity}}
-            };
+            var userProgress = new UserProgressEntity(userId: Guid.NewGuid(), currentLevelId: Guid.NewGuid(),
+                                                      currentTopicId: Guid.NewGuid(),
+                                                      topicsProgress: new Dictionary<Guid, TopicProgressEntity>
+                                                      {
+                                                          {Guid.NewGuid(), topicProgressEntity}
+                                                      }, currentTask: null);
 
             var user = new UserEntity(Guid.NewGuid(), userProgress);
             var t = new TemplateTaskGenerator(Guid.Empty, new[] {"12a"}, "for i in j", new string[0], "woah", 1);

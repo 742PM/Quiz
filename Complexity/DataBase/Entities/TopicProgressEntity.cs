@@ -5,8 +5,14 @@ namespace DataBase.Entities
 {
     public class TopicProgressEntity
     {
-        public Dictionary<Guid, LevelProgressEntity> LevelProgressEntities { get; set; }
+        public TopicProgressEntity(Dictionary<Guid, LevelProgressEntity> levelProgressEntities, Guid topicId)
+        {
+            LevelProgressEntities = levelProgressEntities;
+            TopicId = topicId;
+        }
 
-        public Guid TopicId { get; set; }
+        public Dictionary<Guid, LevelProgressEntity> LevelProgressEntities { get;  }
+
+        public Guid TopicId { get;  }
     }
 }

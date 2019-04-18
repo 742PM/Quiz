@@ -16,6 +16,6 @@ namespace DataBase.Entities
             UserProgressEntity = userProgressEntity;
         }
 
-        public UserProgressEntity UserProgressEntity { get; set; }
+        public UserProgressEntity UserProgressEntity { get;  }
     }
 }

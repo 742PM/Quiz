@@ -5,11 +5,17 @@ namespace DataBase.Entities
 {
     public class LevelProgressEntity
     {
-        public Guid LevelId { get; set; }
+        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks)
+        {
+            LevelId = levelId;
+            CurrentLevelStreaks = currentLevelStreaks;
+        }
+
+        public Guid LevelId { get; }
 
         /// <summary>
         ///     Maps Generator Id to current streak in it
         /// </summary>
-        public Dictionary<Guid, int> CurrentLevelStreaks { get; set; }
+        public Dictionary<Guid, int> CurrentLevelStreaks { get;  }
     }
 }

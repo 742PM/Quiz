@@ -1,9 +1,7 @@
 using System;
-using Domain;
-using Infrastructure;
 using Infrastructure.DDD;
 
-namespace DataBase.Entities
+namespace Application.Repositories.Entities
 {
     public class UserEntity : Entity<Guid>
     {
@@ -16,6 +14,8 @@ namespace DataBase.Entities
             UserProgressEntity = userProgressEntity;
         }
 
-        public UserProgressEntity UserProgressEntity { get;  }
+        public UserProgressEntity UserProgressEntity { get; }
+
+        public UserEntity With(UserProgressEntity userProgress) => new UserEntity(Id, userProgress);
     }
 }

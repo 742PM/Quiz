@@ -5,12 +5,25 @@ using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using static MongoDB.Bson.Serialization.BsonClassMap;
 
 namespace DataBase
 {
     public static class MongoDatabaseInitializer
     {
+        public static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
+        {
+            username = username ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_USERNAME");
+            password = password ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_PASSWORD");
+            var client = new MongoClient
+            ($"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
+             "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
+             "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
+             $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true");
+            return client.GetDatabase("test");
+        }
+
         public static void SetupDatabase()
         {
             RegisterClassMap<Level>(cm =>

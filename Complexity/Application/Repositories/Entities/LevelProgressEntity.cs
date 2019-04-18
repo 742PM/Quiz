@@ -7,17 +7,15 @@ namespace Application.Repositories.Entities
     {
         public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks)
         {
-            CurrentLevelStreaks = currentLevelStreaks;
             LevelId = levelId;
+            CurrentLevelStreaks = currentLevelStreaks;
         }
 
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-        public Guid LevelId { get; private set; }
+        public Guid LevelId { get; }
 
         /// <summary>
         ///     Maps Generator Id to current streak in it
         /// </summary>
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-        public Dictionary<Guid, int> CurrentLevelStreaks { get; private set; }
+        public Dictionary<Guid, int> CurrentLevelStreaks { get;  }
     }
 }

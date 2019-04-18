@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Application.Repositories.Entities
 {
-    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
     public class TaskInfoEntity
     {
-        public TaskInfoEntity(
-            string question,
-            string answer,
-            string[] hints,
-            int hintsTaken,
-            Guid parentGeneratorId,
-            bool isSolved)
+        public TaskInfoEntity(string question, string answer, string[] hints, int hintsTaken, Guid parentGeneratorId, bool isSolved)
         {
             Question = question;
             Answer = answer;
@@ -21,19 +13,6 @@ namespace Application.Repositories.Entities
             ParentGeneratorId = parentGeneratorId;
             IsSolved = isSolved;
         }
-
-        public string Question { get; private set; }
-
-        public string Answer { get; private set; }
-
-        public string[] Hints { get; private set; }
-
-        public int HintsTaken { get; private set; }
-
-        public Guid ParentGeneratorId { get; private set; }
-
-        public bool IsSolved { get; private set; }
-
         public TaskInfoEntity With(
             string question = default,
             string answer = default,
@@ -43,5 +22,16 @@ namespace Application.Repositories.Entities
             bool? isSolved = default) =>
             new TaskInfoEntity(question ?? Question, answer ?? Answer, hints ?? Hints, hintsTaken ?? HintsTaken,
                                parentGeneratorId ?? ParentGeneratorId, isSolved ?? IsSolved);
+        public string Question { get; set; }
+
+        public string Answer { get; set; }
+
+        public string[] Hints { get; set; }
+
+        public int HintsTaken { get; set; }
+
+        public Guid ParentGeneratorId { get; set; }
+
+        public bool IsSolved { get; set; }
     }
 }

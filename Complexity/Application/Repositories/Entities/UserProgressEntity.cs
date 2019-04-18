@@ -1,18 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Application.Repositories.Entities
 {
-    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
     public class UserProgressEntity
     {
-        public UserProgressEntity(
-            Guid currentTopicId,
-            Guid currentLevelId,
-            Guid userId,
-            Dictionary<Guid, TopicProgressEntity> topicsProgress,
-            TaskInfoEntity currentTask)
+        public UserProgressEntity(Guid currentTopicId, Guid currentLevelId, Guid userId, Dictionary<Guid, TopicProgressEntity> topicsProgress, TaskInfoEntity currentTask)
         {
             CurrentTopicId = currentTopicId;
             CurrentLevelId = currentLevelId;
@@ -21,17 +14,21 @@ namespace Application.Repositories.Entities
             CurrentTask = currentTask;
         }
 
-        public Guid CurrentTopicId { get; private set; }
-        public Guid CurrentLevelId { get; private set; }
-        public Guid UserId { get; private set; }
+        public Guid CurrentTopicId { get;  }
+        public Guid CurrentLevelId { get;  }
+
+        public Guid UserId { get;  }
 
         /// <summary>
         ///     Maps Topic Id to progress of the Topic
         /// </summary>
-        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; private set; }
+        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get;  }
 
-        public TaskInfoEntity CurrentTask { get; private set; }
+        public TaskInfoEntity CurrentTask
+        {
+            get;
 
+        }
         public UserProgressEntity With(
             Guid? currentTopicId = default,
             Guid? currentLevelId = default,

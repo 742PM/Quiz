@@ -12,16 +12,17 @@ namespace DataBase
         {
             var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING");
             var db = new MongoClient(mongoConnectionString).GetDatabase("ComplexityBot");
+            MongoDatabaseInitializer.SetupDatabase();
             var userRepo = SetupDatabase(db);
 
             var levelProgressEntity =
                 new LevelProgressEntity(Guid.NewGuid(), new Dictionary<Guid, int> {{Guid.NewGuid(), 10}});
 
-            var topicProgressEntity = new TopicProgressEntity(Guid.NewGuid(),
+            var topicProgressEntity = new TopicProgressEntity(
                                                               new Dictionary<Guid, LevelProgressEntity>
                                                               {
                                                                   {Guid.NewGuid(), levelProgressEntity}
-                                                              });
+                                                              }, Guid.NewGuid());
 
             var userProgress = new UserProgressEntity(userId: Guid.NewGuid(), currentLevelId: Guid.NewGuid(),
                                                       currentTopicId: Guid.NewGuid(),
@@ -45,7 +46,6 @@ namespace DataBase
 
         private static MongoUserRepository SetupDatabase(IMongoDatabase db)
         {
-            MongoDatabaseInitializer.SetupDatabase();
             var userRepo = new MongoUserRepository(db);
 
             return userRepo;

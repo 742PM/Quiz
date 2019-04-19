@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using Infrastructure.DDD;
 
 namespace Application.Repositories.Entities
 {
-    public class TopicProgressEntity
+    public class TopicProgressEntity : Entity
     {
-        public TopicProgressEntity(Dictionary<Guid, LevelProgressEntity> levelProgressEntities, Guid topicId)
+        public TopicProgressEntity(Dictionary<Guid, LevelProgressEntity> levelProgressEntities, Guid topicId, Guid id):base(id)
         {
             LevelProgressEntities = levelProgressEntities;
             TopicId = topicId;

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure.DDD;
 
 namespace Application.Repositories.Entities
 {
-    public class LevelProgressEntity
+    public class LevelProgressEntity  : Entity
     {
-        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks)
+        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks, Guid id) : base(id)
         {
             LevelId = levelId;
             CurrentLevelStreaks = currentLevelStreaks;

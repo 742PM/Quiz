@@ -26,7 +26,7 @@ namespace Application
                                 .Take(1)
                                 .ToDictionary(
                                     level => level.Id,
-                                    level => level.ToProgressEntity()), topic.Id)));
+                                    level => level.ToProgressEntity()), topic.Id, Guid.NewGuid())), id:Guid.NewGuid());
 
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
         }

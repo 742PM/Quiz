@@ -8,6 +8,14 @@ namespace Infrastructure.DDD
     {
     }
 
+    public abstract class Entity : Entity<Guid>
+    {
+        /// <inheritdoc />
+        protected Entity(Guid id) : base(id)
+        {
+        }
+    }
+
     /// <summary>
     ///     Базовый класс всех DDD сущностей.
     /// </summary>

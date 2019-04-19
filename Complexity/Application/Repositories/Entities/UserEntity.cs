@@ -3,7 +3,7 @@ using Infrastructure.DDD;
 
 namespace Application.Repositories.Entities
 {
-    public class UserEntity : Entity<Guid>
+    public class UserEntity : Entity
     {
         public UserEntity(Guid id) : base(id)
         {

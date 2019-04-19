@@ -10,26 +10,26 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING");
+            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING")?? "mongodb://localhost:27017";
             var db = new MongoClient(mongoConnectionString).GetDatabase("ComplexityBot");
             MongoDatabaseInitializer.SetupDatabase();
             var userRepo = SetupDatabase(db);
 
             var levelProgressEntity =
-                new LevelProgressEntity(Guid.NewGuid(), new Dictionary<Guid, int> {{Guid.NewGuid(), 10}});
+                new LevelProgressEntity(Guid.NewGuid(), new Dictionary<Guid, int> {{Guid.NewGuid(), 10}}, Guid.NewGuid());
 
             var topicProgressEntity = new TopicProgressEntity(
                                                               new Dictionary<Guid, LevelProgressEntity>
                                                               {
                                                                   {Guid.NewGuid(), levelProgressEntity}
-                                                              }, Guid.NewGuid());
+                                                              }, Guid.NewGuid(), Guid.NewGuid());
 
             var userProgress = new UserProgressEntity(userId: Guid.NewGuid(), currentLevelId: Guid.NewGuid(),
                                                       currentTopicId: Guid.NewGuid(),
                                                       topicsProgress: new Dictionary<Guid, TopicProgressEntity>
                                                       {
                                                           {Guid.NewGuid(), topicProgressEntity}
-                                                      }, currentTask: null);
+                                                      }, currentTask: null, id:Guid.NewGuid());
 
             var user = new UserEntity(Guid.NewGuid(), userProgress);
             var t = new TemplateTaskGenerator(Guid.Empty, new[] {"12a"}, "for i in j", new string[0], "woah", 1);

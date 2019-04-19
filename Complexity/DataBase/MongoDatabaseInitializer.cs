@@ -18,6 +18,8 @@ namespace DataBase
 {
     public static class MongoDatabaseInitializer
     {
+        private const string MongoUserName = "COMPLEXITY_MONGO_USERNAME";
+        private const string MongoPassword = "COMPLEXITY_MONGO_PASSWORD";
 
         public static IMongoDatabase CreateMongoDatabase(string databaseName, string username = default, string password = default)
         {
@@ -28,14 +30,16 @@ namespace DataBase
 
         private static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
         {
-            username = username ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_USERNAME");
-            password = password ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_PASSWORD");
+            username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
+            password = password ?? Environment.GetEnvironmentVariable(MongoPassword);
+            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING") ?? "mongodb://localhost:27017";
+            var obsoleteConnectionString = $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
+                                   "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
+                                   "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
+                                   $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
             var client =
                 new
-                    MongoClient($"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
-                                "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
-                                "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
-                                $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true");
+                    MongoClient(mongoConnectionString);
             return client.GetDatabase("test");
         }
 

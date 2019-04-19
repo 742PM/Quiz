@@ -43,7 +43,7 @@ namespace ComplexityWebApi
                                                                                GetEnvironmentVariable(MongoUsernameEnvironmentVariable),
                                                                                GetEnvironmentVariable(MongoPasswordEnvironmentVariable)));
             
-            services.AddScoped<ITaskGeneratorSelector>(null);//TODO: implement this interface;
+            services.AddScoped<ITaskGeneratorSelector, PrimitiveTaskGeneratorSelector>();//TODO: implement this interface properly;
             
             services.AddSwaggerGen(c =>
             {

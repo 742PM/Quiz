@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Infrastructure.DDD
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class ValueAttribute : Attribute
-    {
-    }
-
     public abstract class Value
     {
         protected abstract IEnumerable<object> GetEqualityComponents();

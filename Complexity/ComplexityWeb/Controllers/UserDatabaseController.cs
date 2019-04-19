@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Complexity.Controllers
+namespace ComplexityWebApi.Controllers
 {
     [Route("users")]
     [ApiController]

@@ -39,7 +39,7 @@ namespace DataBase
             return client.GetDatabase("test");
         }
 
-        private static void SetupDatabase()
+        internal static void SetupDatabase()
         {
             RegisterClassMap<Entity<Guid>>(cm =>
             {

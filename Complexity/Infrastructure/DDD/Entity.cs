@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace Infrastructure.DDD
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
-    public class EntityAttribute : Attribute
-    {
-    }
-
     public abstract class Entity : Entity<Guid>
     {
         /// <inheritdoc />

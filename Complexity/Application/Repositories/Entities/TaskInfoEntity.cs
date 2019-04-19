@@ -24,16 +24,16 @@ namespace Application.Repositories.Entities
             Guid? id = default) =>
             new TaskInfoEntity(question ?? Question, answer ?? Answer, hints ?? Hints, hintsTaken ?? HintsTaken,
                                parentGeneratorId ?? ParentGeneratorId, isSolved ?? IsSolved, id ?? Id);
-        public string Question { get; set; }
+        public string Question { get; }
 
-        public string Answer { get; set; }
+        public string Answer { get; }
 
-        public string[] Hints { get; set; }
+        public string[] Hints { get;  }
 
-        public int HintsTaken { get; set; }
+        public int HintsTaken { get;  }
 
-        public Guid ParentGeneratorId { get; set; }
+        public Guid ParentGeneratorId { get;  }
 
-        public bool IsSolved { get; set; }
+        public bool IsSolved { get;  }
     }
 }

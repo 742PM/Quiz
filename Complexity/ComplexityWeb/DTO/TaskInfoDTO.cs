@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Application
+namespace ComplexityWebApi.DTO
 {
     public class TaskInfoDTO
     {

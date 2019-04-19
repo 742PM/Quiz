@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application;
+using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers

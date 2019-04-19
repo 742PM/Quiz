@@ -6,7 +6,7 @@ namespace Application.Repositories.Entities
 {
     public class UserProgressEntity : Entity
     {
-        public UserProgressEntity(Guid currentTopicId, Guid currentLevelId, Guid userId, Dictionary<Guid, TopicProgressEntity> topicsProgress, TaskInfoEntity currentTask, Guid id):base(id)
+        public UserProgressEntity(Guid currentTopicId, Guid currentLevelId, Guid userId, Dictionary<Guid, TopicProgressEntity> topicsProgress, TaskInfoEntity currentTask, Guid id) : base(id)
         {
             CurrentTopicId = currentTopicId;
             CurrentLevelId = currentLevelId;
@@ -15,21 +15,17 @@ namespace Application.Repositories.Entities
             CurrentTask = currentTask;
         }
 
-        public Guid CurrentTopicId { get;  }
-        public Guid CurrentLevelId { get;  }
+        public Guid CurrentTopicId { get; }
+        public Guid CurrentLevelId { get; }
 
-        public Guid UserId { get;  }
+        public Guid UserId { get; }
 
         /// <summary>
         ///     Maps Topic Id to progress of the Topic
         /// </summary>
-        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get;  }
+        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; }
 
-        public TaskInfoEntity CurrentTask
-        {
-            get;
-
-        }
+        public TaskInfoEntity CurrentTask { get; }
         public UserProgressEntity With(
             Guid? currentTopicId = default,
             Guid? currentLevelId = default,

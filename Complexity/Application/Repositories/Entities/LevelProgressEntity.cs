@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure.DDD;
 
 namespace Application.Repositories.Entities
 {
-    public class LevelProgressEntity
+    public class LevelProgressEntity  : Entity
     {
-        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks)
+        public LevelProgressEntity(Guid levelId, Dictionary<Guid, int> currentLevelStreaks, Guid id) : base(id)
         {
-            CurrentLevelStreaks = currentLevelStreaks;
             LevelId = levelId;
+            CurrentLevelStreaks = currentLevelStreaks;
         }
 
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-        public Guid LevelId { get; private set; }
+        public Guid LevelId { get; }
 
         /// <summary>
         ///     Maps Generator Id to current streak in it
         /// </summary>
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-        public Dictionary<Guid, int> CurrentLevelStreaks { get; private set; }
+        public Dictionary<Guid, int> CurrentLevelStreaks { get;  }
     }
 }

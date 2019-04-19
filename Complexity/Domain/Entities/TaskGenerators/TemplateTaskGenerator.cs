@@ -42,7 +42,7 @@ namespace Domain.Entities.TaskGenerators
         ///     Should not be used as real answer for user;
         /// </summary>
         [MustBeSaved]
-        public string Answer { get; }
+        public string Answer { get;  }
 
         private ScriptObject GetRandomizedProperties(Random random)
         {

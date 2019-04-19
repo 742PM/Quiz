@@ -13,7 +13,7 @@ namespace Domain.Entities.TaskGenerators
     [MustBeSaved]
 //  [BsonDiscriminator(RootClass = true)]
 //  [BsonKnownTypes(typeof(TemplateTaskGenerator))]
-    public abstract class TaskGenerator : Entity<Guid>
+    public abstract class TaskGenerator : Entity
     {
         /// <inheritdoc />
         protected TaskGenerator(Guid id, int streak) : base(id)

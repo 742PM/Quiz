@@ -134,9 +134,11 @@ namespace Application
                 user = GetUserWithNewStreakIfNotSolved(user, streak => 0);
                 userRepository.Update(user);
                 return false;
-            }
+            }                                                                               
 
-            user = user.With(userUserProgress.With(currentTask: currentTask.With(isSolved: true)));
+            user = user.With(
+                             userUserProgress.With(
+                                                   currentTask: currentTask.With(isSolved: true)));
             user = GetUserWithNewStreakIfNotSolved(user, streak => streak + 1);
             user = GetUserWithNewProgressIfLevelSolved(user);
             userRepository.Update(user);

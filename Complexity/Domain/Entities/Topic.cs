@@ -8,7 +8,7 @@ namespace Domain.Entities
 {
     [Entity]
     [MustBeSaved]
-    public class Topic : Entity<Guid>
+    public class Topic : Entity
     {
         public Topic(Guid id, string name, string description, ICollection<Level> levels) : base(id)
         {

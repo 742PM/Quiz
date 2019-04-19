@@ -1,18 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using Infrastructure.DDD;
 
 namespace Application.Repositories.Entities
 {
-    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
-    public class UserProgressEntity
+    public class UserProgressEntity : Entity
     {
-        public UserProgressEntity(
-            Guid currentTopicId,
-            Guid currentLevelId,
-            Guid userId,
-            Dictionary<Guid, TopicProgressEntity> topicsProgress,
-            TaskInfoEntity currentTask)
+        public UserProgressEntity(Guid currentTopicId, Guid currentLevelId, Guid userId, Dictionary<Guid, TopicProgressEntity> topicsProgress, TaskInfoEntity currentTask, Guid id) : base(id)
         {
             CurrentTopicId = currentTopicId;
             CurrentLevelId = currentLevelId;
@@ -21,17 +15,17 @@ namespace Application.Repositories.Entities
             CurrentTask = currentTask;
         }
 
-        public Guid CurrentTopicId { get; private set; }
-        public Guid CurrentLevelId { get; private set; }
-        public Guid UserId { get; private set; }
+        public Guid CurrentTopicId { get; }
+        public Guid CurrentLevelId { get; }
+
+        public Guid UserId { get; }
 
         /// <summary>
         ///     Maps Topic Id to progress of the Topic
         /// </summary>
-        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; private set; }
+        public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; }
 
-        public TaskInfoEntity CurrentTask { get; private set; }
-
+        public TaskInfoEntity CurrentTask { get; }
         public UserProgressEntity With(
             Guid? currentTopicId = default,
             Guid? currentLevelId = default,
@@ -39,6 +33,6 @@ namespace Application.Repositories.Entities
             Dictionary<Guid, TopicProgressEntity> topicsProgress = default,
             TaskInfoEntity currentTask = default) =>
             new UserProgressEntity(currentTopicId ?? CurrentTopicId, currentLevelId ?? CurrentLevelId, userId ?? UserId,
-                                   topicsProgress ?? TopicsProgress, currentTask ?? CurrentTask);
+                                   topicsProgress ?? TopicsProgress, currentTask ?? CurrentTask, Id);
     }
 }

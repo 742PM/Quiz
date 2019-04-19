@@ -4,6 +4,7 @@ using System.Reflection;
 using Application;
 using Application.Info;
 using AutoMapper;
+using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

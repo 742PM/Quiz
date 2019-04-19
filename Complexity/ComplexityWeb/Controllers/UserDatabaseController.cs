@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers
 {
+    [Obsolete]
     [Route("users")]
     [ApiController]
     public class UserDatabaseController : ControllerBase

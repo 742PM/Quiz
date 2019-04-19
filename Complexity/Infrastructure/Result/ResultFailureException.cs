@@ -9,6 +9,14 @@ namespace Infrastructure.Result
             Error = error;
         }
 
+        public ResultFailureException() : base()
+        {
+        }
+
+        public ResultFailureException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
         public string Error { get; }
     }
 }

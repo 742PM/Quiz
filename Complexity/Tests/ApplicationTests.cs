@@ -6,6 +6,7 @@ using Application.Repositories;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using Tests.Mocks;
 
@@ -20,10 +21,11 @@ namespace Tests
             userRepository = new TestUserRepository();
             taskRepository = new TestTaskRepository();
             selector = new TestTaskGeneratorSelector();
-            application = new Application.Application(userRepository, taskRepository, selector);
+            
+            application = new Application.QuizService(userRepository, taskRepository, selector, NullLogger<Application.QuizService>.Instance);
         }
 
-        private IApplicationApi application;
+        private IQuizService application;
         private IUserRepository userRepository;
         private ITaskRepository taskRepository;
         private ITaskGeneratorSelector selector;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Application.Exceptions;
 using Application.Info;
@@ -7,10 +8,11 @@ using Application.Repositories;
 using Application.Repositories.Entities;
 using Domain.Values;
 using Infrastructure.Result;
+using Microsoft.Extensions.Logging;
 
 namespace Application
 {
-    public class Application : IApplicationApi
+    public class QuizService : IQuizService
     {
         private readonly ITaskGeneratorSelector generatorSelector;
         private readonly Random random = new Random();
@@ -19,16 +21,17 @@ namespace Application
 
         private readonly IUserRepository userRepository;
 
-        //TODO: build asp.net, database etc.
-
-        public Application(
+        private readonly ILogger<QuizService> logger;
+        public QuizService(
             IUserRepository userRepository,
             ITaskRepository taskRepository,
-            ITaskGeneratorSelector generatorSelector)
+            ITaskGeneratorSelector generatorSelector,
+            ILogger<QuizService> logger)
         {
             this.userRepository = userRepository;
             this.taskRepository = taskRepository;
             this.generatorSelector = generatorSelector;
+            this.logger = logger;
         }
 
         /// <inheritdoc />
@@ -80,7 +83,7 @@ namespace Application
                 .LevelProgressEntities[levelId]
                 .CurrentLevelStreaks
                 .Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
-            return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
+            return (double)solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
         }
 
         /// <inheritdoc />
@@ -130,11 +133,11 @@ namespace Application
             var currentTask = userUserProgress.CurrentTask;
 
             if (currentTask.Answer != answer)
-            { 
+            {
                 user = GetUserWithNewStreakIfNotSolved(user, streak => 0);
                 userRepository.Update(user);
                 return false;
-            }                                                                               
+            }
 
             user = user.With(
                              userUserProgress.With(
@@ -157,7 +160,7 @@ namespace Application
             var currentTask = userProgress.CurrentTask;
             var hints = currentTask.Hints;
             var currentHintIndex = currentTask.HintsTaken;
-                
+
             if (currentHintIndex >= hints.Length)
                 return new Exception("Out of hints");
 
@@ -222,5 +225,11 @@ namespace Application
         private bool LevelExists(Guid topicId, Guid levelId) => taskRepository.FindLevel(topicId, levelId) != null;
 
         private static bool CurrentTaskExists(UserEntity user) => user.UserProgressEntity.CurrentTask != null;
+
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(logger != null);
+        }
     }
 }

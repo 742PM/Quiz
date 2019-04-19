@@ -6,7 +6,7 @@ using Infrastructure.Result;
 
 namespace Application
 {
-    public interface IApplicationApi
+    public interface IQuizService
     {
         /// <summary>
         ///     Получение списка тем

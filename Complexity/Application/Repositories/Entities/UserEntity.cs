@@ -1,9 +1,9 @@
 using System;
 using Infrastructure.DDD;
 
-namespace DataBase.Entities
+namespace Application.Repositories.Entities
 {
-    public class UserEntity : Entity<Guid>
+    public class UserEntity : Entity
     {
         public UserEntity(Guid id) : base(id)
         {

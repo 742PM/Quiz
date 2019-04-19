@@ -12,7 +12,7 @@ namespace Domain.Entities
     /// </summary>
     [MustBeSaved]
     [Entity]
-    public class Level : Entity<Guid>
+    public class Level : Entity
     {
         public Level(Guid id, string description, ICollection<TaskGenerator> generators, Guid[] nextLevels) : base(id)
         {

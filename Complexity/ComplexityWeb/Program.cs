@@ -1,11 +1,10 @@
-﻿using ComplexityWebApi;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Complexity
+namespace ComplexityWebApi
 {
 #pragma warning disable CS1591
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

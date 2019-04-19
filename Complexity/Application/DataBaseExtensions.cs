@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using DataBase;
-using DataBase.Entities;
+using Application.Repositories;
+using Application.Repositories.Entities;
 
 namespace Application
 {
@@ -22,12 +22,11 @@ namespace Application
                     .ToDictionary(
                         topic => topic.Id,
                         topic => new TopicProgressEntity(
-                            topic.Id,
                             topic.Levels
                                 .Take(1)
                                 .ToDictionary(
                                     level => level.Id,
-                                    level => level.ToProgressEntity()))));
+                                    level => level.ToProgressEntity()), topic.Id, Guid.NewGuid())), id:Guid.NewGuid());
 
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
         }

@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application;
+using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers
 {
     [Route("api")]
     [ApiController]
-    public class BotController : ControllerBase
+    public class QuizServiceController : ControllerBase
     {
-        private IApplicationApi applicationApi;
+        private IQuizService quizService;
+
+        public QuizServiceController(IQuizService quizService)
+        {
+            this.quizService = quizService;
+        }
 
         /// <summary>
         ///     Возвращает список всех тем.

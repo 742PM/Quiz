@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataBase;
+using Application.Repositories;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 
@@ -31,6 +31,10 @@ namespace Tests.Mocks
         }
 
         public Topic InsertTopic(Topic topic) => UpdateTopic(topic);
+        void ITaskRepository.UpdateTopic(Topic topic)
+        {
+            throw new NotImplementedException();
+        }
 
         public Topic UpdateTopic(Topic topic)
         {
@@ -63,6 +67,11 @@ namespace Tests.Mocks
 
         public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity) =>
             UpdateGenerator(topicId, levelId, entity);
+
+        public ICollection<TaskGenerator> InsertGenerators(Guid topicId, Guid levelId, ICollection<TaskGenerator> entity)
+        {
+            throw new NotImplementedException();
+        }
 
         public TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity)
         {

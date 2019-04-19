@@ -1,8 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Complexity.Controllers
+namespace ComplexityWebApi.Controllers
 {
+    [Obsolete]
     [Route("users")]
     [ApiController]
     public class UserDatabaseController : ControllerBase

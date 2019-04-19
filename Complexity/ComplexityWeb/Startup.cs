@@ -3,18 +3,26 @@ using System.IO;
 using System.Reflection;
 using Application;
 using Application.Info;
+using Application.Repositories;
 using AutoMapper;
+using ComplexityWebApi.DTO;
+using DataBase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Swagger;
+using static System.Environment;
 
 namespace ComplexityWebApi
 {
     public class Startup
     {
+        public const string MongoUsernameEnvironmentVariable = "MONGO_USERNAME";  
+        public const string MongoPasswordEnvironmentVariable = "MONGO_PASSWORD";  
+        public const string MongoDatabaseNameEnvironmentVariable = "MONGO_DB_NAME";  
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,6 +35,16 @@ namespace ComplexityWebApi
         {
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddScoped<IQuizService, Application.QuizService>();
+            services.AddScoped<IUserRepository, MongoUserRepository>();
+            services.AddScoped<ITaskRepository, MongoTaskRepository>();
+            services.AddSingleton(MongoDatabaseInitializer.Connect(GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable),
+                                                                               GetEnvironmentVariable(MongoUsernameEnvironmentVariable),
+                                                                               GetEnvironmentVariable(MongoPasswordEnvironmentVariable)));
+            
+            services.AddScoped<ITaskGeneratorSelector, PrimitiveTaskGeneratorSelector>();//TODO: implement this interface properly;
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",

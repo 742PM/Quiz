@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 
-namespace DataBase
+namespace Application.Repositories
 {
     public interface ITaskRepository
     {

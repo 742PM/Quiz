@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DataBase.Entities;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using MongoDB.Driver;

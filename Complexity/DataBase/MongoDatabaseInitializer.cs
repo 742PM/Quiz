@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataBase.Entities;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Application.Repositories;
+using Application.Repositories.Entities;
+using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Infrastructure.DDD;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Options;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
@@ -12,51 +18,89 @@ namespace DataBase
 {
     public static class MongoDatabaseInitializer
     {
+        private const string MongoUserName = "COMPLEXITY_MONGO_USERNAME";
+        private const string MongoPassword = "COMPLEXITY_MONGO_PASSWORD";
+
         public static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
         {
-            username = username ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_USERNAME");
-            password = password ?? Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_PASSWORD");
-            var client = new MongoClient
-            ($"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
-             "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
-             "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
-             $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true");
+            username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
+            password = password ?? Environment.GetEnvironmentVariable(MongoPassword);
+            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING") ?? "mongodb://localhost:27017";
+            var obsoleteConnectionString = $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
+                                   "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
+                                   "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
+                                   $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
+            var client = new MongoClient(mongoConnectionString);
             return client.GetDatabase("QuizDatabase");
         }
 
-        public static void SetupDatabase()
+        internal static void SetupDatabase()
         {
             RegisterClassMap<Entity<Guid>>(cm =>
             {
                 cm.AutoMap();
+                cm.MapIdMember(c => c.Id);
+                cm.AddKnownType(typeof(Entity));
+            });
+
+            RegisterClassMap<Entity>(cm =>
+            {
+                cm.AutoMap();
                 cm.SetIsRootClass(true);
             });
-            RegisterClassMap<TemplateTaskGenerator>();
-            RegisterClassMap<ExampleTaskGenerator>();
-            RegisterClassMap<TaskGenerator>();
 
-            RegisterClassMap<LevelProgressEntity>(cm =>
+            AutoRegisterClassMap<Level>(c => new Level(c.Id, c.Description, c.Generators, c.NextLevels));
+            AutoRegisterClassMap<Topic>(c => new Topic(c.Id, c.Name, c.Description, c.Levels));
+
+            AutoRegisterClassMap<TemplateTaskGenerator>(c => new TemplateTaskGenerator(c.Id, c.PossibleAnswers,
+                                                                                       c.TemplateCode, c.Hints,
+                                                                                       c.Answer, c.Streak));
+            AutoRegisterClassMap<TaskGenerator>(cm => cm.SetIsRootClass(true));
+            AutoRegisterClassMap<TaskInfoEntity>(c => new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
+                                                                         c.ParentGeneratorId, c.IsSolved, c.Id));
+
+            AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity));
+
+            AutoRegisterClassMap<LevelProgressEntity>(cm =>
             {
-                cm.AutoMap();
-                cm.MapMember(c => c.CurrentLevelStreaks)
-                    .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<Guid, int>
-                    >(DictionaryRepresentation.ArrayOfDocuments));
+                cm.MapDictionary(c => c.CurrentLevelStreaks);
+                cm.MapCreator(c => new LevelProgressEntity(c.LevelId, c.CurrentLevelStreaks, c.Id));
             });
-
-            RegisterClassMap<TopicProgressEntity>(cm =>
+            AutoRegisterClassMap<TopicProgressEntity>(cm =>
             {
-                cm.AutoMap();
-                cm.MapMember(c => c.LevelProgressEntities)
-                    .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<Guid, LevelProgressEntity>
-                    >(DictionaryRepresentation.ArrayOfDocuments));
+                cm.MapDictionary(c => c.LevelProgressEntities);
+                cm.MapCreator(c => new TopicProgressEntity(c.LevelProgressEntities, c.TopicId, c.Id));
             });
-
-            RegisterClassMap<UserProgressEntity>(cm =>
+            AutoRegisterClassMap<UserProgressEntity>(cm =>
             {
-                cm.AutoMap();
-                cm.MapMember(c => c.TopicsProgress)
-                    .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<Guid, TopicProgressEntity>
-                    >(DictionaryRepresentation.ArrayOfDocuments));
+                cm.MapDictionary(c => c.TopicsProgress);
+                cm.MapCreator(c => new UserProgressEntity(c.CurrentTopicId, c.CurrentLevelId, c.UserId,
+                                                          c.TopicsProgress, c.CurrentTask, c.Id));
+            });
+        }
+
+        private static BsonMemberMap MapDictionary<TClass, TKey, TValue>(
+            this BsonClassMap<TClass> cm,
+            Expression<Func<TClass, Dictionary<TKey, TValue>>> memberLambda) =>
+            cm.MapMember(memberLambda)
+              .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<TKey, TValue>
+                             >(DictionaryRepresentation.ArrayOfDocuments));
+
+        private static void AutoRegisterClassMap<TClass>(Expression<Func<TClass, TClass>> creatorLambda) =>
+            AutoRegisterClassMap<TClass>(cm => cm.MapCreator(creatorLambda));
+
+        private static void AutoRegisterClassMap<T>(Action<BsonClassMap<T>> additionalAction = null)
+        {
+            RegisterClassMap<T>(cm =>
+            {
+                var propertyInfos = typeof(T)
+                                    .GetProperties(BindingFlags.DeclaredOnly |
+                                                   BindingFlags.Public |
+                                                   BindingFlags.Instance)
+                                    .Cast<MemberInfo>()
+                                    .ToList();
+                foreach (var propertyInfo in propertyInfos) cm.MapMember(propertyInfo);
+                additionalAction?.Invoke(cm);
             });
         }
     }

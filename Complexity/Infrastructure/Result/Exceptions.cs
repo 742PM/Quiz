@@ -7,6 +7,14 @@
             Error = error;
         }
 
+        public ResultFailureException() : base()
+        {
+        }
+
+        public ResultFailureException(string message, System.Exception innerException) : base(message, innerException)
+        {
+        }
+
         public new E Error { get; }
     }
 }

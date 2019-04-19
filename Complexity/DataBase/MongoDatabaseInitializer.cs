@@ -21,7 +21,7 @@ namespace DataBase
              "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
              "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
              $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true");
-            return client.GetDatabase("test");
+            return client.GetDatabase("QuizDatabase");
         }
 
         public static void SetupDatabase()

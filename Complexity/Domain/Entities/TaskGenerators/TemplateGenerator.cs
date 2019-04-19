@@ -20,17 +20,17 @@ namespace Domain.Entities.TaskGenerators
             Answer = answer;
         }
 
-        [MustBeSaved] public string[] PossibleAnswers { get; }
+        [MustBeSaved] public string[] PossibleAnswers { get; private set;}
 
-        [MustBeSaved] public string TemplateCode { get; }
+        [MustBeSaved] public string TemplateCode { get; private set;}
 
-        [MustBeSaved] public string[] Hints { get; }
+        [MustBeSaved] public string[] Hints { get; private set;}
 
         /// <summary>
         ///     Should not be used as real answer for user;
         /// </summary>
         [MustBeSaved]
-        public string Answer { get; }
+        public string Answer { get; private set; }
 
         /// <inheritdoc />
         public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, null);

@@ -7,7 +7,7 @@ namespace DataBase
 {
     public class MongoUserRepository : IUserRepository
     {
-        public const string CollectionName = "users";
+        public const string CollectionName = "Users";
         private readonly IMongoCollection<UserEntity> userCollection;
 
         public MongoUserRepository(IMongoDatabase database)

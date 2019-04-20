@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 
@@ -16,7 +17,7 @@ namespace Application.Repositories
 
         Topic InsertTopic(Topic topic);
 
-        Topic UpdateTopic(Topic topic);
+        void UpdateTopic(Topic topic);
 
         Topic FindTopic(Guid topicId);
 
@@ -27,6 +28,8 @@ namespace Application.Repositories
         Level FindLevel(Guid topicId, Guid levelId);
 
         TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity);
+        
+        ICollection<TaskGenerator> InsertGenerators(Guid topicId, Guid levelId, ICollection<TaskGenerator> entity);
 
         TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity);
 

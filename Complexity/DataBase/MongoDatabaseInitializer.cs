@@ -21,13 +21,12 @@ namespace DataBase
         private const string MongoUserName = "COMPLEXITY_MONGO_USERNAME";
         private const string MongoPassword = "COMPLEXITY_MONGO_PASSWORD";
 
-        public static IMongoDatabase CreateMongoDatabase(string databaseName, string username = default, string password = default)
+        public static IMongoDatabase CreateMongoDatabase(string databaseName, string username = default,
+            string password = default)
         {
-             SetupDatabase();
-             return Connect(databaseName, username, password);
+            SetupDatabase();
+            return Connect(databaseName, username, password);
         }
-
-
         private static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
         {
             username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
@@ -37,10 +36,8 @@ namespace DataBase
                                    "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
                                    "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
                                    $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
-            var client =
-                new
-                    MongoClient(mongoConnectionString);
-            return client.GetDatabase("test");
+            var client = new MongoClient(mongoConnectionString);
+            return client.GetDatabase("QuizDatabase");
         }
 
         internal static void SetupDatabase()

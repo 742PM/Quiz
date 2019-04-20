@@ -13,8 +13,8 @@ namespace Application
             ITaskRepository taskRepository)
         {
             var progress = new UserProgressEntity(
-                Guid.Empty,
-                Guid.Empty,
+                Guid.NewGuid(),
+                Guid.NewGuid(),
                 currentTask: null,
                 userId: userId,
                 topicsProgress: taskRepository

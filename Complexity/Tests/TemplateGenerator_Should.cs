@@ -20,7 +20,7 @@ namespace Tests
         private Random random;
 
         private static TemplateTaskGenerator CreateGenerator(string template) =>
-            new TemplateTaskGenerator(Guid.Empty, Array.Empty<string>(), template, Array.Empty<string>(), "", 10);
+            new TemplateTaskGenerator(Guid.NewGuid(), Array.Empty<string>(), template, Array.Empty<string>(), "", 10);
 
         [TestCase("var {{loop_var}} = 3;", "var a = 3;", TestName = "template has one variable")]
         [TestCase("var {{loop_var}} = 3;\n {{loop_var}}++;", "var a = 3;\n a++;", TestName =

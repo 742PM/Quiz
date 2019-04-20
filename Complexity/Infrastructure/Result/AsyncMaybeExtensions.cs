@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Result
@@ -12,7 +13,7 @@ namespace Infrastructure.Result
         }
 
         public static async Task<Result<T, E>> ToResult<T, E>(this Task<Maybe<T>> maybeTask, E error)
-            where T : class where E : class
+            where T : class where E : Exception
         {
             var maybe = await maybeTask.ConfigureAwait(Result.DefaultConfigureAwait);
             return maybe.ToResult(error);

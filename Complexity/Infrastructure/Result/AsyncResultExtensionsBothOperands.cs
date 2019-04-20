@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Result
@@ -10,7 +11,7 @@ namespace Infrastructure.Result
     {
         public static async Task<Result<K, E>> OnSuccess<T, K, E>(
             this Task<Result<T, E>> resultTask,
-            Func<T, Task<K>> func) where E : class
+            Func<T, Task<K>> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -51,7 +52,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<K, E>> OnSuccess<T, K, E>(
             this Task<Result<T, E>> resultTask,
-            Func<T, Task<Result<K, E>>> func) where E : class
+            Func<T, Task<Result<K, E>>> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -88,7 +89,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<K, E>> OnSuccess<T, K, E>(
             this Task<Result<T, E>> resultTask,
-            Func<Task<Result<K, E>>> func) where E : class
+            Func<Task<Result<K, E>>> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -152,7 +153,7 @@ namespace Infrastructure.Result
         public static async Task<Result<T, E>> Ensure<T, E>(
             this Task<Result<T, E>> resultTask,
             Func<T, Task<bool>> predicate,
-            E error) where E : class
+            E error) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -184,7 +185,7 @@ namespace Infrastructure.Result
         }
 
         public static Task<Result<K, E>> Map<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, Task<K>> func)
-            where E : class =>
+            where E : Exception =>
             resultTask.OnSuccess(func);
 
         public static Task<Result<K>> Map<T, K>(this Task<Result<T>> resultTask, Func<T, Task<K>> func) =>
@@ -193,7 +194,7 @@ namespace Infrastructure.Result
         public static Task<Result<T>> Map<T>(this Task<Result> resultTask, Func<Task<T>> func) =>
             resultTask.OnSuccess(func);
 
-        public static async Task<Result<T, E>> OnSuccess<T, E>(this Task<Result<T, E>> resultTask, Func<T, Task> action)
+        public static async Task<Result<T, E>> OnSuccess<T, E>(this Task<Result<T, E>> resultTask, Func<T, Task> action) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -242,14 +243,14 @@ namespace Infrastructure.Result
 
         public static async Task<K> OnBoth<T, K, E>(
             this Task<Result<T, E>> resultTask,
-            Func<Result<T, E>, Task<K>> func)
+            Func<Result<T, E>, Task<K>> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
             return await func(result)
                        .ConfigureAwait(Result.DefaultConfigureAwait);
         }
 
-        public static async Task<Result<T, E>> OnFailure<T, E>(this Task<Result<T, E>> resultTask, Func<Task> func)
+        public static async Task<Result<T, E>> OnFailure<T, E>(this Task<Result<T, E>> resultTask, Func<Task> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -293,7 +294,7 @@ namespace Infrastructure.Result
             return result;
         }
 
-        public static async Task<Result<T, E>> OnFailure<T, E>(this Task<Result<T, E>> resultTask, Func<E, Task> func)
+        public static async Task<Result<T, E>> OnFailure<T, E>(this Task<Result<T, E>> resultTask, Func<E, Task> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -306,7 +307,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<T, E>> OnFailureCompensate<T, E>(
             this Task<Result<T, E>> resultTask,
-            Func<Task<Result<T, E>>> func)
+            Func<Task<Result<T, E>>> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -356,7 +357,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<T, E>> OnFailureCompensate<T, E>(
             this Task<Result<T, E>> resultTask,
-            Func<E, Task<Result<T, E>>> func)
+            Func<E, Task<Result<T, E>>> func) where E : Exception
         {
             var result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
 

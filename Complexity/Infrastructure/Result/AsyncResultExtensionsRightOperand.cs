@@ -21,7 +21,7 @@ namespace Infrastructure.Result
         }
 
         public static async Task<Result<K, E>> OnSuccess<T, K, E>(this Result<T, E> result, Func<T, Task<K>> func)
-            where E : class
+            where E : Exception
         {
             if (result.IsFailure)
                 return Result.Fail<K, E>(result.Error);
@@ -54,7 +54,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<K, E>> OnSuccess<T, K, E>(
             this Result<T, E> result,
-            Func<T, Task<Result<K, E>>> func) where E : class
+            Func<T, Task<Result<K, E>>> func) where E : Exception
         {
             if (result.IsFailure)
                 return Result.Fail<K, E>(result.Error);
@@ -83,7 +83,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<K, E>> OnSuccess<T, K, E>(
             this Result<T, E> result,
-            Func<Task<Result<K, E>>> func) where E : class
+            Func<Task<Result<K, E>>> func) where E : Exception
         {
             if (result.IsFailure)
                 return Result.Fail<K, E>(result.Error);
@@ -128,7 +128,7 @@ namespace Infrastructure.Result
         public static async Task<Result<T, E>> Ensure<T, E>(
             this Result<T, E> result,
             Func<T, Task<bool>> predicate,
-            E error) where E : class
+            E error) where E : Exception
         {
             if (result.IsFailure)
                 return result;
@@ -155,7 +155,7 @@ namespace Infrastructure.Result
         public static Task<Result<K>> Map<T, K>(this Result<T> result, Func<T, Task<K>> func) => result.OnSuccess(func);
 
         public static Task<Result<K, E>> Map<T, K, E>(this Result<T, E> result, Func<T, Task<K>> func)
-            where E : class =>
+            where E : Exception =>
             result.OnSuccess(func);
 
         public static Task<Result<T>> Map<T>(this Result result, Func<Task<T>> func) => result.OnSuccess(func);
@@ -169,7 +169,7 @@ namespace Infrastructure.Result
             return result;
         }
 
-        public static async Task<Result<T, E>> OnSuccess<T, E>(this Result<T, E> result, Func<T, Task> action)
+        public static async Task<Result<T, E>> OnSuccess<T, E>(this Result<T, E> result, Func<T, Task> action) where E : Exception
         {
             if (result.IsSuccess)
                 await action(result.Value)
@@ -195,7 +195,7 @@ namespace Infrastructure.Result
             await func(result)
                 .ConfigureAwait(Result.DefaultConfigureAwait);
 
-        public static async Task<K> OnBoth<T, K, E>(this Result<T, E> result, Func<Result<T>, Task<K>> func) =>
+        public static async Task<K> OnBoth<T, K, E>(this Result<T, E> result, Func<Result<T>, Task<K>> func) where E : Exception =>
             await func(result)
                 .ConfigureAwait(Result.DefaultConfigureAwait);
 
@@ -208,7 +208,7 @@ namespace Infrastructure.Result
             return result;
         }
 
-        public static async Task<Result<T, E>> OnFailure<T, E>(this Result<T, E> result, Func<Task> func)
+        public static async Task<Result<T, E>> OnFailure<T, E>(this Result<T, E> result, Func<Task> func) where E : Exception
         {
             if (result.IsFailure)
                 await func()
@@ -235,7 +235,7 @@ namespace Infrastructure.Result
             return result;
         }
 
-        public static async Task<Result<T, E>> OnFailure<T, E>(this Result<T, E> result, Func<E, Task> func)
+        public static async Task<Result<T, E>> OnFailure<T, E>(this Result<T, E> result, Func<E, Task> func) where E : Exception
         {
             if (result.IsFailure)
                 await func(result.Error)
@@ -255,7 +255,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<T, E>> OnFailureCompensate<T, E>(
             this Result<T, E> result,
-            Func<Task<Result<T, E>>> func)
+            Func<Task<Result<T, E>>> func) where E : Exception
         {
             if (result.IsFailure)
                 return await func()
@@ -286,7 +286,7 @@ namespace Infrastructure.Result
 
         public static async Task<Result<T, E>> OnFailureCompensate<T, E>(
             this Result<T, E> result,
-            Func<E, Task<Result<T, E>>> func)
+            Func<E, Task<Result<T, E>>> func) where E : Exception
         {
             if (result.IsFailure)
                 return await func(result.Error)

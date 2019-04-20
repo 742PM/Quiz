@@ -14,7 +14,7 @@ namespace Application.Repositories.Entities
             UserProgressEntity = userProgressEntity;
         }
 
-        public UserProgressEntity UserProgressEntity { get; private set; }
+        public UserProgressEntity UserProgressEntity { get; }
 
         public UserEntity With(UserProgressEntity userProgress) => new UserEntity(Id, userProgress);
     }

@@ -17,11 +17,11 @@ namespace Domain.Entities
             Levels = levels.ToArray();
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public string Description { get; private set; }
+        public string Description { get; }
 
-        public Level[] Levels { get; private set; }
+        public Level[] Levels { get; }
 
         public Topic With(Guid? id = default,
             string name = default,

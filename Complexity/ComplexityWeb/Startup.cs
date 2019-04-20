@@ -39,7 +39,7 @@ namespace ComplexityWebApi
             services.AddScoped<IQuizService, Application.QuizService>();
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();
-            services.AddSingleton(MongoDatabaseInitializer.Connect(GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable),
+            services.AddSingleton(MongoDatabaseInitializer.CreateMongoDatabase(GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable),
                                                                                GetEnvironmentVariable(MongoUsernameEnvironmentVariable),
                                                                                GetEnvironmentVariable(MongoPasswordEnvironmentVariable)));
             

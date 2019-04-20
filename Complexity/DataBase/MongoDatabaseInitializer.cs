@@ -21,7 +21,13 @@ namespace DataBase
         private const string MongoUserName = "COMPLEXITY_MONGO_USERNAME";
         private const string MongoPassword = "COMPLEXITY_MONGO_PASSWORD";
 
-        public static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
+        public static IMongoDatabase CreateMongoDatabase(string databaseName, string username = default,
+            string password = default)
+        {
+            SetupDatabase();
+            return Connect(databaseName, username, password);
+        }
+        private static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
         {
             username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
             password = password ?? Environment.GetEnvironmentVariable(MongoPassword);

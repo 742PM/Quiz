@@ -10,7 +10,7 @@ namespace DataBase
 {
     public class MongoTaskRepository : ITaskRepository
     {
-        private const string CollectionName = "Topics";
+        private const string CollectionName = "Tasks";
         private readonly IMongoCollection<Topic> topicCollection;
 
         public MongoTaskRepository(IMongoDatabase database)
@@ -74,11 +74,8 @@ namespace DataBase
         public Level InsertLevel(Guid topicId, Level level)
         {
             var topic = topicCollection.Find(t => t.Id == topicId).FirstOrDefault();
-            Console.WriteLine(topic);
             var levels = topic?.Levels?.Append(level);
-            Console.WriteLine(levels.ToList().First());
             var newTopic = topic.With(levels: levels.ToArray());
-            Console.WriteLine(newTopic);
             UpdateTopic(newTopic);
             return level;
         }

@@ -10,7 +10,7 @@ namespace DataBase
     {
         public void Fill()
         {
-            var db = MongoDatabaseInitializer.Connect("ComplexityBot");
+            var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", "romutchio", "romaha434");
             var taskRepo = SetupTaskRepository(db);
             var topic = new Topic(Guid.NewGuid(), "Сложность алгоритмов",
                 "Описание: Задачи на разные алгоритмы и разные сложности", new Level[0]);
@@ -151,7 +151,6 @@ namespace DataBase
 
         private static MongoTaskRepository SetupTaskRepository(IMongoDatabase db)
         {
-            MongoDatabaseInitializer.SetupDatabase();
             var taskRepo = new MongoTaskRepository(db);
 
             return taskRepo;

@@ -4,6 +4,7 @@ using System.Reflection;
 using Application;
 using Application.Info;
 using Application.Repositories;
+using Application.Selectors;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using DataBase;

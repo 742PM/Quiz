@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Application;
+using Application.Extensions;
 using Application.Repositories;
+using Application.Selectors;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using FluentAssertions;

@@ -17,7 +17,7 @@ namespace Application
     public class QuizService : IQuizService
     {
         private readonly ITaskGeneratorSelector generatorSelector;
-        private readonly Random random = new Random();
+        private readonly Random random;
 
         private readonly ITaskRepository taskRepository;
 
@@ -29,12 +29,14 @@ namespace Application
             IUserRepository userRepository,
             ITaskRepository taskRepository,
             ITaskGeneratorSelector generatorSelector,
-            ILogger<QuizService> logger)
+            ILogger<QuizService> logger,
+            Random random)
         {
             this.userRepository = userRepository;
             this.taskRepository = taskRepository;
             this.generatorSelector = generatorSelector;
             this.logger = logger;
+            this.random = random;
         }
 
         /// <inheritdoc />

@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Swagger;
 using static System.Environment;
 
@@ -21,9 +20,10 @@ namespace ComplexityWebApi
 {
     public class Startup
     {
-        public const string MongoUsernameEnvironmentVariable = "MONGO_USERNAME";  
-        public const string MongoPasswordEnvironmentVariable = "MONGO_PASSWORD";  
-        public const string MongoDatabaseNameEnvironmentVariable = "MONGO_DB_NAME";  
+        public const string MongoUsernameEnvironmentVariable = "MONGO_USERNAME";
+        public const string MongoPasswordEnvironmentVariable = "MONGO_PASSWORD";
+        public const string MongoDatabaseNameEnvironmentVariable = "MONGO_DB_NAME";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -34,25 +34,31 @@ namespace ComplexityWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddScoped<IQuizService, Application.QuizService>();
+            services.AddTransient(_ => new Random(Guid.NewGuid().GetHashCode()));
+
+            services.AddScoped<IQuizService, QuizService>();
+
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();
-            services.AddSingleton(MongoDatabaseInitializer.CreateMongoDatabase(GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable),
-                                                                               GetEnvironmentVariable(MongoUsernameEnvironmentVariable),
-                                                                               GetEnvironmentVariable(MongoPasswordEnvironmentVariable)));
-            
-            services.AddScoped<ITaskGeneratorSelector, PrimitiveTaskGeneratorSelector>();//TODO: implement this interface properly;
-            
+
+            var databaseName = GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable);
+            var username = GetEnvironmentVariable(MongoUsernameEnvironmentVariable);
+            var password = GetEnvironmentVariable(MongoPasswordEnvironmentVariable);
+            services.AddSingleton(MongoDatabaseInitializer.CreateMongoDatabase(databaseName, username, password));
+
+            services.AddTransient<RandomTaskGeneratorSelector>();
+            services.AddTransient<ITaskGeneratorSelector, ProgressTaskGeneratorSelector>(p =>
+                new ProgressTaskGeneratorSelector(p.GetService<Random>(), p.GetService<RandomTaskGeneratorSelector>()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",
-                             new Info
-                             {
-                                 Version = "v1", Title = "Complexity bot", Description = "Web API of Complexity bot"
-                             });
+                    new Info
+                    {
+                        Version = "v1", Title = "Complexity bot", Description = "Web API of Complexity bot"
+                    });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);

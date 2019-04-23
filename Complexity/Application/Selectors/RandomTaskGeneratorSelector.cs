@@ -16,8 +16,9 @@ namespace Application.Selectors
 
         public TaskGenerator Select(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
         {
-            var generatorsArray = generators.ToArray();
+            var generatorsArray = generators as TaskGenerator[] ?? generators.ToArray();
             return generatorsArray.Length == 0 ? null : generatorsArray[random.Next(generatorsArray.Length)];
+                // не уверен насчет null возможно стоит еще подумать над этим
         }
     }
 }

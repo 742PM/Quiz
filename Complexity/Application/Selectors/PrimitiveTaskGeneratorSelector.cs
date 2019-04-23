@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application.Repositories.Entities;
 using Domain.Entities.TaskGenerators;
 
 namespace Application.Selectors
@@ -11,7 +10,7 @@ namespace Application.Selectors
     {
         private int current;
 
-        public TaskGenerator Select(IEnumerable<TaskGenerator> generators, UserProgressEntity progress)
+        public TaskGenerator Select(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
         {
             var taskGenerators = generators.ToArray();
             var index = current % taskGenerators.Length;

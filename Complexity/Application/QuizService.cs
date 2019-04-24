@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Application.Exceptions;
+using Application.Extensions;
 using Application.Info;
 using Application.Repositories;
 using Application.Repositories.Entities;
+using Application.Selectors;
 using Domain.Values;
 using Infrastructure.Result;
 using Microsoft.Extensions.Logging;
@@ -15,23 +17,26 @@ namespace Application
     public class QuizService : IQuizService
     {
         private readonly ITaskGeneratorSelector generatorSelector;
-        private readonly Random random = new Random();
+        private readonly Random random;
 
         private readonly ITaskRepository taskRepository;
 
         private readonly IUserRepository userRepository;
 
         private readonly ILogger<QuizService> logger;
+
         public QuizService(
             IUserRepository userRepository,
             ITaskRepository taskRepository,
             ITaskGeneratorSelector generatorSelector,
-            ILogger<QuizService> logger)
+            ILogger<QuizService> logger,
+            Random random)
         {
             this.userRepository = userRepository;
             this.taskRepository = taskRepository;
             this.generatorSelector = generatorSelector;
             this.logger = logger;
+            this.random = random;
         }
 
         /// <inheritdoc />
@@ -83,7 +88,7 @@ namespace Application
                 .LevelProgressEntities[levelId]
                 .CurrentLevelStreaks
                 .Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
-            return (double)solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
+            return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
         }
 
         /// <inheritdoc />
@@ -101,10 +106,20 @@ namespace Application
                 return new AccessDeniedException(
                     $"User {userId} doesn't have access to level {levelId} in topic {topicId}");
 
-            var task = generatorSelector
-                .Select(taskRepository.GetGeneratorsFromLevel(topicId, levelId))
-                .GetTask(random);
-            GetUserWithNewCurrentTask(user, topicId, levelId, task);
+            var streaks = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId]
+                .CurrentLevelStreaks;
+
+            var (_, isFailure, generator, error) = generatorSelector
+                .SelectGenerator(taskRepository.GetGeneratorsFromLevel(topicId, levelId), streaks);
+
+            if (isFailure)
+                return error;
+
+            var task = generator.GetTask(random);
+            UpdateUserCurrentTask(user, topicId, levelId, task);
             return task.ToInfo();
         }
 
@@ -140,8 +155,8 @@ namespace Application
             }
 
             user = user.With(
-                             userUserProgress.With(
-                                                   currentTask: currentTask.With(isSolved: true)));
+                userUserProgress.With(
+                    currentTask: currentTask.With(isSolved: true)));
             user = GetUserWithNewStreakIfNotSolved(user, streak => streak + 1);
             user = GetUserWithNewProgressIfLevelSolved(user);
             userRepository.Update(user);
@@ -198,7 +213,7 @@ namespace Application
             return currentStreak >= streakToSolve;
         }
 
-        private void GetUserWithNewCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
+        private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
         {
             var taskInfoEntity = task.AsInfoEntity();
             var progress = user.UserProgressEntity.With(topicId, levelId, currentTask: taskInfoEntity);

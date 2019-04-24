@@ -6,6 +6,6 @@ namespace Application.Selectors
 {
     public interface ITaskGeneratorSelector
     {
-        TaskGenerator Select(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks);
+        TaskGenerator SelectGenerator(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks);
     }
 }

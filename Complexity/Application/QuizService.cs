@@ -113,7 +113,7 @@ namespace Application
                 .CurrentLevelStreaks;
 
             var task = generatorSelector
-                .Select(taskRepository.GetGeneratorsFromLevel(topicId, levelId), streaks)
+                .SelectGenerator(taskRepository.GetGeneratorsFromLevel(topicId, levelId), streaks)
                 .GetTask(random);
             UpdateUserCurrentTask(user, topicId, levelId, task);
             return task.ToInfo();

@@ -16,7 +16,7 @@ namespace Application.Selectors
             this.alternativeSelector = alternativeSelector;
         }
 
-        public TaskGenerator Select(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
+        public TaskGenerator SelectGenerator(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
         {
             var generatorsArray = generators as TaskGenerator[] ?? generators.ToArray();
 
@@ -30,7 +30,7 @@ namespace Application.Selectors
 
             return variants.Count > 0
                 ? variants[random.Next(variants.Count)]
-                : alternativeSelector.Select(generatorsArray, streaks);
+                : alternativeSelector.SelectGenerator(generatorsArray, streaks);
         }
     }
 }

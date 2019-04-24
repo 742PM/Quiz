@@ -10,7 +10,7 @@ namespace Tests.Mocks
     {
         private int current;
 
-        public TaskGenerator Select(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
+        public TaskGenerator SelectGenerator(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
         {
             var taskGenerators = generators.ToArray();
             var index = current % taskGenerators.Length;

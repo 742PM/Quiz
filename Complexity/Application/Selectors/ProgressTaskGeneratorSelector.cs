@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Entities.TaskGenerators;
+using Infrastructure.Result;
 
 namespace Application.Selectors
 {
@@ -22,7 +23,9 @@ namespace Application.Selectors
             this.alternativeSelector = alternativeSelector;
         }
 
-        public TaskGenerator SelectGenerator(IEnumerable<TaskGenerator> generators, Dictionary<Guid, int> streaks)
+        public Result<TaskGenerator, Exception> SelectGenerator(
+            IEnumerable<TaskGenerator> generators,
+            Dictionary<Guid, int> streaks)
         {
             var generatorsArray = generators as TaskGenerator[] ?? generators.ToArray();
 

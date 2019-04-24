@@ -112,9 +112,13 @@ namespace Application
                 .LevelProgressEntities[levelId]
                 .CurrentLevelStreaks;
 
-            var task = generatorSelector
-                .SelectGenerator(taskRepository.GetGeneratorsFromLevel(topicId, levelId), streaks)
-                .GetTask(random);
+            var (_, isFailure, generator, error) = generatorSelector
+                .SelectGenerator(taskRepository.GetGeneratorsFromLevel(topicId, levelId), streaks);
+
+            if (isFailure)
+                return error;
+
+            var task = generator.GetTask(random);
             UpdateUserCurrentTask(user, topicId, levelId, task);
             return task.ToInfo();
         }

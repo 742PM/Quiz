@@ -10,6 +10,12 @@ namespace Application.Selectors
         private readonly Random random;
         private readonly ITaskGeneratorSelector alternativeSelector;
 
+        /// <param name="random" />
+        /// <param name="alternativeSelector">
+        ///     Альтернативный селектор,
+        ///     который будет использоваться,
+        ///     если у всех генераторов полный стрик
+        /// </param>
         public ProgressTaskGeneratorSelector(Random random, ITaskGeneratorSelector alternativeSelector)
         {
             this.random = random;

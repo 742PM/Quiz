@@ -29,11 +29,13 @@ namespace ComplexityWebApi.Controllers
         ///     GET api/topics
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
+        /// <response code="404"> Темы не найдены</response>
         [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
             return applicationApi.GetTopicsInfo()
                                  .OnSuccess(ts => Ok(ts.Select(Mapper.Map<TopicInfoDTO>)))
+                                 .OnFailure(res => NotFound("Topics not found"))
                                  .Value;
         }
 
@@ -49,11 +51,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{topicId}/levels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
         {
-            return applicationApi.GetLevels(topicId)
-                          .Then(ls => (ls.Select(Mapper.Map<LevelInfoDTO>)))
-                          .Then(Ok)
-                          .OnFailure(err => NotFound(err is ArgumentException ? $"Invalid TopicId {topicId}" : $"Levels not found: {err.Message}"))
-                          .Value;
+            var (isSuccess, _, levels) = applicationApi.GetLevels(topicId);
+            if (isSuccess)
+                return Ok(levels.Select(Mapper.Map<LevelInfoDTO>));
+            return NotFound("Levels not found");
         }
 
         /// <summary>
@@ -68,11 +69,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/{topicId}/availableLevels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            return applicationApi.GetAvailableLevels(userId, topicId)
-                                 .Then(al => al.Select(Mapper.Map<LevelInfoDTO>))
-                                 .Then(Ok)
-                                 .OnFailure(err => NotFound(err is ArgumentException ? $"Invalid UserId or TopicId:{userId}\n{topicId}" : $"Levels not found: {err.Message}"))
-                                 .Value;
+            var (isSuccess, _, availableLevels) = applicationApi.GetAvailableLevels(userId, topicId);
+            if (isSuccess)
+                return Ok(availableLevels.Select(Mapper.Map<LevelInfoDTO>));
+            return NotFound("Available levels not found");
         }
 
         /// <summary>
@@ -87,10 +87,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
         public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            return applicationApi.GetCurrentProgress(userId, topicId, levelId)
-                                 .Then(p=>Ok(p))
-                                 .OnFailure(err => NotFound(err is ArgumentException ? $"Invalid UserId or TopicId or LevelId:{userId}\n{topicId}\n{levelId}" : $"Progress not found: {err.Message}"))
-                                 .Value;
+            var (isSuccess, _, progress) = applicationApi.GetCurrentProgress(userId, topicId, levelId);
+            if (isSuccess)
+                return Ok(progress);
+            return NotFound("Failed, trying to get user progress");
         }
 
         /// <summary>
@@ -102,7 +102,6 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает информацию о задании</response>
         /// <response code="404"> Информация о задании не была найдена</response>
-        /// <response code="403"> Отказано в доступе к заданию данному пользователю</response>
         [HttpGet("{userId}/{topicId}/{levelId}/task")]
         public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId)
         {

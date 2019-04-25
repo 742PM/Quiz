@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Application;
+using Application.Extensions;
 using Application.Repositories;
+using Application.Selectors;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using FluentAssertions;
@@ -22,7 +24,7 @@ namespace Tests
             taskRepository = new TestTaskRepository();
             selector = new TestTaskGeneratorSelector();
             
-            application = new Application.QuizService(userRepository, taskRepository, selector, NullLogger<Application.QuizService>.Instance);
+            application = new QuizService(userRepository, taskRepository, selector, NullLogger<QuizService>.Instance, new Random());
         }
 
         private IQuizService application;

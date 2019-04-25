@@ -5,7 +5,7 @@ using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Values;
 
-namespace Application
+namespace Application.Extensions
 {
     public static class DomainExtensions
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using Application.Repositories;
 using Application.Repositories.Entities;
 
-namespace Application
+namespace Application.Extensions
 {
     public static class DataBaseExtensions
     {

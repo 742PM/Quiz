@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Domain.Values;
 using Infrastructure;
@@ -11,8 +11,12 @@ namespace Domain.Entities.TaskGenerators
     {
         public const string LoopVariable = "loop_var";
         public const string Const = "const";
-        public const int MaxRandomConstantValue = 50;
+        public const string From = "from";
+        public const string To = "to";
+        public const string IterateConstant = "iter";
 
+        public const int MaxRandomConstantValue = 50;
+        private const int BaseTemplateKeywordsAmount = 5;
         private readonly char[] letters = Enumerable.Range('a', 26).Select(i => (char) i).ToArray();
 
         private readonly Template template;
@@ -51,17 +55,21 @@ namespace Domain.Entities.TaskGenerators
                 {LoopVariable, letters[random.Next(0, 25)]},
                 {Const, random.Next(-MaxRandomConstantValue, MaxRandomConstantValue)}
             };
-            foreach (var i in Enumerable.Range(1, 5))
+            foreach (var i in Enumerable.Range(1, BaseTemplateKeywordsAmount))
             {
                 result.Add($"{LoopVariable}{i}", letters[random.Next(0, 25)]);
                 result.Add($"{Const}{i}", random.Next(-MaxRandomConstantValue, MaxRandomConstantValue));
+                var fromValue = random.Next(-MaxRandomConstantValue, MaxRandomConstantValue);
+                result.Add($"{From}{i}", fromValue);
+                result.Add($"{To}{i}", fromValue + random.Next(-MaxRandomConstantValue, MaxRandomConstantValue));
+                result.Add($"{IterateConstant}{i}", random.Next(2, 8));
             }
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, null);
+        public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, PossibleAnswers);
 
         private string Randomize(Random randomSeed) => template.Render(GetRandomizedProperties(randomSeed));
     }

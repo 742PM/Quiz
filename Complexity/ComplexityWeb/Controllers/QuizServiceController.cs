@@ -33,10 +33,11 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
-            return applicationApi.GetTopicsInfo()
-                                 .OnSuccess(ts => Ok(ts.Select(Mapper.Map<TopicInfoDTO>)))
-                                 .OnFailure(res => NotFound("Topics not found"))
-                                 .Value;
+            var (isSuccess, _, topics) = applicationApi.GetTopicsInfo();
+            if (isSuccess)
+                return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
+            return NotFound("Topics not found");
+            
         }
 
         /// <summary>

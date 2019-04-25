@@ -25,6 +25,9 @@ namespace Application.Repositories.Entities
         /// </summary>
         public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; }
 
+        /// <inheritdoc />
+        public override string ToString() => $"{base.ToString()}, {nameof(CurrentTopicId)}: {CurrentTopicId}, {nameof(CurrentLevelId)}: {CurrentLevelId}, {nameof(UserId)}: {UserId}, {nameof(TopicsProgress)}: {TopicsProgress}, {nameof(CurrentTask)}: {CurrentTask}";
+
         public TaskInfoEntity CurrentTask { get; }
         public UserProgressEntity With(
             Guid? currentTopicId = default,

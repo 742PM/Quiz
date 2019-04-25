@@ -16,6 +16,9 @@ namespace Application.Repositories.Entities
 
         public UserProgressEntity UserProgressEntity { get; }
 
+        /// <inheritdoc />
+        public override string ToString() => $"{base.ToString()}, {nameof(UserProgressEntity)}: {UserProgressEntity}";
+
         public UserEntity With(UserProgressEntity userProgress) => new UserEntity(Id, userProgress);
     }
 }

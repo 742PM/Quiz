@@ -61,7 +61,8 @@ namespace Domain.Entities.TaskGenerators
         }
 
         /// <inheritdoc />
-        public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, null);
+        public override Task GetTask(Random randomSeed) => new Task(Randomize(randomSeed), Hints, Answer, Id, PossibleAnswers);
+
 
         private string Randomize(Random randomSeed) => template.Render(GetRandomizedProperties(randomSeed));
     }

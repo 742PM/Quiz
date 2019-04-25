@@ -14,7 +14,12 @@ namespace ComplexityWebApi.Controllers
     [ApiController]
     public class QuizServiceController : ControllerBase
     {
-        private IQuizService applicationApi;
+        private readonly IQuizService applicationApi;
+
+        public QuizServiceController(IQuizService applicationApi)
+        {
+            this.applicationApi = applicationApi;
+        }
 
         /// <summary>
         ///     Возвращает список всех тем.

@@ -33,13 +33,13 @@ namespace Tests
             CreateGenerator(template).GetTask(random).Question.Should().BeEquivalentTo(expected);
         }
 
-        [TestCase("var a = {{const}};\n var b = {{const1}};", "var a = 0;\n var b = 1;", TestName =
+        [TestCase("var a = {{const}};\n var b = {{const1}};", "var a = 0;\n var b = 0;", TestName =
             "template has several constants")]
         [TestCase("var a = {{const}};", "var a = 0;", TestName = "template has one constants")]
         public void ReplaceConstants_When(string template, string expected)
         {
             A.CallTo(() => random.Next(-MaxRandomConstantValue, MaxRandomConstantValue))
-             .ReturnsNextFromSequence(0, 1, 2, 3, 4, 5, 6, 7);
+             .Returns(0);
             CreateGenerator(template).GetTask(random).Question.Should().BeEquivalentTo(expected);
         }
 

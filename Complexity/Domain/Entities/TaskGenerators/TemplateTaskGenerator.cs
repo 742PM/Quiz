@@ -63,7 +63,7 @@ namespace Domain.Entities.TaskGenerators
                 var fromValue = random.Next(-MaxRandomConstantValue, MaxRandomConstantValue);
                 var toValue = fromValue + random.Next(0, LoopAmount * MaxRandomConstantValue);
                 result.Add($"{From}{i}", fromValue);
-                result.Add($"{To}{i}", toValue);
+                result.Add($"{To}{i}", "n");
                 result.Add($"{IterateConstant}{i}", random.Next(2, 8));
             }
 

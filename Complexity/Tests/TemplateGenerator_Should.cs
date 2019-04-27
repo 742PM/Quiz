@@ -50,6 +50,8 @@ namespace Tests
             creation.Should().NotThrow("Generator contains template processing;");
         }
 
+
+
         [Test]
         public void BeOk_WhenTemplateWithoutVariables()
         {

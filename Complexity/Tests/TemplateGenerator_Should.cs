@@ -20,7 +20,7 @@ namespace Tests
         private Random random;
 
         private static TemplateTaskGenerator CreateGenerator(string template) =>
-            new TemplateTaskGenerator(Guid.NewGuid(), Array.Empty<string>(), template, Array.Empty<string>(), "", 10);
+            new TemplateTaskGenerator(Guid.Empty, Array.Empty<string>(), template, Array.Empty<string>(), "", 10);
 
         [TestCase("var {{loop_var}} = 3;", "var a = 3;", TestName = "template has one variable")]
         [TestCase("var {{loop_var}} = 3;\n {{loop_var}}++;", "var a = 3;\n a++;", TestName =
@@ -33,13 +33,13 @@ namespace Tests
             CreateGenerator(template).GetTask(random).Question.Should().BeEquivalentTo(expected);
         }
 
-        [TestCase("var a = {{const}};\n var b = {{const1}};", "var a = 0;\n var b = 1;", TestName =
+        [TestCase("var a = {{const}};\n var b = {{const1}};", "var a = 0;\n var b = 0;", TestName =
             "template has several constants")]
         [TestCase("var a = {{const}};", "var a = 0;", TestName = "template has one constants")]
         public void ReplaceConstants_When(string template, string expected)
         {
             A.CallTo(() => random.Next(-MaxRandomConstantValue, MaxRandomConstantValue))
-             .ReturnsNextFromSequence(0, 1, 2, 3, 4, 5, 6, 7);
+             .Returns(0);
             CreateGenerator(template).GetTask(random).Question.Should().BeEquivalentTo(expected);
         }
 
@@ -49,6 +49,8 @@ namespace Tests
             Action creation = () => CreateGenerator("5 == 5;");
             creation.Should().NotThrow("Generator contains template processing;");
         }
+
+
 
         [Test]
         public void BeOk_WhenTemplateWithoutVariables()

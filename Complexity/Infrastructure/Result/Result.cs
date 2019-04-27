@@ -93,19 +93,19 @@ namespace Infrastructure.Result
         }
 
         [DebuggerStepThrough]
-        public static Result<T, E> Ok<T, E>(T value) => new Result<T, E>(false, value, default);
+        public static Result<T, E> Ok<T, E>(T value) where E:Exception=> new Result<T, E>(false, value, default) ;
 
         [DebuggerStepThrough]
-        public static Result<T, E> Fail<T, E>(E error) => new Result<T, E>(true, default, error);
+        public static Result<T, E> Fail<T, E>(E error) where E : Exception => new Result<T, E>(true, default, error);
 
         [DebuggerStepThrough]
-        public static Result<T, E> Create<T, E>(bool isSuccess, T value, E error) =>
+        public static Result<T, E> Create<T, E>(bool isSuccess, T value, E error) where E : Exception =>
             isSuccess ? Ok<T, E>(value) : Fail<T, E>(error);
 
-        public static Result<T, E> Create<T, E>(Func<bool> predicate, T value, E error) =>
+        public static Result<T, E> Create<T, E>(Func<bool> predicate, T value, E error) where E : Exception =>
             predicate() ? Ok<T, E>(value) : Fail<T, E>(error);
 
-        public static async Task<Result<T, E>> Create<T, E>(Func<Task<bool>> predicate, T value, E error)
+        public static async Task<Result<T, E>> Create<T, E>(Func<Task<bool>> predicate, T value, E error) where E : Exception
         {
             var isSuccess = await predicate()
                                 .ConfigureAwait(DefaultConfigureAwait);
@@ -211,7 +211,7 @@ namespace Infrastructure.Result
             }
         }
 
-        public static Result<T, E> Try<T, E>(Func<T> func, Func<Exception, E> errorHandler) where E : class
+        public static Result<T, E> Try<T, E>(Func<T> func, Func<Exception, E> errorHandler) where E :  Exception
         {
             try
             {
@@ -225,7 +225,7 @@ namespace Infrastructure.Result
         }
 
         public static async Task<Result<T, E>> Try<T, E>(Func<Task<T>> func, Func<Exception, E> errorHandler)
-            where E : class
+            where E :  Exception
         {
             try
             {
@@ -323,16 +323,25 @@ namespace Infrastructure.Result
         }
     }
 
-    public struct Result<T, E> : IResult, ISerializable
+    public struct Result<T, TError
+            > : IResult, ISerializable where TError
+             : Exception
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ResultCommonLogic<E> _logic;
+        private readonly ResultCommonLogic<TError
+            > _logic;
 
         public bool IsFailure => _logic.IsFailure;
         public bool IsSuccess => _logic.IsSuccess;
-        public E Error => _logic.Error;
-        public static implicit operator Result<T, E>(T value) => Result.Ok<T, E>(value);
-        public static implicit operator Result<T, E>(E error) => Result.Fail<T, E>(error);
+        public TError
+             Error => _logic.Error;
+        public static implicit operator Result<T, TError
+            >(T value) => Result.Ok<T, TError
+            >(value);
+        public static implicit operator Result<T, TError
+            >(TError
+             error) => Result.Fail<T, TError
+            >(error);
 
         // public static implicit operator Result<T, E>(Result<T> value) => value.IsSuccess ? (Result<T, E>) value.Value : default(E);
 
@@ -341,6 +350,20 @@ namespace Infrastructure.Result
             _logic.GetObjectData(info, context);
 
             if (IsSuccess) info.AddValue("Value", Value);
+        }
+
+        public Result<TOut,TError
+            > Then<TOut>(Func<T,TOut> f)
+        {
+            if (IsSuccess)
+                return f(Value);
+            return Error;
+        }
+        public Result<TOut,Exception> Then<TOut>(Func<T, Result<TOut,Exception>> f)
+        {
+            if (IsSuccess)
+                return f(Value);
+            return Error;
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -352,27 +375,32 @@ namespace Infrastructure.Result
             get
             {
                 if (!IsSuccess)
-                    throw new ResultFailureException<E>(Error);
+                    throw new ResultFailureException<TError
+            >(Error);
 
                 return _value;
             }
         }
 
         [DebuggerStepThrough]
-        internal Result(bool isFailure, T value, E error)
+        internal Result(bool isFailure, T value, TError
+             error)
         {
-            _logic = new ResultCommonLogic<E>(isFailure, error);
+            _logic = new ResultCommonLogic<TError
+            >(isFailure, error);
             _value = value;
         }
 
-        public static implicit operator Result(Result<T, E> result)
+        public static implicit operator Result(Result<T, TError
+            > result)
         {
             if (result.IsSuccess)
                 return Result.Ok();
             return Result.Fail(result.Error.ToString());
         }
 
-        public static implicit operator Result<T>(Result<T, E> result)
+        public static implicit operator Result<T>(Result<T, TError
+            > result)
         {
             if (result.IsSuccess)
                 return Result.Ok(result.Value);
@@ -392,12 +420,16 @@ namespace Infrastructure.Result
             value = IsSuccess ? Value : default;
         }
 
-        public void Deconstruct(out bool isSuccess, out bool isFailure, out T value, out E error)
+        public void Deconstruct(out bool isSuccess, out bool isFailure, out T value, out TError
+             error)
         {
             isSuccess = IsSuccess;
             isFailure = IsFailure;
             value = IsSuccess ? Value : default;
             error = IsFailure ? Error : default;
         }
+
     }
+
+    
 }

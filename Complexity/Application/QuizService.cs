@@ -32,6 +32,7 @@ namespace Application
             this.userRepository = userRepository;
             this.taskRepository = taskRepository;
             this.generatorSelector = generatorSelector;
+            this.random = random;
             Logger = logger;
             this.random = random;
         }

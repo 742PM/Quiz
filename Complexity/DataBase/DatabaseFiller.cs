@@ -138,6 +138,7 @@ namespace DataBase
                     double12,
                     double13
                 });
+            taskRepo.FindTopic(topic.Id);
         }
 
         private static MongoUserRepository SetupUserRepository(IMongoDatabase db)

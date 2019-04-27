@@ -6,18 +6,18 @@ namespace Infrastructure.Result
 {
     public static class ResultExtensions
     {
-        public static Result<K, E> OnSuccess<T, K, E>(this Result<T, E> result, Func<T, K> func) where E : class
+        public static Result<TK, TE> OnSuccess<T, TK, TE>(this Result<T, TE> result, Func<T, TK> func) where TE : Exception
         {
             if (result.IsFailure)
-                return Result.Fail<K, E>(result.Error);
+                return Result.Fail<TK, TE>(result.Error);
 
-            return Result.Ok<K, E>(func(result.Value));
+            return Result.Ok<TK, TE>(func(result.Value));
         }
 
-        public static Result<K> OnSuccess<T, K>(this Result<T> result, Func<T, K> func)
+        public static Result<TK> OnSuccess<T, TK>(this Result<T> result, Func<T, TK> func)
         {
             if (result.IsFailure)
-                return Result.Fail<K>(result.Error);
+                return Result.Fail<TK>(result.Error);
 
             return Result.Ok(func(result.Value));
         }
@@ -30,19 +30,19 @@ namespace Infrastructure.Result
             return Result.Ok(func());
         }
 
-        public static Result<K, E> OnSuccess<T, K, E>(this Result<T, E> result, Func<T, Result<K, E>> func)
-            where E : class
+        public static Result<TK, TE> OnSuccess<T, TK, TE>(this Result<T, TE> result, Func<T, Result<TK, TE>> func)
+            where TE : Exception
         {
             if (result.IsFailure)
-                return Result.Fail<K, E>(result.Error);
+                return Result.Fail<TK, TE>(result.Error);
 
             return func(result.Value);
         }
 
-        public static Result<K> OnSuccess<T, K>(this Result<T> result, Func<T, Result<K>> func)
+        public static Result<TK> OnSuccess<T, TK>(this Result<T> result, Func<T, Result<TK>> func)
         {
             if (result.IsFailure)
-                return Result.Fail<K>(result.Error);
+                return Result.Fail<TK>(result.Error);
 
             return func(result.Value);
         }
@@ -55,34 +55,34 @@ namespace Infrastructure.Result
             return func();
         }
 
-        public static Result<K, E> OnSuccess<T, K, E>(this Result<T, E> result, Func<Result<K, E>> func) where E : class
+        public static Result<TK, TE> OnSuccess<T, TK, TE>(this Result<T, TE> result, Func<Result<TK, TE>> func) where TE : Exception
         {
             if (result.IsFailure)
-                return Result.Fail<K, E>(result.Error);
+                return Result.Fail<TK, TE>(result.Error);
 
             return func();
         }
 
-        public static Result<K> OnSuccess<T, K>(this Result<T> result, Func<Result<K>> func)
+        public static Result<TK> OnSuccess<T, TK>(this Result<T> result, Func<Result<TK>> func)
         {
             if (result.IsFailure)
-                return Result.Fail<K>(result.Error);
+                return Result.Fail<TK>(result.Error);
 
             return func();
         }
 
-        public static Result<K> OnSuccess<T, K, E>(this Result<T, E> result, Func<T, Result<K>> func) where E : class
+        public static Result<TK> OnSuccess<T, TK, TE>(this Result<T, TE> result, Func<T, Result<TK>> func) where TE : Exception
         {
             if (result.IsFailure)
-                return Result.Fail<K, E>(result.Error);
+                return Result.Fail<TK, TE>(result.Error);
 
             return func(result.Value);
         }
 
-        public static Result OnSuccess<T, K, E>(this Result<T, E> result, Func<T, Result> func) where E : class
+        public static Result OnSuccess<T, TK, TE>(this Result<T, TE> result, Func<T, Result> func) where TE : Exception
         {
             if (result.IsFailure)
-                return Result.Fail<K, E>(result.Error);
+                return Result.Fail<TK, TE>(result.Error);
 
             return func(result.Value);
         }
@@ -103,14 +103,14 @@ namespace Infrastructure.Result
             return func();
         }
 
-        public static Result<T, E> Ensure<T, E>(this Result<T, E> result, Func<T, bool> predicate, E error)
-            where E : class
+        public static Result<T, TE> Ensure<T, TE>(this Result<T, TE> result, Func<T, bool> predicate, TE error)
+            where TE : Exception
         {
             if (result.IsFailure)
                 return result;
 
             if (!predicate(result.Value))
-                return Result.Fail<T, E>(error);
+                return Result.Fail<T, TE>(error);
 
             return result;
         }
@@ -137,14 +137,25 @@ namespace Infrastructure.Result
             return result;
         }
 
-        public static Result<K, E> Map<T, K, E>(this Result<T, E> result, Func<T, K> func) where E : class =>
+        public static Result<TK, TE> Map<T, TK, TE>(
+            this Result<T, TE> result,
+            Func<T, TK> onSuccess,
+            Func<TE, TK> onFailure) where TE : Exception
+        {
+            var (isSuccess, _, value, error) = result;
+            return isSuccess ? onSuccess(value) : onFailure(error);
+        }
+
+
+
+        public static Result<TK, TE> Map<T, TK, TE>(this Result<T, TE> result, Func<T, TK> func) where TE : Exception =>
             result.OnSuccess(func);
 
-        public static Result<K> Map<T, K>(this Result<T> result, Func<T, K> func) => result.OnSuccess(func);
+        public static Result<TK> Map<T, TK>(this Result<T> result, Func<T, TK> func) => result.OnSuccess(func);
 
         public static Result<T> Map<T>(this Result result, Func<T> func) => result.OnSuccess(func);
 
-        public static Result<T, E> OnSuccess<T, E>(this Result<T, E> result, Action<T> action) where E : class
+        public static Result<T, TE> OnSuccess<T, TE>(this Result<T, TE> result, Action<T> action) where TE : Exception
         {
             if (result.IsSuccess) action(result.Value);
 
@@ -185,49 +196,56 @@ namespace Infrastructure.Result
             return result.IsFailure ? Result.Fail(result.Error) : Result.Try(() => action(result.Value), errorHandler);
         }
 
-        public static Result<K> OnSuccessTry<T, K>(
+        public static Result<TK> OnSuccessTry<T, TK>(
             this Result<T> result,
-            Func<T, K> func,
+            Func<T, TK> func,
             Func<Exception, string> errorHandler = null)
         {
-            return result.IsFailure ? Result.Fail<K>(result.Error) : Result.Try(() => func(result.Value), errorHandler);
+            return result.IsFailure ? Result.Fail<TK>(result.Error) : Result.Try(() => func(result.Value), errorHandler);
         }
 
         public static T OnBoth<T>(this Result result, Func<Result, T> func) => func(result);
 
-        public static K OnBoth<T, K>(this Result<T> result, Func<Result<T>, K> func) => func(result);
+        public static TK OnBoth<T, TK>(this Result<T> result, Func<Result<T>, TK> func) => func(result);
 
-        public static K OnBoth<T, K, E>(this Result<T, E> result, Func<Result<T, E>, K> func) => func(result);
+        public static TK OnBoth<T, TK, TE>(this Result<T, TE> result, Func<Result<T, TE>, TK> func) where TE : Exception => func(result);
 
-        public static T OnBoth<T, E>(this Result<T, E> result, Func<Result<T, E>, T> func) where E : class =>
+        public static T OnBoth<T, TE>(this Result<T, TE> result, Func<Result<T, TE>, T> func) where TE : Exception =>
             func(result);
 
-        public static Result<T, E> OnFailure<T, E>(this Result<T, E> result, Action action) where E : class
+        public static Result<T, TE> OnFailure<T, TE>(this Result<T, TE> result, Func<TE, T> compensator) where TE : Exception
         {
-            if (result.IsFailure) action();
+            if (result.IsFailure)
+                return compensator(result.Error);
 
             return result;
         }
 
-        public static Result<T> OnFailure<T>(this Result<T> result, Action action)
+        public static Result<T, TE> OnFailure<T, TE>(this Result<T, TE> result, Func<TE, Result<T, TE>> action)
+            where TE : Exception
         {
-            if (result.IsFailure) action();
+            if (result.IsFailure)
+                return action(result.Error);
 
             return result;
         }
 
-        public static Result OnFailure(this Result result, Action action)
+        public static Result<TK, TE> OnFailure<T, TE, TK>(this Result<T, TE> result, Func<TE, Result<TK, TE>> action)
+            where TE : Exception where TK : class
         {
-            if (result.IsFailure) action();
+            if (result.IsFailure)
+                return action(result.Error);
 
-            return result;
+            return result.Value as TK ?? throw new InvalidCastException();
         }
 
-        public static Result<T, E> OnFailure<T, E>(this Result<T, E> result, Action<E> action) where E : class
+        public static Result<TK, TE> OnFailure<T, TE, TK>(this Result<T, TE> result, Func<TE, TK> action)
+            where TE : Exception where TK : class
         {
-            if (result.IsFailure) action(result.Error);
+            if (result.IsFailure)
+                return action(result.Error);
 
-            return result;
+            return result.Value as TK ?? throw new InvalidCastException();
         }
 
         public static Result<T> OnFailure<T>(this Result<T> result, Action<string> action)
@@ -239,13 +257,14 @@ namespace Infrastructure.Result
 
         public static Result OnFailure(this Result result, Action<string> action)
         {
-            if (result.IsFailure) action(result.Error);
+            if (result.IsFailure)
+                action(result.Error);
 
             return result;
         }
 
-        public static Result<T, E> OnFailureCompensate<T, E>(this Result<T, E> result, Func<Result<T, E>> func)
-            where E : class
+        public static Result<T, TE> OnFailureCompensate<T, TE>(this Result<T, TE> result, Func<Result<T, TE>> func)
+            where TE : Exception
         {
             if (result.IsFailure)
                 return func();
@@ -269,8 +288,8 @@ namespace Infrastructure.Result
             return result;
         }
 
-        public static Result<T, E> OnFailureCompensate<T, E>(this Result<T, E> result, Func<E, Result<T, E>> func)
-            where E : class
+        public static Result<T, TE> OnFailureCompensate<T, TE>(this Result<T, TE> result, Func<TE, Result<T, TE>> func)
+            where TE : Exception
         {
             if (result.IsFailure)
                 return func(result.Error);
@@ -311,14 +330,14 @@ namespace Infrastructure.Result
             return result.IsSuccess ? Result.Ok(data.Select(e => e.Value)) : Result.Fail<IEnumerable<T>>(result.Error);
         }
 
-        public static Result<K> Combine<T, K>(
+        public static Result<TK> Combine<T, TK>(
             this IEnumerable<Result<T>> results,
-            Func<IEnumerable<T>, K> composer,
+            Func<IEnumerable<T>, TK> composer,
             string errorMessageSeparator)
         {
             var result = results.Combine(errorMessageSeparator);
 
-            return result.IsSuccess ? Result.Ok(composer(result.Value)) : Result.Fail<K>(result.Error);
+            return result.IsSuccess ? Result.Ok(composer(result.Value)) : Result.Fail<TK>(result.Error);
         }
     }
 }

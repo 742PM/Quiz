@@ -33,6 +33,7 @@ namespace Application
             this.taskRepository = taskRepository;
             this.generatorSelector = generatorSelector;
             Logger = logger;
+            this.random = random;
         }
 
         private ILogger<QuizService> Logger { get; }

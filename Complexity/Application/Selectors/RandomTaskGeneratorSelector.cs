@@ -22,7 +22,7 @@ namespace Application.Selectors
         {
             var generatorsArray = generators as TaskGenerator[] ?? generators.ToArray();
             return generatorsArray.Length == 0 
-                ? new ArgumentException($"{nameof(generators)} must be not empty") 
+                ? new ArgumentOutOfRangeException(nameof(generators), $"{nameof(generators)} must be not empty") 
                 : generatorsArray[random.Next(generatorsArray.Length)].Ok();
         }
     }

@@ -5,7 +5,7 @@ using Application;
 using Application.Exceptions;
 using AutoMapper;
 using ComplexityWebApi.DTO;
-using Infrastructure.Result;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers
@@ -33,11 +33,8 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
-            var (isSuccess, _, topics) = applicationApi.GetTopicsInfo();
-            if (isSuccess)
-                return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
-            return NotFound("Topics not found");
-            
+            var (_, _, topics) = applicationApi.GetTopicsInfo();
+            return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
         }
 
         /// <summary>
@@ -52,10 +49,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{topicId}/levels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
         {
-            var (isSuccess, _, levels) = applicationApi.GetLevels(topicId);
+            var (isSuccess, _, levels, error) = applicationApi.GetLevels(topicId);
             if (isSuccess)
                 return Ok(levels.Select(Mapper.Map<LevelInfoDTO>));
-            return NotFound("Levels not found");
+            return NotFound(error.Message);
         }
 
         /// <summary>
@@ -70,10 +67,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/{topicId}/availableLevels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
         {
-            var (isSuccess, _, availableLevels) = applicationApi.GetAvailableLevels(userId, topicId);
+            var (isSuccess, _, availableLevels, error) = applicationApi.GetAvailableLevels(userId, topicId);
             if (isSuccess)
                 return Ok(availableLevels.Select(Mapper.Map<LevelInfoDTO>));
-            return NotFound("Available levels not found");
+            return NotFound(error.Message);
         }
 
         /// <summary>
@@ -88,10 +85,10 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
         public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
-            var (isSuccess, _, progress) = applicationApi.GetCurrentProgress(userId, topicId, levelId);
+            var (isSuccess, _, progress, error) = applicationApi.GetCurrentProgress(userId, topicId, levelId);
             if (isSuccess)
                 return Ok(progress);
-            return NotFound("Failed, trying to get user progress");
+            return NotFound(error.Message);
         }
 
         /// <summary>
@@ -106,10 +103,18 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/{topicId}/{levelId}/task")]
         public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId)
         {
-            var (isSuccess, _, task) = applicationApi.GetTask(userId, topicId, levelId);
+            var (isSuccess, _, task, error) = applicationApi.GetTask(userId, topicId, levelId);
             if (isSuccess)
                 return Ok(Mapper.Map<TaskInfoDTO>(task));
-            return NotFound("Task info not found");
+            switch (error)
+            {
+                case ArgumentException _:
+                    return NotFound(error.Message);
+                case AccessDeniedException _:
+                    return Forbid(error.Message);
+                default:
+                    return InternalServerError(error.Message);
+            }
         }
 
         /// <summary>
@@ -124,10 +129,12 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/nextTask")]
         public ActionResult<TaskInfoDTO> GetNextTaskInfo(Guid userId)
         {
-            var (isSuccess, _, task) = applicationApi.GetNextTask(userId);
+            var (isSuccess, _, task, error) = applicationApi.GetNextTask(userId);
             if (isSuccess)
                 return Ok(Mapper.Map<TaskInfoDTO>(task));
-            return NotFound("Next task info not found");
+            if (error is AccessDeniedException)
+                return Forbid(error.Message);
+            return InternalServerError(error.Message);
         }
 
         /// <summary>
@@ -142,10 +149,18 @@ namespace ComplexityWebApi.Controllers
         [HttpGet("{userId}/hint")]
         public ActionResult<string> GetHint(Guid userId)
         {
-            var (isSuccess, _, hint) = applicationApi.GetHint(userId);
+            var (isSuccess, _, hint, error) = applicationApi.GetHint(userId);
             if (isSuccess)
                 return Ok(hint);
-            return NoContent();
+            switch (error)
+            {
+                case AccessDeniedException _:
+                    return Forbid(error.Message);
+                case OutOfHintsException _:
+                    return NoContent();
+                default:
+                    return InternalServerError(error.Message);
+            }
         }
 
         /// <summary>
@@ -161,10 +176,15 @@ namespace ComplexityWebApi.Controllers
         [HttpPost("{userId}/sendAnswer")]
         public ActionResult<bool> SendAnswer([FromBody] string answer, Guid userId)
         {
-            var (isSuccess, _, result) = applicationApi.CheckAnswer(userId, answer);
+            var (isSuccess, _, result, error) = applicationApi.CheckAnswer(userId, answer);
             if (isSuccess)
                 return Ok(result);
-            return BadRequest("Error, trying to send an answer");
+            if (error is AccessDeniedException)
+                return Forbid(error.Message);
+            return InternalServerError(error.Message);
         }
+
+        private ObjectResult InternalServerError(object value) =>
+            StatusCode(StatusCodes.Status500InternalServerError, value);
     }
 }

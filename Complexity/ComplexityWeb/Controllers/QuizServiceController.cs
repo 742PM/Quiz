@@ -132,13 +132,9 @@ namespace ComplexityWebApi.Controllers
             var (isSuccess, _, task, error) = applicationApi.GetNextTask(userId);
             if (isSuccess)
                 return Ok(Mapper.Map<TaskInfoDTO>(task));
-            switch (error)
-            {
-                case AccessDeniedException _:
-                    return Forbid(error.Message);
-                default:
-                    return InternalServerError(error.Message);
-            }
+            if (error is AccessDeniedException)
+                return Forbid(error.Message);
+            return InternalServerError(error.Message);
         }
 
         /// <summary>
@@ -183,13 +179,9 @@ namespace ComplexityWebApi.Controllers
             var (isSuccess, _, result, error) = applicationApi.CheckAnswer(userId, answer);
             if (isSuccess)
                 return Ok(result);
-            switch (error)
-            {
-                case AccessDeniedException _:
-                    return Forbid(error.Message);
-                default:
-                    return InternalServerError(error.Message);
-            }
+            if (error is AccessDeniedException)
+                return Forbid(error.Message);
+            return InternalServerError(error.Message);
         }
 
         private ObjectResult InternalServerError(object value) =>

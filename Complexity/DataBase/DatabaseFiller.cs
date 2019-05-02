@@ -8,65 +8,94 @@ namespace DataBase
 {
     public class DatabaseFiller
     {
+        private const string Theta = "Θ";
+        private const string Sqrt = "√";
+        private const string Pow2 = "²";
+        private const string Pow3 = "³";
+
+        private const string OuterIterable = "i";
+        private const string InnerIterable = "j";
+        private const string OuterFrom = "{{from1}}";
+        private const string InnerFrom = "{{from2}}";
+        private const string OuterTo = "{{to1}}";
+        private const string InnerTo = "{{to2}}";
+        private const string OuterIteration = "{{iter1}}";
+        private const string InnerIteration = "{{iter2}}";
+
+        private const string SimpleOperation = "\tc++\n";
+        private const string PlusEqual = "+=";
+        private const string MultiplyEqual = "*=";
+
+        private static readonly string Theta1 = $"{Theta}(1)";
+        private static readonly string ThetaN = $"{Theta}(n)";
+        private static readonly string ThetaN2 = $"{Theta}(n{Pow2})";
+        private static readonly string ThetaN3 = $"{Theta}(n{Pow3})";
+        private static readonly string ThetaSqrtN = $"{Theta}({Sqrt}n)";
+        private static readonly string ThetaLogN = $"{Theta}(log(n))";
+        private static readonly string ThetaNLogN = $"{Theta}(n*log(n))";
+        private static readonly string ThetaLog2N = $"{Theta}(n*log{Pow2}(n))";
+        private static readonly string ThetaLogNLogLogN = $"{Theta}(log(n)*log(log(n)))";
+
+        private static readonly string[] StandardLoopAnswers = { ThetaLogN, ThetaSqrtN, Theta1, ThetaN, ThetaN2 };
+        private static readonly string[] StandardDoubleAnswers = { ThetaN, ThetaNLogN, ThetaN2, ThetaN3 };
+        private static readonly string[] DifficultDoubleAnswers = { ThetaLog2N, ThetaN, ThetaNLogN, ThetaN2 };
+
         public void Fill()
         {
             var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", "romutchio", "romaha434");
             var taskRepo = SetupTaskRepository(db);
             var topic = new Topic(Guid.NewGuid(), "Сложность алгоритмов",
                 "Описание: Задачи на разные алгоритмы и разные сложности", new Level[0]);
-            var singleloopLevels = new Level(Guid.NewGuid(), "Циклы", new TaskGenerator[0], new Guid[0]);
+            var singleLoopLevels = new Level(Guid.NewGuid(), "Циклы", new TaskGenerator[0], new Guid[0]);
             var doubleLoopLevels = new Level(Guid.NewGuid(), "Двойные Циклы", new TaskGenerator[0], new Guid[0]);
-            
+
             taskRepo.InsertTopic(topic);
-            taskRepo.InsertLevel(topic.Id, singleloopLevels);
+            taskRepo.InsertLevel(topic.Id, singleLoopLevels);
             taskRepo.InsertLevel(topic.Id, doubleLoopLevels);
 
-
             var forLoop1 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(n)", "Θ(n²)","Θ(1)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\t\tc++\n",
-                new string[0], "Θ(n)", 1);
-            
-            var forLoop2 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(n)", "Θ(n²)","Θ(1)", "Θ(log n)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\t\tc++\n",
-                new[] {"Цикл с удвоением"}, "Θ(log n)", 1);
-            
-            var forLoop3 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(n log n)", "Θ(n)", "Θ(n²)","Θ(n³)", "Θ(log n)"},
-                "for (int i = {{from1}}; i < {{to1}}*{{to1}}; i*={{iter1}})\n" +
-                "\t\tc++\n",
-                new[] {"Свойства логарифма"}, "Θ(log n)", 1);
-            
-            var forLoop4 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(sqrt(n))", "Θ(n)", "Θ(n²)","Θ(1)", "Θ(log n)"},
-                "for (int i = {{from1}}; i * i < {{to1}}; i+={{iter1}})\n" +
-                "\t\tc++\n",
-                new string[0], "Θ(sqrt(n))", 1);       
-            
-            var forLoop5 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(sqrt(n))", "Θ(n)", "Θ(n²)","Θ(1)", "Θ(log n)"},
-                "for (int i = {{from1}}; i < {{to1}}*{{to1}}; i+={{iter1}})\n" +
-                "\t\tc++\n",
-                new string[0], "Θ(n²)", 1);
-                        
-            var forLoop6 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(sqrt(n))", "Θ(n)", "Θ(n²)","Θ(1)", "Θ(log n)"},
-                "for (int i = {{from1}}; i % {{from1}} != 0; i+={{iter1}})\n" +
-                "\t\tc++\n",
-                new string[0], "Θ(1)", 1);
-                        
-            var forLoop7 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(sqrt(n))", "Θ(n)", "Θ(n²)","Θ(1)", "Θ(log n)"},
-                "for (int i = {{from1}}; i < {{to1}}*{{to1}}; i*={{iter1}})\n" +
-                "\t\tc++\n",
-                new string[0], "Θ(log n)", 1);
-            
-            
+                StandardLoopAnswers,
+                GetForLoop() +
+                SimpleOperation,
+                new string[0], ThetaN, 1);
 
-            taskRepo.InsertGenerators(topic.Id, singleloopLevels.Id, new List<TaskGenerator>
+            var forLoop2 = new TemplateTaskGenerator(Guid.NewGuid(),
+                StandardLoopAnswers,
+                GetForLoop(increment: MultiplyEqual) +
+                SimpleOperation,
+                new[] { "Цикл с удвоением" }, ThetaLogN, 1);
+
+            var forLoop3 = new TemplateTaskGenerator(Guid.NewGuid(),
+                new[] { ThetaLogN, Theta1, ThetaN, ThetaNLogN, ThetaN2 },
+                GetForLoop(comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}", increment: MultiplyEqual) +
+                SimpleOperation,
+                new[] { "Свойства логарифма" }, ThetaLogN, 1);
+
+            var forLoop4 = new TemplateTaskGenerator(Guid.NewGuid(),
+                StandardLoopAnswers,
+                GetForLoop(comparision: $"{OuterIterable} * {OuterIterable} < {OuterTo}") +
+                SimpleOperation,
+                new string[0], ThetaSqrtN, 1);
+
+            var forLoop5 = new TemplateTaskGenerator(Guid.NewGuid(),
+                StandardLoopAnswers,
+                GetForLoop(comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}") +
+                SimpleOperation,
+                new string[0], ThetaN2, 1);
+
+            var forLoop6 = new TemplateTaskGenerator(Guid.NewGuid(),
+                StandardLoopAnswers,
+                GetForLoop(comparision: $"{OuterIterable} % {OuterFrom} != 0") +
+                SimpleOperation,
+                new string[0], Theta1, 1);
+
+            var forLoop7 = new TemplateTaskGenerator(Guid.NewGuid(),
+                StandardLoopAnswers,
+                GetForLoop(comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}", increment: MultiplyEqual) +
+                SimpleOperation,
+                new string[0], ThetaLogN, 1);
+
+            taskRepo.InsertGenerators(topic.Id, singleLoopLevels.Id, new List<TaskGenerator>
             {
                 forLoop1,
                 forLoop2,
@@ -77,99 +106,90 @@ namespace DataBase
                 forLoop7
             });
 
-
             var double1 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(n)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < {{to2}}; j+={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Независимые циклы"}, "Θ(n²)", 1);
+                new[] { ThetaN, ThetaN2, ThetaN3 },
+                GetForLoop() +
+                GetInnerForLoop() +
+                "\t" + SimpleOperation,
+                new[] { "Независимые циклы" }, ThetaN2, 1);
 
             var double2 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < {{to2}}; j*={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Независимые циклы"}, "Θ(nlogn)", 1);
+                StandardDoubleAnswers,
+                GetForLoop() +
+                GetInnerForLoop(increment: MultiplyEqual) +
+                "\t" + SimpleOperation,
+                new[] { "Независимые циклы" }, ThetaNLogN, 1);
 
             var double3 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < {{to2}}; j+=i)\n" +
-                "\t\tc++\n",
-                new[] {"Частичная сумма гармонического ряда"}, "Θ(nlogn)", 1);
+                StandardDoubleAnswers,
+                GetForLoop() +
+                GetInnerForLoop(incrementValue: OuterIterable) +
+                "\t" + SimpleOperation,
+                new[] { "Частичная сумма гармонического ряда" }, ThetaNLogN, 1);
 
             var double4 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)", "Θ(n)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < {{to2}}; j*=i)\n" +
-                "\t\tc++\n",
-                new[] {"logn * li(n) = logn * n / logn = n"}, "Θ(n)", 1);
+                StandardDoubleAnswers,
+                GetForLoop() +
+                GetInnerForLoop(increment: MultiplyEqual, incrementValue: "i") +
+                "\t" + SimpleOperation,
+                new[] { "log(n) * li(n) = log(n) * n / log(n) = n" }, ThetaN, 1);
 
             var double5 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j+={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Арифметическая прогрессия"}, "Θ(n²)", 1);
+                StandardDoubleAnswers,
+                GetForLoop() +
+                GetInnerForLoop(OuterIterable) +
+                "\t" + SimpleOperation,
+                new[] { "Арифметическая прогрессия" }, ThetaN2, 1);
 
             var double6 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j*={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Логарифм факториала, Формула Стирлинга"}, "Θ(nlogn)", 1);
+                StandardDoubleAnswers,
+                GetForLoop() +
+                GetInnerForLoop(OuterIterable, MultiplyEqual) +
+                "\t" + SimpleOperation,
+                new[] { "Логарифм факториала, Формула Стирлинга" }, ThetaNLogN, 1);
 
             var double7 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i+={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j*={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Логарифм факториала, Формула Стирлинга"}, "Θ(nlogn)", 1);
+                StandardDoubleAnswers,
+                GetForLoop(increment: MultiplyEqual) +
+                GetInnerForLoop(OuterIterable) +
+                "\t" + SimpleOperation,
+                new[] { "Независимые циклы" }, ThetaNLogN, 1);
 
             var double8 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(nlogn)", "Θ(n²)", "Θ(n³)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j+={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Независимые циклы"}, "Θ(nlogn)", 1);
+                DifficultDoubleAnswers,
+                GetForLoop(increment: MultiplyEqual) +
+                GetInnerForLoop(OuterIterable, MultiplyEqual) +
+                "\t" + SimpleOperation,
+                new[] { "Независимые циклы" }, ThetaLog2N, 1);
 
             var double9 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(log² n)", "Θ(nlogn)", "Θ(n²)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j*={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Независимые циклы"}, "Θ(log² n)", 1);
+                DifficultDoubleAnswers,
+                GetForLoop(increment: MultiplyEqual) +
+                GetInnerForLoop(OuterIterable) +
+                "\t" + SimpleOperation,
+                new[] { "Геометрическая прогрессия" }, ThetaN, 1);
 
             var double10 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(log² n)", "Θ(nlogn)", "Θ(n²)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j+=i)\n" +
-                "\t\tc++\n",
-                new[] {"Геометрическая прогрессия"}, "Θ(n)", 1);
-
+                new[] { ThetaLogNLogLogN, ThetaN, ThetaNLogN },
+                GetForLoop(increment: MultiplyEqual) +
+                GetInnerForLoop(OuterIterable, MultiplyEqual, OuterIterable) +
+                "\t" + SimpleOperation,
+                new[] { "Cмена основания логарифма и частичная сумма гармонического ряда" }, ThetaLogNLogLogN, 1);
 
             var double11 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(logn loglogn)", "Θ(nlogn)", "Θ(n)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j*=i)\n" +
-                "\t\tc++\n",
-                new[] {"Cмена основания логарифма и частичная сумма гармонического ряда"}, "Θ(logn loglogn)", 1);
+                StandardDoubleAnswers,
+                GetForLoop(increment: MultiplyEqual) +
+                GetInnerForLoop(OuterIterable) +
+                "\t" + SimpleOperation,
+                new[] { "Геометрическая прогрессия" }, ThetaN, 1);
 
             var double12 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(log² n)","Θ(n)", "Θ(nlogn)", "Θ(n²)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j+={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Геометрическая прогрессия"}, "Θ(n)", 1);
+                DifficultDoubleAnswers,
+                GetForLoop(increment: MultiplyEqual) +
+                GetInnerForLoop(OuterIterable, MultiplyEqual) +
+                "\t" + SimpleOperation,
+                new[] { "Арифметическая прогрессия" }, ThetaLog2N, 1);
 
-            var double13 = new TemplateTaskGenerator(Guid.NewGuid(),
-                new[] {"Θ(log² n)", "Θ(nlogn)", "Θ(n²)", "Θ(n)"},
-                "for (int i = {{from1}}; i < {{to1}}; i*={{iter1}})\n" +
-                "\tfor (int j = {{from2}}; j < i; j*={{iter2}})\n" +
-                "\t\tc++\n",
-                new[] {"Арифметическая прогрессия"}, "Θ(log² n)", 1);
-            
             taskRepo.InsertGenerators(topic.Id, doubleLoopLevels.Id,
                 new List<TaskGenerator>
                 {
@@ -180,14 +200,28 @@ namespace DataBase
                     double5,
                     double6,
                     double7,
+                    double7,
                     double8,
                     double9,
                     double10,
                     double11,
-                    double12,
-                    double13
+                    double12
                 });
         }
+
+        private static string GetForLoop(
+            string iterable = OuterIterable,
+            string from = OuterFrom,
+            string comparision = OuterIterable + " <  " + OuterTo,
+            string increment = PlusEqual,
+            string incrementValue = OuterIteration) =>
+            $"for (int {iterable} = {from}; {comparision}; {iterable} {increment} {incrementValue})\n";
+
+        private static string GetInnerForLoop(
+            string upperBound = InnerTo,
+            string increment = PlusEqual,
+            string incrementValue = InnerIteration) =>
+            $"\t{GetForLoop(InnerIterable, InnerFrom, $"{InnerIterable} < {upperBound}", increment, incrementValue)}";
 
         private static MongoUserRepository SetupUserRepository(IMongoDatabase db)
         {
@@ -196,7 +230,6 @@ namespace DataBase
 
             return userRepo;
         }
-
 
         private static MongoTaskRepository SetupTaskRepository(IMongoDatabase db)
         {

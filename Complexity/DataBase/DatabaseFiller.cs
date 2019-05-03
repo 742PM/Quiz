@@ -207,6 +207,7 @@ namespace DataBase
                     double11,
                     double12
                 });
+            taskRepo.FindTopic(topic.Id);
         }
 
         private static string GetForLoop(

@@ -6,7 +6,13 @@ namespace Application.Repositories.Entities
 {
     public class UserProgressEntity : Entity
     {
-        public UserProgressEntity(Guid currentTopicId, Guid currentLevelId, Guid userId, Dictionary<Guid, TopicProgressEntity> topicsProgress, TaskInfoEntity currentTask, Guid id) : base(id)
+        public UserProgressEntity(
+            Guid currentTopicId,
+            Guid currentLevelId,
+            Guid userId,
+            Dictionary<Guid, TopicProgressEntity> topicsProgress,
+            TaskInfoEntity currentTask,
+            Guid id) : base(id)
         {
             CurrentTopicId = currentTopicId;
             CurrentLevelId = currentLevelId;
@@ -25,7 +31,11 @@ namespace Application.Repositories.Entities
         /// </summary>
         public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; }
 
+        /// <inheritdoc />
+        public override string ToString() => $"{base.ToString()}, {nameof(CurrentTopicId)}: {CurrentTopicId}, {nameof(CurrentLevelId)}: {CurrentLevelId}, {nameof(UserId)}: {UserId}, {nameof(TopicsProgress)}: {TopicsProgress}, {nameof(CurrentTask)}: {CurrentTask}";
+
         public TaskInfoEntity CurrentTask { get; }
+
         public UserProgressEntity With(
             Guid? currentTopicId = default,
             Guid? currentLevelId = default,
@@ -33,6 +43,6 @@ namespace Application.Repositories.Entities
             Dictionary<Guid, TopicProgressEntity> topicsProgress = default,
             TaskInfoEntity currentTask = default) =>
             new UserProgressEntity(currentTopicId ?? CurrentTopicId, currentLevelId ?? CurrentLevelId, userId ?? UserId,
-                                   topicsProgress ?? TopicsProgress, currentTask ?? CurrentTask, Id);
+                topicsProgress ?? TopicsProgress, currentTask ?? CurrentTask, Id);
     }
 }

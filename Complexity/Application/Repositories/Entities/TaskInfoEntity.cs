@@ -5,6 +5,9 @@ namespace Application.Repositories.Entities
 {
     public class TaskInfoEntity : Entity
     {
+        /// <inheritdoc />
+        public override string ToString() => $"{base.ToString()}, {nameof(Question)}: {Question}, {nameof(Answer)}: {Answer}, {nameof(Hints)}: {Hints}, {nameof(HintsTaken)}: {HintsTaken}, {nameof(ParentGeneratorId)}: {ParentGeneratorId}, {nameof(IsSolved)}: {IsSolved}";
+
         public TaskInfoEntity(string question, string answer, string[] hints, int hintsTaken, Guid parentGeneratorId, bool isSolved, Guid id): base(id)
         {
             Question = question;

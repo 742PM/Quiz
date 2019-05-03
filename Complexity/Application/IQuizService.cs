@@ -35,6 +35,7 @@ namespace Application
         ///     Получение задачи из конкретных темы и уровня
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Отсутствуют генераторы</exception>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<TaskInfo, Exception> GetTask(Guid userId, Guid topicId, Guid levelId);
 
@@ -42,6 +43,7 @@ namespace Application
         ///     Получение следующей задачи из текущих темы и уровня
         /// </summary>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Отсутствуют генераторы</exception>
         Result<TaskInfo, Exception> GetNextTask(Guid userId);
 
         /// <summary>

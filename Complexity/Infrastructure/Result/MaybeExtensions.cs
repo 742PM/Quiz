@@ -12,7 +12,7 @@ namespace Infrastructure.Result
             return Result.Ok(maybe.Value);
         }
 
-        public static Result<T, E> ToResult<T, E>(this Maybe<T> maybe, E error) where E : class
+        public static Result<T, E> ToResult<T, E>(this Maybe<T> maybe, E error) where E : Exception
         {
             if (maybe.HasNoValue)
                 return Result.Fail<T, E>(error);

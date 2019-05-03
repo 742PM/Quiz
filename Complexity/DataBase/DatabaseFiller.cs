@@ -40,9 +40,9 @@ namespace DataBase
         private static readonly string[] StandardDoubleAnswers = { ThetaN, ThetaNLogN, ThetaN2, ThetaN3 };
         private static readonly string[] DifficultDoubleAnswers = { ThetaLog2N, ThetaN, ThetaNLogN, ThetaN2 };
 
-        public void Fill()
+        public void Fill(string username, string password)
         {
-            var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", "romutchio", "romaha434");
+            var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", username, password);
             var taskRepo = SetupTaskRepository(db);
             var topic = new Topic(Guid.NewGuid(), "Сложность алгоритмов",
                 "Описание: Задачи на разные алгоритмы и разные сложности", new Level[0]);
@@ -212,7 +212,7 @@ namespace DataBase
         private static string GetForLoop(
             string iterable = OuterIterable,
             string from = OuterFrom,
-            string comparision = OuterIterable + " <  " + OuterTo,
+            string comparision = OuterIterable + " < " + OuterTo,
             string increment = PlusEqual,
             string incrementValue = OuterIteration) =>
             $"for (int {iterable} = {from}; {comparision}; {iterable} {increment} {incrementValue})\n";

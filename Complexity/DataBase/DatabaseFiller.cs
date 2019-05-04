@@ -22,7 +22,7 @@ namespace DataBase
         private const string OuterIteration = "{{iter1}}";
         private const string InnerIteration = "{{iter2}}";
 
-        private const string SimpleOperation = "\tc++\n";
+        private const string SimpleOperation = "\t{{simple_operation1}}\n";
         private const string PlusEqual = "+=";
         private const string MultiplyEqual = "*=";
 

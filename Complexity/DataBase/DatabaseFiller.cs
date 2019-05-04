@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
-using MongoDB.Driver;
 
 namespace DataBase
 {
@@ -12,9 +11,10 @@ namespace DataBase
         private const string Sqrt = "√";
         private const string Pow2 = "²";
         private const string Pow3 = "³";
+        private const string Multiply = "∙";
 
-        private const string OuterIterable = "i";
-        private const string InnerIterable = "j";
+        private const string OuterIterable = "{{loop_var1}}";
+        private const string InnerIterable = "{{loop_var2}}";
         private const string OuterFrom = "{{from1}}";
         private const string InnerFrom = "{{from2}}";
         private const string OuterTo = "{{to1}}";
@@ -32,9 +32,9 @@ namespace DataBase
         private static readonly string ThetaN3 = $"{Theta}(n{Pow3})";
         private static readonly string ThetaSqrtN = $"{Theta}({Sqrt}n)";
         private static readonly string ThetaLogN = $"{Theta}(log(n))";
-        private static readonly string ThetaNLogN = $"{Theta}(n*log(n))";
-        private static readonly string ThetaLog2N = $"{Theta}(n*log{Pow2}(n))";
-        private static readonly string ThetaLogNLogLogN = $"{Theta}(log(n)*log(log(n)))";
+        private static readonly string ThetaNLogN = $"{Theta}(n {Multiply} log(n))";
+        private static readonly string ThetaLog2N = $"{Theta}(n {Multiply} log{Pow2}(n))";
+        private static readonly string ThetaLogNLogLogN = $"{Theta}(log(n) {Multiply} log(log(n)))";
 
         private static readonly string[] StandardLoopAnswers = { ThetaLogN, ThetaSqrtN, Theta1, ThetaN, ThetaN2 };
         private static readonly string[] StandardDoubleAnswers = { ThetaN, ThetaNLogN, ThetaN2, ThetaN3 };
@@ -43,7 +43,8 @@ namespace DataBase
         public void Fill(string username, string password)
         {
             var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", username, password);
-            var taskRepo = SetupTaskRepository(db);
+            var taskRepo = new MongoTaskRepository(db);
+
             var topic = new Topic(Guid.NewGuid(), "Сложность алгоритмов",
                 "Описание: Задачи на разные алгоритмы и разные сложности", new Level[0]);
             var singleLoopLevels = new Level(Guid.NewGuid(), "Циклы", new TaskGenerator[0], new Guid[0]);
@@ -95,16 +96,17 @@ namespace DataBase
                 SimpleOperation,
                 new string[0], ThetaLogN, 1);
 
-            taskRepo.InsertGenerators(topic.Id, singleLoopLevels.Id, new List<TaskGenerator>
-            {
-                forLoop1,
-                forLoop2,
-                forLoop3,
-                forLoop4,
-                forLoop5,
-                forLoop6,
-                forLoop7
-            });
+            taskRepo.InsertGenerators(topic.Id, singleLoopLevels.Id,
+                new[]
+                {
+                    forLoop1,
+                    forLoop2,
+                    forLoop3,
+                    forLoop4,
+                    forLoop5,
+                    forLoop6,
+                    forLoop7
+                });
 
             var double1 = new TemplateTaskGenerator(Guid.NewGuid(),
                 new[] { ThetaN, ThetaN2, ThetaN3 },
@@ -132,7 +134,7 @@ namespace DataBase
                 GetForLoop() +
                 GetInnerForLoop(increment: MultiplyEqual, incrementValue: "i") +
                 "\t" + SimpleOperation,
-                new[] { "log(n) * li(n) = log(n) * n / log(n) = n" }, ThetaN, 1);
+                new[] { $"log(n) {Multiply} li(n) = log(n) {Multiply} n / log(n) = n" }, ThetaN, 1);
 
             var double5 = new TemplateTaskGenerator(Guid.NewGuid(),
                 StandardDoubleAnswers,
@@ -191,7 +193,7 @@ namespace DataBase
                 new[] { "Арифметическая прогрессия" }, ThetaLog2N, 1);
 
             taskRepo.InsertGenerators(topic.Id, doubleLoopLevels.Id,
-                new List<TaskGenerator>
+                new[]
                 {
                     double1,
                     double2,
@@ -207,7 +209,6 @@ namespace DataBase
                     double11,
                     double12
                 });
-            taskRepo.FindTopic(topic.Id);
         }
 
         private static string GetForLoop(
@@ -216,27 +217,12 @@ namespace DataBase
             string comparision = OuterIterable + " < " + OuterTo,
             string increment = PlusEqual,
             string incrementValue = OuterIteration) =>
-            $"for (int {iterable} = {from}; {comparision}; {iterable} {increment} {incrementValue})\n";
+            $"for (var {iterable} = {from}; {comparision}; {iterable} {increment} {incrementValue})\n";
 
         private static string GetInnerForLoop(
             string upperBound = InnerTo,
             string increment = PlusEqual,
             string incrementValue = InnerIteration) =>
             $"\t{GetForLoop(InnerIterable, InnerFrom, $"{InnerIterable} < {upperBound}", increment, incrementValue)}";
-
-        private static MongoUserRepository SetupUserRepository(IMongoDatabase db)
-        {
-            MongoDatabaseInitializer.SetupDatabase();
-            var userRepo = new MongoUserRepository(db);
-
-            return userRepo;
-        }
-
-        private static MongoTaskRepository SetupTaskRepository(IMongoDatabase db)
-        {
-            var taskRepo = new MongoTaskRepository(db);
-
-            return taskRepo;
-        }
     }
 }

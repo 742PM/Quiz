@@ -83,11 +83,11 @@ namespace ComplexityWebApi.Controllers
         /// <response code="200"> Отношение решенных задач к общему колличеству задач.</response>
         /// <response code="404"> Не удалось получить прогресс пользователя.</response>
         [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
-        public ActionResult<double> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        public ActionResult<LevelProgressInfoDTO> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
             var (isSuccess, _, progress, error) = applicationApi.GetCurrentProgress(userId, topicId, levelId);
             if (isSuccess)
-                return Ok(progress);
+                return Ok(Mapper.Map<LevelProgressInfoDTO>(progress));
             return NotFound(error.Message);
         }
 
@@ -147,11 +147,11 @@ namespace ComplexityWebApi.Controllers
         /// <response code="200"> Возвращает подсказку на уровень</response>
         /// <response code="404"> Подсказки закончились</response>
         [HttpGet("{userId}/hint")]
-        public ActionResult<string> GetHint(Guid userId)
+        public ActionResult<HintInfoDTO> GetHint(Guid userId)
         {
             var (isSuccess, _, hint, error) = applicationApi.GetHint(userId);
             if (isSuccess)
-                return Ok(hint);
+                return Ok(Mapper.Map<HintInfoDTO>(hint));
             switch (error)
             {
                 case AccessDeniedException _:

@@ -19,7 +19,9 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     GET service/topics
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
         [HttpGet("topics")]
@@ -35,11 +37,13 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     POST service/addTopic
         ///     {
         ///         "name": "Сложность алгоритмов",
         ///         "description": "Оценка сложностей алгоритмов"
         ///     }
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Topic</response>
         [HttpPost("addTopic")]
@@ -54,7 +58,9 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     DELETE service/deleteTopic/1
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Topic был удален</response>
         [HttpDelete("deleteTopic/{topicId}")]
@@ -69,12 +75,14 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     POST service/addLevel/0
         ///     {
         ///         "description": "Оценка сложностей алгоритмов",
         ///         "next_levels": [0, 1],
         ///         "previous_levels": [2, 3]
         ///     }
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Level</response>
         [HttpPost("addLevel/{topicId}")]
@@ -89,7 +97,9 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     DELETE service/deleteLevel/1/0
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Level был удален</response>
         [HttpDelete("deleteLevel/{topicId}/{levelId}")]
@@ -104,6 +114,7 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     POST service/addTemplateGenerator/1/0
         ///     {
         ///        "template": "for (int i = {{from1}}; i &lt {{to1}}; i += {{iter1}})\r\nc++\r\n",
@@ -112,6 +123,7 @@ namespace ComplexityWebApi.Controllers
         ///        "hints": [],
         ///        "streak": 1
         ///     }
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
         [HttpPost("addTemplateGenerator/{topicId}/{levelId}")]
@@ -127,7 +139,9 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     DELETE service/deleteGenerator/1/0/2
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Generator был удален</response>
         [HttpDelete("deleteGenerator/{topicId}/{levelId}/{generatorId}")]
@@ -142,6 +156,7 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
+        ///     <code>
         ///     POST service/renderTask
         ///     {
         ///        "template": "for (int i = {{from1}}; i &lt {{to1}}; i += {{iter1}})\r\nc++\r\n",
@@ -149,6 +164,7 @@ namespace ComplexityWebApi.Controllers
         ///        "rightAnswer": "Θ(n)",
         ///        "hints": []
         ///     }
+        ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает отрендереный Task</response>
         [HttpPost("renderTask")]

@@ -19,25 +19,24 @@ namespace Tests
         }
 
         [Test]
-        public void ThrowOnEmptyList()
+        public void ReturnEmptyStringOnEmptyList()
         {
-            Action usage = () => new List<string>().SafeConcat();
-            usage.Should().Throw<ArgumentException>();
+            new List<string>().SafeConcat()
+            .Should().BeEquivalentTo("");
         }
         [Test]
-        public void ThrowOnSingleElement()
+        public void NotChangeAnythingOnSingleElement()
         {
-            Action usage = () => new List<string>(){"a"}.SafeConcat();
-            usage.Should().Throw<ArgumentException>();
+            new List<string>(){"a"}.SafeConcat().Should().BeEquivalentTo("a");
         }
 
-        [Test]
-        public void ReturnFalse_WhenSplitWithNonExistingKey()
-        {
-            var strings = new[] { "aa", "bb", "cc" };
-            var (result, _) = strings.SafeConcat();
-            result.TrySafeSplit(new Splitter.Key(Guid.NewGuid()), out _).Should().BeFalse();
-        }
+//        [Test]
+//        public void ReturnFalse_WhenSplitWithNonExistingKey()
+//        {
+//            var strings = new[] { "aa", "bb", "cc" };
+//            var (result, _) = strings.SafeConcat();
+//            result.TrySafeSplit(key: new Splitter.Key(Guid.NewGuid()), out _).Should().BeFalse();
+//        }
 
         [TestCase("a","b")]
         [TestCase("a","b","c","d")]

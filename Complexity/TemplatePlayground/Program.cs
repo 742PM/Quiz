@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Infrastructure;
 using Scriban;
 using Scriban.Runtime;
 
 namespace TemplatePlayground
 {
+
     class Program
     {
         static void Main(string[] args)
@@ -26,10 +30,7 @@ namespace TemplatePlayground
         }
     }
 
-    public static class ScribanExtensions
-    {
 
-    }
     public class Templator : ScriptObject
     {
         public static int GetVar(int i)

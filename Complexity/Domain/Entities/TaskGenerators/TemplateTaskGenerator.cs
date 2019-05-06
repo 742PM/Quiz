@@ -71,9 +71,55 @@ namespace Domain.Entities.TaskGenerators
         }
 
         /// <inheritdoc />
-        public override Task GetTask(Random randomSeed) =>
-            new Task(Randomize(randomSeed), Hints, Answer, Id, PossibleAnswers);
+        public override Task GetTask(Random randomSeed)
+        {
+            var (question, answer, answers, hints) = RenderFields();
 
-        private string Randomize(Random randomSeed) => template.Render(GetRandomizedProperties(randomSeed));
+            return new Task(question, hints, answer, Id, answers);
+        }
+
+        private (string question, string answer, string[] answers, string[] hints) RenderFields()
+        {
+            var doHintsExist = Hints?.Length > 0;
+            var doAnswersExist = PossibleAnswers?.Length > 0;
+            var (head, rest) = Template.Parse(
+                new[]
+                    {
+                        new[] {TemplateCode, Answer}.SafeConcat(out var qaKey), Hints?.SafeConcat(out var hintsKey),
+                        PossibleAnswers?.SafeConcat(out var answersKey)
+                    }.Where(s => s != "")
+                    .ToList().SafeConcat(out var key)).Render(GetSO()).SafeSplit(key);
+            var questionAndAnswer = head.SafeSplit(qaKey);
+            string[] answers;
+            string[] hints;
+            if (doHintsExist && doAnswersExist)
+            {
+                answers = rest[1].SafeSplit(answersKey).ToArray();
+                hints = rest[0].SafeSplit(hintsKey).ToArray();
+            }
+            else if (!doHintsExist)
+            {
+                answers = rest[0].SafeSplit(answersKey).ToArray();
+                hints = new string[0];
+            }
+            else
+            {
+                hints = rest[0].SafeSplit(hintsKey).ToArray();
+                answers = new string[0];
+            }
+
+            return (questionAndAnswer[0], questionAndAnswer[1], answers, hints);
+        }
+
+        private ScriptObject GetSO()
+        {
+            return new ScriptObject();
+        }
+
+
+        private string Randomize(Random randomSeed)
+        {
+            return template.Render(GetRandomizedProperties(randomSeed));
+        }
     }
 }

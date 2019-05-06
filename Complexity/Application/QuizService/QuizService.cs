@@ -11,7 +11,7 @@ using Domain.Values;
 using Infrastructure.Result;
 using Microsoft.Extensions.Logging;
 
-namespace Application
+namespace Application.QuizService
 {
     public class QuizService : IQuizService
     {

@@ -4,7 +4,7 @@ using Application.Exceptions;
 using Application.Info;
 using Infrastructure.Result;
 
-namespace Application
+namespace Application.QuizService
 {
     public interface IQuizService
     {

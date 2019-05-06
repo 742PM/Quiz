@@ -7,9 +7,9 @@ using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using Infrastructure.Result;
 
-namespace Application
+namespace Application.TaskService
 {
-    class TaskService : ITaskService
+    public class TaskService : ITaskService
     {
         private readonly ITaskRepository taskRepository;
         private readonly Random random;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application;
 using Application.Extensions;
+using Application.QuizService;
 using Application.Repositories;
 using Application.Selectors;
 using Domain.Entities;

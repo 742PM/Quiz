@@ -14,6 +14,14 @@ namespace ComplexityWebApi.Controllers
     {
         private readonly ITaskService applicationApi;
 
+        /// <summary>
+        ///     Получить список всех Topic.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     GET service/topics
+        /// </remarks>
+        /// <response code="200"> Возвращает список тем</response>
         [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
@@ -21,13 +29,33 @@ namespace ComplexityWebApi.Controllers
             return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
         }
 
-        [HttpPost("addTopic/{name}")]
-        public ActionResult<Guid> AddEmptyTopic(string name, [FromBody] string description)
+        /// <summary>
+        ///     Добавляет в сервис новый пустой Topic.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     POST service/addTopic
+        ///     {
+        ///         "name": "Сложность алгоритмов",
+        ///         "description": "Оценка сложностей алгоритмов"
+        ///     }
+        /// </remarks>
+        /// <response code="200"> Возвращает Guid от нового Topic</response>
+        [HttpPost("addTopic")]
+        public ActionResult<Guid> AddEmptyTopic([FromBody] TopicWithDescriptionDTO topic)
         {
-            var topicGuid = applicationApi.AddEmptyTopic(name, description);
+            var topicGuid = applicationApi.AddEmptyTopic(topic.Name, topic.Description);
             return Ok(topicGuid);
         }
 
+        /// <summary>
+        ///     Удаляет Topic из сервиса.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     DELETE service/deleteTopic/1
+        /// </remarks>
+        /// <response code="200"> Topic был удален</response>
         [HttpDelete("deleteTopic/{topicId}")]
         public ActionResult DeleteTopic(Guid topicId)
         {
@@ -35,6 +63,19 @@ namespace ComplexityWebApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        ///     Добавляет в сервис новый пустой Level.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     POST service/addLevel/0
+        ///     {
+        ///         "description": "Оценка сложностей алгоритмов",
+        ///         "next_levels": [0, 1],
+        ///         "previous_levels": [2, 3]
+        ///     }
+        /// </remarks>
+        /// <response code="200"> Возвращает Guid от нового Level</response>
         [HttpPost("addLevel/{topicId}")]
         public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] DataBaseLevelDTO level)
         {
@@ -42,6 +83,14 @@ namespace ComplexityWebApi.Controllers
             return Ok(levelGuid);
         }
 
+        /// <summary>
+        ///     Удаляет Level из сервиса.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     DELETE service/deleteLevel/1/0
+        /// </remarks>
+        /// <response code="200"> Level был удален</response>
         [HttpDelete("deleteLevel/{topicId}/{levelId}")]
         public ActionResult DeleteLevel(Guid topicId, Guid levelId)
         {
@@ -49,6 +98,21 @@ namespace ComplexityWebApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        ///     Добавляет в сервис новый TemplateGenerator.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     POST service/addTemplateGenerator/1/0
+        ///     {
+        ///        "template": "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
+        ///        "rightAnswer": "Θ(n)",
+        ///        "hints": [],
+        ///        "streak": 1
+        ///     }
+        /// </remarks>
+        /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
         [HttpPost("addTemplateGenerator/{topicId}/{levelId}")]
         public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] DataBaseTemplateGeneratorWithStreakDTO templateGenerator)
         {
@@ -56,7 +120,15 @@ namespace ComplexityWebApi.Controllers
                 templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak);
             return Ok(generatorGuid);
         }
-
+        
+        /// <summary>
+        ///     Удаляет Generator из сервиса.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     DELETE service/deleteGenerator/1/0/2
+        /// </remarks>
+        /// <response code="200"> Generator был удален</response>
         [HttpDelete("deleteGenerator/{topicId}/{levelId}/{generatorId}")]
         public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
@@ -64,6 +136,20 @@ namespace ComplexityWebApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        ///     Рендерит и возвращает Task по шаблону полученому в запросе
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     POST service/renderTemplateGenerator
+        ///     {
+        ///        "template": "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
+        ///        "rightAnswer": "Θ(n)",
+        ///        "hints": []
+        ///     }
+        /// </remarks>
+        /// <response code="200"> Возвращает отрендереный Task</response>
         [HttpPost("renderTemplateGenerator")]
         public ActionResult RenderTemplateGenerator([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
         {

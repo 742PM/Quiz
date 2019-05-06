@@ -79,7 +79,7 @@ namespace Application
         }
 
         /// <inheritdoc />
-        public Result<double, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        public Result<LevelProgressInfo, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
             if (!TopicExists(topicId))
                 return new ArgumentException(nameof(topicId));
@@ -172,7 +172,7 @@ namespace Application
         }
 
         /// <inheritdoc />
-        public Result<string, Exception> GetHint(Guid userId)
+        public Result<HintInfo, Exception> GetHint(Guid userId)
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 

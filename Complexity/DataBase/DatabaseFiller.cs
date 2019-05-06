@@ -32,8 +32,8 @@ namespace DataBase
         private static readonly string ThetaN3 = $"{Theta}(n{Pow3})";
         private static readonly string ThetaSqrtN = $"{Theta}({Sqrt}n)";
         private static readonly string ThetaLogN = $"{Theta}(log(n))";
+        private static readonly string ThetaLog2N = $"{Theta}(log{Pow2}(n))";
         private static readonly string ThetaNLogN = $"{Theta}(n {Multiply} log(n))";
-        private static readonly string ThetaLog2N = $"{Theta}(n {Multiply} log{Pow2}(n))";
         private static readonly string ThetaLogNLogLogN = $"{Theta}(log(n) {Multiply} log(log(n)))";
 
         private static readonly string[] StandardLoopAnswers = { ThetaLogN, ThetaSqrtN, Theta1, ThetaN, ThetaN2 };
@@ -90,12 +90,6 @@ namespace DataBase
                 SimpleOperation,
                 new string[0], Theta1, 1);
 
-            var forLoop7 = new TemplateTaskGenerator(Guid.NewGuid(),
-                StandardLoopAnswers,
-                GetForLoop(comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}", increment: MultiplyEqual) +
-                SimpleOperation,
-                new string[0], ThetaLogN, 1);
-
             taskRepo.InsertGenerators(topic.Id, singleLoopLevels.Id,
                 new[]
                 {
@@ -104,8 +98,7 @@ namespace DataBase
                     forLoop3,
                     forLoop4,
                     forLoop5,
-                    forLoop6,
-                    forLoop7
+                    forLoop6
                 });
 
             var double1 = new TemplateTaskGenerator(Guid.NewGuid(),
@@ -179,13 +172,6 @@ namespace DataBase
                 new[] { "Cмена основания логарифма и частичная сумма гармонического ряда" }, ThetaLogNLogLogN, 1);
 
             var double11 = new TemplateTaskGenerator(Guid.NewGuid(),
-                StandardDoubleAnswers,
-                GetForLoop(increment: MultiplyEqual) +
-                GetInnerForLoop(OuterIterable) +
-                "\t" + SimpleOperation,
-                new[] { "Геометрическая прогрессия" }, ThetaN, 1);
-
-            var double12 = new TemplateTaskGenerator(Guid.NewGuid(),
                 DifficultDoubleAnswers,
                 GetForLoop(increment: MultiplyEqual) +
                 GetInnerForLoop(OuterIterable, MultiplyEqual) +
@@ -202,12 +188,10 @@ namespace DataBase
                     double5,
                     double6,
                     double7,
-                    double7,
                     double8,
                     double9,
                     double10,
-                    double11,
-                    double12
+                    double11
                 });
         }
 

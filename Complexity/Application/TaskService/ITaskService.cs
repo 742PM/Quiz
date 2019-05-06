@@ -22,6 +22,13 @@ namespace Application.TaskService
         Guid AddEmptyTopic(string name, string description);
 
         /// <summary>
+        ///     Удалить тему из базы данных
+        /// </summary>
+        /// <param name="topicId">Id удаляемой темы</param>
+        /// <exception cref="ArgumentException">Id темы не найден</exception>
+        Result<Exception> DeleteTopic(Guid topicId);
+
+        /// <summary>
         ///     Добавить пустой уровень в базу данных
         /// </summary>
         /// <param name="topicId">Id темы, в которую добавится уровень</param>
@@ -37,6 +44,14 @@ namespace Application.TaskService
             IEnumerable<Guid> nextLevels);
 
         /// <summary>
+        ///     Удалить уровень из базы данных
+        /// </summary>
+        /// <param name="topicId">Id удаляемой темы</param>
+        /// <param name="levelId">Id удаляемого уровня</param>
+        /// <exception cref="ArgumentException">Id темы или уровня не найдены</exception>
+        Result<Exception> DeleteLevel(Guid topicId, Guid levelId);
+
+        /// <summary>
         ///     Добавить шаблонный генератор в базу данных
         /// </summary>
         /// <param name="topicId">Id темы, в которую добавится генератор</param>
@@ -48,7 +63,7 @@ namespace Application.TaskService
         /// <param name="streak">Необходимое количество подряд правильно решенных задач для прохождения</param>
         /// <returns>Id добавленного генератора</returns>
         /// <exception cref="ArgumentException">Id темы или уровня не найдены</exception>
-        Guid AddTemplateGenerator(
+        Result<Guid, Exception> AddTemplateGenerator(
             Guid topicId,
             Guid levelId,
             string template,
@@ -56,6 +71,15 @@ namespace Application.TaskService
             string rightAnswer,
             IEnumerable<string> hints,
             int streak);
+
+        /// <summary>
+        ///     Удалить генератор из базы данных
+        /// </summary>
+        /// <param name="topicId">Id удаляемой темы</param>
+        /// <param name="levelId">Id удаляемого уровня</param>
+        /// <param name="generatorId">Id удаляемого генератора</param>
+        /// <exception cref="ArgumentException">Id темы, уровня или генератора не найдены</exception>
+        Result<Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId);
 
         /// <summary>
         ///     Получить задачу, созданную генератором с данными аргументами 

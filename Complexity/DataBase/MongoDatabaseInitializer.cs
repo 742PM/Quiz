@@ -31,12 +31,11 @@ namespace DataBase
         {
             username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
             password = password ?? Environment.GetEnvironmentVariable(MongoPassword);
-            var mongoConnectionString = Environment.GetEnvironmentVariable("COMPLEXITY_MONGO_CONNECTION_STRING") ?? "mongodb://localhost:27017";
-            var obsoleteConnectionString = $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
+            var connectionString = $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
                                    "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
                                    "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
                                    $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
-            var client = new MongoClient(mongoConnectionString);
+            var client = new MongoClient(connectionString);
             return client.GetDatabase("QuizDatabase");
         }
 

@@ -29,6 +29,11 @@ namespace Application.TaskService
                 .Id;
         }
 
+        public Result<Exception> DeleteTopic(Guid topicId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Result<Guid, Exception> AddEmptyLevel(
             Guid topicId,
             string description,
@@ -42,7 +47,12 @@ namespace Application.TaskService
                 .Id;
         }
 
-        public Guid AddTemplateGenerator(
+        public Result<Exception> DeleteLevel(Guid topicId, Guid levelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result<Guid, Exception> AddTemplateGenerator(
             Guid topicId,
             Guid levelId,
             string template,
@@ -66,6 +76,11 @@ namespace Application.TaskService
                         rightAnswer,
                         streak))
                 .Id;
+        }
+
+        public Result<Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            throw new NotImplementedException();
         }
 
         public Task RenderTask(

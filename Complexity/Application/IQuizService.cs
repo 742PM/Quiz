@@ -29,7 +29,7 @@ namespace Application
         ///     Прогресс пользователя в текущих теме и уровне
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
-        Result<double, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
+        Result<LevelProgressInfo, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         ///     Получение задачи из конкретных темы и уровня
@@ -57,6 +57,6 @@ namespace Application
         /// </summary>
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         /// <exception cref="OutOfHintsException">Подсказки отсутствуют или кончились</exception>
-        Result<string, Exception> GetHint(Guid userId);
+        Result<HintInfo, Exception> GetHint(Guid userId);
     }
 }

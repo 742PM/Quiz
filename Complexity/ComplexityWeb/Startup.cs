@@ -39,6 +39,7 @@ namespace ComplexityWebApi
             services.AddTransient(_ => new Random(Guid.NewGuid().GetHashCode()));
 
             services.AddScoped<IQuizService, QuizService>();
+            services.AddScoped<ITaskService, TaskService>();
 
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();

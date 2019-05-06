@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace Application
+namespace Application.Extensions
 {
     public static class LoggerExtensions
     {

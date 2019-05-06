@@ -117,7 +117,7 @@ namespace ComplexityWebApi.Controllers
         ///     <code>
         ///     POST service/addTemplateGenerator/1/0
         ///     {
-        ///        "template": "for (int i = {{from1}}; i &lt {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "template": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
         ///        "rightAnswer": "Θ(n)",
         ///        "hints": [],
@@ -159,7 +159,7 @@ namespace ComplexityWebApi.Controllers
         ///     <code>
         ///     POST service/renderTask
         ///     {
-        ///        "template": "for (int i = {{from1}}; i &lt {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "template": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
         ///        "rightAnswer": "Θ(n)",
         ///        "hints": []

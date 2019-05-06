@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Result;
 
@@ -10,7 +11,7 @@ namespace Application
         /// <summary>
         ///     Получить все темы из базы данных
         /// </summary>
-        IEnumerable<Task> GetAllTopics();
+        IEnumerable<Topic> GetAllTopics();
 
         /// <summary>
         ///     Добавить пустую тему в базу данных

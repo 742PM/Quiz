@@ -13,15 +13,25 @@ namespace Application.Extensions
 
         public static LevelInfo ToInfo(this Level level) => new LevelInfo(level.Id, level.Description);
 
-        public static TaskInfo ToInfo(this Task task) => new TaskInfo(task.Question, task.PossibleAnswers);
+        public static TaskInfo ToInfo(this Task task) =>
+            new TaskInfo(task.Question, task.PossibleAnswers, task.Hints.Length > 0);
 
         public static TaskInfoEntity AsInfoEntity(this Task task) =>
-            new TaskInfoEntity(task.Question, task.Answer, task.Hints, 0, task.ParentGeneratorId, false, Guid.NewGuid());
+            new TaskInfoEntity(
+                task.Question,
+                task.Answer,
+                task.Hints, 
+                0,
+                task.ParentGeneratorId, 
+                false,
+                Guid.NewGuid());
 
         public static LevelProgressEntity ToProgressEntity(this Level level)
         {
-            return new LevelProgressEntity(level.Id,
-                                           level.Generators.ToDictionary(generator => generator.Id, generator => 0), Guid.NewGuid());
+            return new LevelProgressEntity(
+                level.Id,
+                level.Generators.ToDictionary(generator => generator.Id, generator => 0),
+                Guid.NewGuid());
         }
     }
 }

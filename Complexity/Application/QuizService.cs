@@ -44,9 +44,9 @@ namespace Application
         {
             Logger.LogInformation("Showing topics;");
             return taskRepository.GetTopics()
-                                 .Select(topic => topic.ToInfo())
-                                 .LogInfo(ts => $"Found {ts.Count()} topics", Logger)
-                                 .Ok();
+                .Select(topic => topic.ToInfo())
+                .LogInfo(ts => $"Found {ts.Count()} topics", Logger)
+                .Ok();
         }
 
         /// <inheritdoc />
@@ -54,10 +54,11 @@ namespace Application
         {
             Logger.LogInformation($"Getting levels for topic {topicId}");
             if (TopicExists(topicId))
-                return taskRepository.GetLevelsFromTopic(topicId)
-                                     .Select(level => level.ToInfo())
-                                     .LogInfo(ts => $"Found {ts.Count()} levels", Logger)
-                                     .Ok();
+                return taskRepository
+                    .GetLevelsFromTopic(topicId)
+                    .Select(level => level.ToInfo())
+                    .LogInfo(ts => $"Found {ts.Count()} levels", Logger)
+                    .Ok();
             Logger.LogError($"Did not find any levels for {topicId}");
             return new ArgumentException(nameof(topicId));
         }
@@ -67,15 +68,15 @@ namespace Application
         {
             Logger.LogInformation($"Showing Available levels for User @ {userId} at Topic @ {topicId}");
             return !TopicExists(topicId)
-                       ? new ArgumentException(nameof(topicId))
-                       : userRepository.FindOrInsertUser(userId, taskRepository)
-                                       .UserProgressEntity.TopicsProgress[topicId]
-                                       .LogInfo(s => $"Found TopicProgressEntity {s}", Logger)
-                                       .LevelProgressEntities
-                                       .Select(levelProgress =>
-                                                   taskRepository.FindLevel(topicId, levelProgress.Key).ToInfo())
-                                       .LogInfo(s => $"Found {s.Count()} levels", Logger)
-                                       .Ok();
+                ? new ArgumentException(nameof(topicId))
+                : userRepository
+                    .FindOrInsertUser(userId, taskRepository)
+                    .UserProgressEntity.TopicsProgress[topicId]
+                    .LogInfo(s => $"Found TopicProgressEntity {s}", Logger)
+                    .LevelProgressEntities
+                    .Select(levelProgress => taskRepository.FindLevel(topicId, levelProgress.Key).ToInfo())
+                    .LogInfo(s => $"Found {s.Count()} levels", Logger)
+                    .Ok();
         }
 
         /// <inheritdoc />
@@ -87,23 +88,25 @@ namespace Application
                 return new ArgumentException(nameof(levelId));
 
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
-            var solved = user
+            var streaks = user
                 .UserProgressEntity
                 .TopicsProgress[topicId]
                 .LevelProgressEntities[levelId]
-                .CurrentLevelStreaks
-                .Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
-            return (double) solved / taskRepository.GetGeneratorsFromLevel(topicId, levelId).Length;
+                .CurrentLevelStreaks;
+
+            var solved = streaks.Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
+            var total = streaks.Sum(pair => taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
+            return new LevelProgressInfo(total, solved);
         }
 
         /// <inheritdoc />
         public Result<TaskInfo, Exception> GetTask(Guid userId, Guid topicId, Guid levelId)
         {
             if (!TopicExists(topicId))
-                return
-                    new ArgumentException(nameof(topicId))
-                        .LogError(_ => $"No topics exists for {(nameof(userId), userId, nameof(topicId), topicId, nameof(levelId), levelId)}",
-                                  Logger);
+                return new ArgumentException(nameof(topicId))
+                    .LogError(_ =>
+                            $"No topics exists for {(nameof(userId), userId, nameof(topicId), topicId, nameof(levelId), levelId)}",
+                        Logger);
             if (!LevelExists(topicId, levelId))
                 return new ArgumentException(nameof(levelId));
 
@@ -185,11 +188,11 @@ namespace Application
             var currentHintIndex = currentTask.HintsTaken;
 
             if (currentHintIndex >= hints.Length)
-                return new Exception("Out of hints");
+                return new OutOfHintsException("Out of hints");
 
             user = user.With(userProgress.With(currentTask: currentTask.With(hintsTaken: currentTask.HintsTaken + 1)));
             userRepository.Update(user);
-            return hints[currentHintIndex];
+            return new HintInfo(hints[currentHintIndex], currentHintIndex < hints.Length - 1);
         }
 
         private UserEntity GetUserWithNewProgressIfLevelSolved(UserEntity user)
@@ -197,13 +200,13 @@ namespace Application
             var topicId = user.UserProgressEntity.CurrentTopicId;
             var levelId = user.UserProgressEntity.CurrentLevelId;
             var allSolved = taskRepository.GetGeneratorsFromLevel(topicId, levelId)
-                                          .All(generator => IsGeneratorSolved(user, topicId, levelId, generator.Id));
+                .All(generator => IsGeneratorSolved(user, topicId, levelId, generator.Id));
             if (!allSolved)
                 return user;
             var level = taskRepository.GetLevelsFromTopic(topicId)
-                                      .SkipWhile(l => l.Id != levelId)
-                                      .Skip(1)
-                                      .FirstOrDefault();
+                .SkipWhile(l => l.Id != levelId)
+                .Skip(1)
+                .FirstOrDefault();
             if (level is null)
                 return user;
             user.UserProgressEntity.TopicsProgress[topicId].LevelProgressEntities[level.Id] = level.ToProgressEntity();

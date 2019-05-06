@@ -12,6 +12,6 @@ namespace ComplexityWebApi.DTO
 
         [JsonProperty("question")] public string Question { get; }
         [JsonProperty("answers")] public string[] Answers { get; }
-        [JsonProperty("has_hints")] public bool HasHints { get; }
+        [JsonProperty("hasHints")] public bool HasHints { get; }
     }
 }

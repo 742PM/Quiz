@@ -10,7 +10,7 @@ namespace ComplexityWebApi.DTO
             HasNext = hasNext;
         }
 
-        [JsonProperty("hint_text")] public string HintText { get; }
-        [JsonProperty("has_next")] public bool HasNext { get; }
+        [JsonProperty("hintText")] public string HintText { get; }
+        [JsonProperty("hasNext")] public bool HasNext { get; }
     }
 }

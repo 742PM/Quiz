@@ -10,7 +10,7 @@ namespace ComplexityWebApi.DTO
             TasksSolved = tasksSolved;
         }
 
-        [JsonProperty("tasks_count")] public int TasksCount { get; }
-        [JsonProperty("tasks_solved")] public int TasksSolved { get; }
+        [JsonProperty("tasksCount")] public int TasksCount { get; }
+        [JsonProperty("tasksSolved")] public int TasksSolved { get; }
     }
 }

@@ -94,7 +94,7 @@ namespace Application
                 .LevelProgressEntities[levelId]
                 .CurrentLevelStreaks;
 
-            var solved = streaks.Count(pair => IsGeneratorSolved(user, topicId, levelId, pair.Key));
+            var solved = streaks.Sum(pair => pair.Value);
             var total = streaks.Sum(pair => taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
             return new LevelProgressInfo(total, solved);
         }

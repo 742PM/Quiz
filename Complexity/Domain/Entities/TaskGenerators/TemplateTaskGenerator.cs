@@ -122,4 +122,26 @@ namespace Domain.Entities.TaskGenerators
             return template.Render(GetRandomizedProperties(randomSeed));
         }
     }
+
+    public class TemplateLanguage : ScriptObject
+    {
+        public TemplateLanguage(Random random)
+        {
+            Random = random;
+        }
+
+        private static readonly Random TrueRandom = new Random(42);
+
+        public Random Random { get; }
+
+        public static object AnyOf(ScriptArray array)
+        {
+            return array[TrueRandom.Next(array.Count)];
+        }
+        public static object AnyOfR(Random random, ScriptArray array)
+        {
+            return array[random.Next(array.Count)];
+        }
+
+    }
 }

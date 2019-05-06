@@ -106,7 +106,7 @@ namespace ComplexityWebApi.Controllers
         ///     Sample request:
         ///     POST service/addTemplateGenerator/1/0
         ///     {
-        ///        "template": "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "template": "for (int i = {{from1}}; i &lt {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
         ///        "rightAnswer": "Θ(n)",
         ///        "hints": [],
@@ -142,17 +142,17 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     POST service/renderTemplateGenerator
+        ///     POST service/renderTask
         ///     {
-        ///        "template": "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "template": "for (int i = {{from1}}; i &lt {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
         ///        "rightAnswer": "Θ(n)",
         ///        "hints": []
         ///     }
         /// </remarks>
         /// <response code="200"> Возвращает отрендереный Task</response>
-        [HttpPost("renderTemplateGenerator")]
-        public ActionResult RenderTemplateGenerator([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
+        [HttpPost("renderTask")]
+        public ActionResult RenderTask([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
         {
             var task = applicationApi.RenderTask(templateGenerator.Template, templateGenerator.PossibleAnswers,
                 templateGenerator.RightAnswer, templateGenerator.Hints);

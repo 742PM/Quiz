@@ -23,7 +23,11 @@ namespace Domain.Values
             Answer = answer;
         }
 
-        public Task With(string answer) => new Task(Question, Hints, answer, ParentGeneratorId, PossibleAnswers);
+        public Task With(string answer)
+        {
+            return new Task(Question, Hints, answer, ParentGeneratorId, PossibleAnswers);
+        }
+
         public string Question { get; }
 
         public string[] PossibleAnswers { get; }
@@ -32,9 +36,15 @@ namespace Domain.Values
 
         public string Answer { get; }
 
-        public bool Equals(Task other) => (Question, Hints, Answer).Equals((other.Question, other.Hints, other.Answer));
+        public bool Equals(Task other)
+        {
+            return (Question, Hints, Answer).Equals((other.Question, other.Hints, other.Answer));
+        }
 
-        public Task With(string[] answers) => new Task(Question, Hints, Answer, ParentGeneratorId, answers);
+        public Task With(string[] answers)
+        {
+            return new Task(Question, Hints, Answer, ParentGeneratorId, answers);
+        }
 
         public void Deconstruct(
             out string question,
@@ -50,12 +60,24 @@ namespace Domain.Values
 
         public Guid ParentGeneratorId { get; }
 
-        public override bool Equals(object obj) => obj is Task task && Equals(task);
+        public override bool Equals(object obj)
+        {
+            return obj is Task task && Equals(task);
+        }
 
-        public override int GetHashCode() => (Question, Hints, Answer).GetHashCode();
+        public override int GetHashCode()
+        {
+            return (Question, Hints, Answer).GetHashCode();
+        }
 
-        public static bool operator ==(Task left, Task right) => Equals(left, right);
+        public static bool operator ==(Task left, Task right)
+        {
+            return Equals(left, right);
+        }
 
-        public static bool operator !=(Task left, Task right) => !Equals(left, right);
+        public static bool operator !=(Task left, Task right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

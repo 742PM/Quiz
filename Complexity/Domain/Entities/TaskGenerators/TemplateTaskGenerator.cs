@@ -9,18 +9,6 @@ namespace Domain.Entities.TaskGenerators
 {
     public class TemplateTaskGenerator : TaskGenerator
     {
-        public const string LoopVariable = "loop_var";
-        public const string Const = "const";
-        public const string From = "from";
-        public const string To = "to";
-        public const string IterateConstant = "iter";
-        public const int LoopAmount = 8;
-
-        public const int MaxRandomConstantValue = 50;
-        private const int BaseTemplateKeywordsAmount = 5;
-        private readonly char[] letters = Enumerable.Range('a', 26).Select(i => (char) i).ToArray();
-
-
         public TemplateTaskGenerator(
             Guid id,
             string[] possibleAnswers,
@@ -60,12 +48,16 @@ namespace Domain.Entities.TaskGenerators
             var doHintsExist = Hints?.Length > 0;
             var doAnswersExist = PossibleAnswers?.Length > 0;
             var (head, rest) = Template.Parse(
-                new[]
-                    {
-                        new[] {TemplateCode, Answer}.SafeConcat(out var qaKey), Hints?.SafeConcat(out var hintsKey),
-                        PossibleAnswers?.SafeConcat(out var answersKey)
-                    }.Where(s => s != "")
-                    .ToList().SafeConcat(out var key)).Render(so).SafeSplit(key);
+                    new[]
+                        {
+                            new[] {TemplateCode, Answer}.SafeConcat(out var qaKey), Hints?.SafeConcat(out var hintsKey),
+                            PossibleAnswers?.SafeConcat(out var answersKey)
+                        }.Where(s => s != "")
+                        .ToList()
+                        .SafeConcat(out var key))
+                .Render(so)
+                .SafeSplit(key);
+
             var questionAndAnswer = head.SafeSplit(qaKey);
             string[] answers;
             string[] hints;
@@ -88,7 +80,9 @@ namespace Domain.Entities.TaskGenerators
             return (questionAndAnswer[0], questionAndAnswer[1], answers, hints);
         }
 
-        private static ScriptObject CreateScriptObject(Random random) => TemplateLanguage.Create(random);
+        private static ScriptObject CreateScriptObject(Random random)
+        {
+            return TemplateLanguage.Create(random);
+        }
     }
-
 }

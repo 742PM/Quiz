@@ -21,22 +21,15 @@ namespace Tests
         [Test]
         public void ReturnEmptyStringOnEmptyList()
         {
-            new List<string>().SafeConcat()
+            new List<string>().SafeConcat(out _)
             .Should().BeEquivalentTo("");
         }
         [Test]
         public void NotChangeAnythingOnSingleElement()
         {
-            new List<string>(){"a"}.SafeConcat().Should().BeEquivalentTo("a");
+            new List<string>(){"a"}.SafeConcat(out var key).SafeSplit(key).Should().BeEquivalentTo("a");
         }
 
-//        [Test]
-//        public void ReturnFalse_WhenSplitWithNonExistingKey()
-//        {
-//            var strings = new[] { "aa", "bb", "cc" };
-//            var (result, _) = strings.SafeConcat();
-//            result.TrySafeSplit(key: new Splitter.Key(Guid.NewGuid()), out _).Should().BeFalse();
-//        }
 
         [TestCase("a","b")]
         [TestCase("a","b","c","d")]

@@ -27,4 +27,23 @@ namespace Infrastructure
             third = list[2];
         }
     }
+    public static class EnumerableRandomExtensions
+    {
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable, Random random = default)
+        {
+            random = random ?? new Random(42);
+            return enumerable.OrderBy(_ => random.Next());
+        }
+
+        public static IEnumerable<T> TakeRandom<T>(this IEnumerable<T> enumerable, int amount = 1,
+            Random random = default)
+        {
+            return enumerable.Shuffle(random).Take(amount);
+        }
+        public static T TakeRandomOne<T>(this IEnumerable<T> enumerable,
+            Random random = default)
+        {
+            return enumerable.Shuffle(random).Take(1).First();
+        }
+    }
 }

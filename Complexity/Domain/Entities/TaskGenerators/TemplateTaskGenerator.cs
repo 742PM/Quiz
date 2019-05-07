@@ -90,4 +90,5 @@ namespace Domain.Entities.TaskGenerators
 
         private static ScriptObject CreateScriptObject(Random random) => TemplateLanguage.Create(random);
     }
+
 }

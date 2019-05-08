@@ -43,6 +43,7 @@ namespace Domain.Entities.TaskGenerators
             return new Task(question, hints, answer, Id, answers);
         }
 
+
         private (string question, string answer, string[] answers, string[] hints) RenderFields(IScriptObject so)
         {
             var doHintsExist = Hints?.Length > 0;

@@ -19,7 +19,7 @@ namespace Domain.Entities.TaskGenerators
         public const int BaseTemplateKeywordsAmount = 5;
 
         public static readonly IReadOnlyCollection<string> LoopVariables = new[]
-            {"i", "j", "k", "item", "x", "y", "element", "step"};
+            {"i", "j", "k", "x", "y", "step"};
 
         public static readonly IReadOnlyCollection<string> Tos = new[] {"n", "m", "length", "amount", "size"};
 
@@ -59,15 +59,18 @@ namespace Domain.Entities.TaskGenerators
             AddMethods(random, so);
             so.Import(language);
 
-            foreach (var (substitution, value) in GenerateLiteralSubstitutions(random)
-                .Concat(NumericalSubstitutions.Select(kv => (kv.Key, kv.Value(random)))))
+            var substitutionValues = GenerateLiteralSubstitutions(random)
+                                    .Concat(NumericalSubstitutions.Select(kv => (kv.Key, kv.Value(random))));
+
+            foreach (var (substitution, value) in substitutionValues)
                 so.Add(substitution, value);
+
             return so;
         }
 
         private static void AddMethod<TOut, TIn>(Func<Random, TIn, TOut> method, Random random, ScriptObject so)
         {
-            so.Import(method.Method.Name.ToUnderscoreCase(), new Func<TIn, TOut>(item => method(random, item)));
+            so.Import(method.Method.Name.ToSnakeCase(), new Func<TIn, TOut>(item => method(random, item)));
         }
 
         private static void AddMethod<TOut, TIn1, TIn2>(Func<Random, TIn1, TIn2, TOut> method, Random random,

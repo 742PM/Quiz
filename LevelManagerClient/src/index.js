@@ -1,11 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from "react-dom";
+import { hasRole, isAllowed } from './auth';
 
-const title = 'Здесь будет менеджер уровней для Quible';
 
-ReactDOM.render(
-    <div>{title}</div>,
-    document.getElementById('app')
+const admin = {
+    roles: ['user', 'admin'],
+    rights: ['can_create_levels', 'can_create_topics',]
+};
+
+const user = {
+    roles: ['user'],
+    rights: []
+};
+
+const App = ({ user }) => (
+    <div>
+        {hasRole(user, ['user']) && <p>Is User</p>}
+        {hasRole(user, ['admin']) && <p>Is Admin</p>}
+        {isAllowed(user, ['can_create_topics']) && <p>Может создавать Topic</p>}
+        {isAllowed(user, ['can_create_levels']) && <p>Может создавать Level</p>}
+    </div>
 );
 
-module.hot.accept();
+render(
+    <App user={admin} />,
+    document.getElementById('app')
+);

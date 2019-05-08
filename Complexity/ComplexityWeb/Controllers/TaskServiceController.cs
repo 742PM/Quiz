@@ -13,6 +13,22 @@ namespace ComplexityWebApi.Controllers
     public class TaskServiceController : ControllerBase
     {
         private readonly ITaskService applicationApi;
+        
+        /// <summary>
+        ///     Является ли user администратором.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     <code>
+        ///     GET service/isAdmin
+        ///     </code>
+        /// </remarks>
+        /// <response code="200"> true, если пользователь администратор</response>
+        [HttpPost("isAdmin")]
+        public ActionResult IsAdmin([FromBody] UserLoginDTO user)
+        {
+            return Ok(user.Login == "admin" && user.Token == "pass");
+        }
 
         /// <summary>
         ///     Получить список всех Topic.
@@ -133,7 +149,7 @@ namespace ComplexityWebApi.Controllers
                 templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak);
             return Ok(generatorGuid);
         }
-        
+
         /// <summary>
         ///     Удаляет Generator из сервиса.
         /// </summary>

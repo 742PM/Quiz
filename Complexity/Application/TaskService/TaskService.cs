@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Application.Extensions;
 using Application.Repositories;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
@@ -20,8 +21,10 @@ namespace Application.TaskService
             this.random = random;
         }
 
+        /// <inheritdoc />
         public IEnumerable<Topic> GetAllTopics() => taskRepository.GetTopics();
 
+        /// <inheritdoc />
         public Guid AddEmptyTopic(string name, string description)
         {
             return taskRepository
@@ -29,29 +32,36 @@ namespace Application.TaskService
                 .Id;
         }
 
-        public Result<Exception> DeleteTopic(Guid topicId)
+        /// <inheritdoc />
+        public Result<None, Exception> DeleteTopic(Guid topicId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Result<Guid, Exception> AddEmptyLevel(
             Guid topicId,
             string description,
             IEnumerable<Guid> previousLevels,
             IEnumerable<Guid> nextLevels)
         {
-            return taskRepository
-                .InsertLevel(
-                    topicId,
-                    new Level(Guid.NewGuid(), description, new TaskGenerator[0], new Guid[0]))
-                .Id;
+            return !taskRepository.TopicExists(topicId)
+                ? new ArgumentException(nameof(topicId))
+                : taskRepository
+                    .InsertLevel(
+                        topicId,
+                        new Level(Guid.NewGuid(), description, new TaskGenerator[0], new Guid[0]))
+                    .Id
+                    .Ok();
         }
 
-        public Result<Exception> DeleteLevel(Guid topicId, Guid levelId)
+        /// <inheritdoc />
+        public Result<None, Exception> DeleteLevel(Guid topicId, Guid levelId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Result<Guid, Exception> AddTemplateGenerator(
             Guid topicId,
             Guid levelId,
@@ -61,6 +71,11 @@ namespace Application.TaskService
             IEnumerable<string> hints,
             int streak)
         {
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+
             var possibleAnswerArray = possibleAnswers as string[] ?? possibleAnswers.ToArray();
             var hintsArray = hints as string[] ?? hints.ToArray();
 
@@ -78,11 +93,13 @@ namespace Application.TaskService
                 .Id;
         }
 
-        public Result<Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        /// <inheritdoc />
+        public Result<None, Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Task RenderTask(
             string template,
             IEnumerable<string> possibleAnswers,

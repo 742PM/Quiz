@@ -26,7 +26,7 @@ namespace Application.Extensions
                                 .Take(1)
                                 .ToDictionary(
                                     level => level.Id,
-                                    level => level.ToProgressEntity()), topic.Id, Guid.NewGuid())), id:Guid.NewGuid());
+                                    level => level.ToProgressEntity()), topic.Id, Guid.NewGuid())), id: Guid.NewGuid());
 
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
         }
@@ -43,5 +43,11 @@ namespace Application.Extensions
                 .LevelProgressEntities[levelId ?? progress.CurrentLevelId]
                 .CurrentLevelStreaks[generatorId ?? progress.CurrentTask.ParentGeneratorId];
         }
+
+        public static bool TopicExists(this ITaskRepository taskRepository, Guid topicId) =>
+            taskRepository.FindTopic(topicId) != null;
+
+        public static bool LevelExists(this ITaskRepository taskRepository, Guid topicId, Guid levelId) =>
+            taskRepository.FindLevel(topicId, levelId) != null;
     }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using FluentAssertions;
+using Infrastructure;
 using NUnit.Framework;
 
 namespace Tests
@@ -51,7 +53,7 @@ namespace Tests
             var (actualCode, expectedCode) = code ?? (CodeDummy, RegexDummy);
             var (actualAnswer, expectedAnswer) = answer ?? (AnswerDummy, RegexDummy);
             var (actualQuestion, expectedQuestion) = question ?? (QuestionDummy, RegexDummy);
-            
+
             var actual = new TemplateTaskGenerator(IdDummy, actualAnswers, actualCode, actualHints, actualAnswer,
                                                    StreakDummy,
                                                    actualQuestion)
@@ -59,8 +61,8 @@ namespace Tests
             Regex.IsMatch(actual.Answer, expectedAnswer).Should().BeTrue();
             Regex.IsMatch(actual.Code, expectedCode).Should().BeTrue();
             Regex.IsMatch(actual.Question, expectedQuestion).Should().BeTrue();
-            Regex.IsMatch(actual.Answer, expectedAnswer).Should().BeTrue();
-            Regex.IsMatch(actual.Answer, expectedAnswer).Should().BeTrue();
+            actual.PossibleAnswers.Zip(expectedAnswers, Regex.IsMatch).Should().AllBeEquivalentTo(true);
+            actual.Hints.Zip(expectedHints, Regex.IsMatch).Should().AllBeEquivalentTo(true);
         }
 
         [TestCase("{{4+4}}", "8")]
@@ -88,8 +90,11 @@ namespace Tests
                                                                    hints: (new[] { "{{var}}" }, new[] { "4" }),
                                                                    answers: (new[] { "{{var}}" }, new[] { "4" }));
 
+        [TestCase("{{any_of ['m','n','k']}}", "(n|m|k)", TestName = nameof(TemplateLanguage.AnyOf))]
+        [TestCase("{{random 100 200}}", @"\d{3}", TestName = nameof(TemplateLanguage.Random))]
+        public void Render_WhenBuiltInFunctionsAreUsed(string actual, string regex) => TestFieldWithRegex(code: (actual, regex));
+
         [Test]
-        [Category("Creation")]
         public void Throw_WhenHintsOrPossibleAnswers_AreNull()
         {
             Action nullHintsCreation = () =>

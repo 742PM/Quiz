@@ -8,23 +8,7 @@ namespace Domain.Entities.TaskGenerators
 {
     public partial class TemplateLanguage
     {
-        public const string LoopVariable = "loop_var";
-        public const string Const = "const";
-        public const string From = "from";
-        public const string To = "to";
-        public const string SimpleOperation = "simple_operation";
-        public const string IterateConstant = "iter";
-        public const int LoopAmount = 8;
-        public const int MaxRandomConstantValue = 50;
-        public const int BaseTemplateKeywordsAmount = 5;
-
-        public static readonly IReadOnlyCollection<string> LoopVariables = new[]
-            {"i", "j", "k", "x", "y", "step"};
-
-        public static readonly IReadOnlyCollection<string> Tos = new[] {"n", "m", "length", "amount", "size"};
-
-        public static readonly IReadOnlyCollection<string> Operations = new[]
-            {"c++", "k1--", "service.Update()", "var a = Environment.GetVariable(\"VAR\")", "k3++"};
+        
 
 
         private static readonly Dictionary<string, Func<Random, string>> NumericalSubstitutions =
@@ -46,15 +30,14 @@ namespace Domain.Entities.TaskGenerators
                 [SimpleOperation] = Operations.ToArray()
             };
 
-        private TemplateLanguage(Random random)
+        private TemplateLanguage()
         {
-            Random = random;
         }
 
 
         public static ScriptObject Create(Random random)
         {
-            var language = new TemplateLanguage(random);
+            var language = new TemplateLanguage();
             var so = new ScriptObject();
             AddMethods(random, so);
             so.Import(language);

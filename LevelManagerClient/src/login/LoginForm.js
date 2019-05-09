@@ -1,17 +1,25 @@
 import React from 'react';
+import {isAllowed} from "./auth";
 
 const users = [
     {
         username: "admin",
         password: "pass",
         roles: ['user', 'admin'],
-        rights: ['can_edit_levels', 'can_edit_topics',]
+        rights: [
+            'can_edit_levels',
+            'can_edit_topics',
+            'can_edit_generators',
+            'can_render_tasks',
+            'can_get_levels_tasks_generators']
     },
     {
         username: "user",
         password: "pass",
         roles: ['user'],
-        rights: []
+        rights: [
+            'can_render_tasks',
+            'can_get_levels_tasks_generators']
     },
 ]
 

@@ -21,13 +21,11 @@ export class DeleteTopicForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
+                <h3>Удаление Topic</h3>
                 <label>
                     Выберите Topic, который хотите удалить:
                     <select value={this.state.value} onChange={this.handleChange}>
                         <option value="Сложность алгоритмов">Сложность алгоритмов</option>
-                        {/*<option value="lime">Lime</option>*/}
-                        {/*<option value="coconut">Coconut</option>*/}
-                        {/*<option value="mango">Mango</option>*/}
                     </select>
                 </label>
                 <input type="submit" value="Submit"/>

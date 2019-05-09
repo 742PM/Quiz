@@ -23,8 +23,9 @@ export class CreateTopicForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
+                <h3>Добавление Topic</h3>
                 <label>
-                    Topic name:
+                    Имя Topic, который хотите добавить:
                     <textarea value={this.state.value} onChange={this.handleChange} />
                 </label>
                 <input type="submit" value="Create Topic" />

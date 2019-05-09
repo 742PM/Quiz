@@ -26,7 +26,7 @@ namespace Application.TaskService
         /// </summary>
         /// <param name="topicId">Id удаляемой темы</param>
         /// <exception cref="ArgumentException">Id темы не найден</exception>
-        Result<Exception> DeleteTopic(Guid topicId);
+        Result<None, Exception> DeleteTopic(Guid topicId);
 
         /// <summary>
         ///     Добавить пустой уровень в базу данных
@@ -49,7 +49,7 @@ namespace Application.TaskService
         /// <param name="topicId">Id удаляемой темы</param>
         /// <param name="levelId">Id удаляемого уровня</param>
         /// <exception cref="ArgumentException">Id темы или уровня не найдены</exception>
-        Result<Exception> DeleteLevel(Guid topicId, Guid levelId);
+        Result<None, Exception> DeleteLevel(Guid topicId, Guid levelId);
 
         /// <summary>
         ///     Добавить шаблонный генератор в базу данных
@@ -79,7 +79,7 @@ namespace Application.TaskService
         /// <param name="levelId">Id удаляемого уровня</param>
         /// <param name="generatorId">Id удаляемого генератора</param>
         /// <exception cref="ArgumentException">Id темы, уровня или генератора не найдены</exception>
-        Result<Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId);
+        Result<None, Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId);
 
         /// <summary>
         ///     Получить задачу, созданную генератором с данными аргументами 

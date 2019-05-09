@@ -21,20 +21,25 @@ namespace DataBase
         private const string MongoUserName = "COMPLEXITY_MONGO_USERNAME";
         private const string MongoPassword = "COMPLEXITY_MONGO_PASSWORD";
 
-        public static IMongoDatabase CreateMongoDatabase(string databaseName, string username = default,
+        public static IMongoDatabase CreateMongoDatabase(
+            string databaseName,
+            string username = default,
             string password = default)
         {
             SetupDatabase();
             return Connect(databaseName, username, password);
         }
+
         private static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
         {
             username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
             password = password ?? Environment.GetEnvironmentVariable(MongoPassword);
-            var connectionString = $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
-                                   "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
-                                   "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
-                                   $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
+            var connectionString = username is null || password is null
+                ? "mongodb://localhost:27017"
+                : $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
+                  "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
+                  "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
+                  $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
             var client = new MongoClient(connectionString);
             return client.GetDatabase("QuizDatabase");
         }
@@ -58,11 +63,11 @@ namespace DataBase
             AutoRegisterClassMap<Topic>(c => new Topic(c.Id, c.Name, c.Description, c.Levels));
 
             AutoRegisterClassMap<TemplateTaskGenerator>(c => new TemplateTaskGenerator(c.Id, c.PossibleAnswers,
-                                                                                       c.TemplateCode, c.Hints,
-                                                                                       c.Answer, c.Streak));
+                c.TemplateCode, c.Hints,
+                c.Answer, c.Streak));
             AutoRegisterClassMap<TaskGenerator>(cm => cm.SetIsRootClass(true));
             AutoRegisterClassMap<TaskInfoEntity>(c => new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
-                                                                         c.ParentGeneratorId, c.IsSolved, c.Id));
+                c.ParentGeneratorId, c.IsSolved, c.Id));
 
             AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity));
 
@@ -80,7 +85,7 @@ namespace DataBase
             {
                 cm.MapDictionary(c => c.TopicsProgress);
                 cm.MapCreator(c => new UserProgressEntity(c.CurrentTopicId, c.CurrentLevelId, c.UserId,
-                                                          c.TopicsProgress, c.CurrentTask, c.Id));
+                    c.TopicsProgress, c.CurrentTask, c.Id));
             });
         }
 
@@ -88,8 +93,8 @@ namespace DataBase
             this BsonClassMap<TClass> cm,
             Expression<Func<TClass, Dictionary<TKey, TValue>>> memberLambda) =>
             cm.MapMember(memberLambda)
-              .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<TKey, TValue>
-                             >(DictionaryRepresentation.ArrayOfDocuments));
+                .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<TKey, TValue>
+                >(DictionaryRepresentation.ArrayOfDocuments));
 
         private static void AutoRegisterClassMap<TClass>(Expression<Func<TClass, TClass>> creatorLambda) =>
             AutoRegisterClassMap<TClass>(cm => cm.MapCreator(creatorLambda));
@@ -99,12 +104,13 @@ namespace DataBase
             RegisterClassMap<T>(cm =>
             {
                 var propertyInfos = typeof(T)
-                                    .GetProperties(BindingFlags.DeclaredOnly |
-                                                   BindingFlags.Public |
-                                                   BindingFlags.Instance)
-                                    .Cast<MemberInfo>()
-                                    .ToList();
-                foreach (var propertyInfo in propertyInfos) cm.MapMember(propertyInfo);
+                    .GetProperties(BindingFlags.DeclaredOnly |
+                                   BindingFlags.Public |
+                                   BindingFlags.Instance)
+                    .Cast<MemberInfo>()
+                    .ToList();
+                foreach (var propertyInfo in propertyInfos)
+                    cm.MapMember(propertyInfo);
                 additionalAction?.Invoke(cm);
             });
         }

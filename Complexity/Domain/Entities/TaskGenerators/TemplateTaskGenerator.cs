@@ -4,6 +4,7 @@ using Domain.Values;
 using Infrastructure;
 using Scriban;
 using Scriban.Runtime;
+using static Infrastructure.Storage;
 
 namespace Domain.Entities.TaskGenerators
 {
@@ -38,52 +39,22 @@ namespace Domain.Entities.TaskGenerators
         /// <inheritdoc />
         public override Task GetTask(Random randomSeed)
         {
-            var (question, answer, answers, hints) = RenderFields(CreateScriptObject(randomSeed));
+            var so = CreateScriptObject(randomSeed);
 
+            var questionAndAnswerStorage = Concat(TemplateCode, Answer);
+            var hintsStorage = Concat(Hints ?? new string[0]);
+            var answersStorage = Concat(PossibleAnswers ?? new string[0]);
+
+            //var (question, answer) = result[0];
+            var fields = new[] { questionAndAnswerStorage, hintsStorage, answersStorage };
+
+            var ((question, answer), hints, answers)
+                = fields.MapMany(vs => Concat(vs).Map(s => Template.Parse(s).Render(so)).Split())
+                        .Select(r => r.Split().ToArray())
+                        .ToArray();
             return new Task(question, hints, answer, Id, answers);
         }
 
-
-        private (string question, string answer, string[] answers, string[] hints) RenderFields(IScriptObject so)
-        {
-            var doHintsExist = Hints?.Length > 0;
-            var doAnswersExist = PossibleAnswers?.Length > 0;
-            var (head, rest) = Template.Parse(
-                    new[]
-                        {
-                            new[] {TemplateCode, Answer}.SafeConcat(out var qaKey), Hints?.SafeConcat(out var hintsKey),
-                            PossibleAnswers?.SafeConcat(out var answersKey)
-                        }.Where(s => s != "")
-                        .ToList()
-                        .SafeConcat(out var key))
-                .Render(so)
-                .SafeSplit(key);
-
-            var questionAndAnswer = head.SafeSplit(qaKey);
-            string[] answers;
-            string[] hints;
-            if (doHintsExist && doAnswersExist)
-            {
-                answers = rest[1].SafeSplit(answersKey).ToArray();
-                hints = rest[0].SafeSplit(hintsKey).ToArray();
-            }
-            else if (!doHintsExist)
-            {
-                answers = rest[0].SafeSplit(answersKey).ToArray();
-                hints = new string[0];
-            }
-            else
-            {
-                hints = rest[0].SafeSplit(hintsKey).ToArray();
-                answers = new string[0];
-            }
-
-            return (questionAndAnswer[0], questionAndAnswer[1], answers, hints);
-        }
-
-        private static ScriptObject CreateScriptObject(Random random)
-        {
-            return TemplateLanguage.Create(random);
-        }
+        private static ScriptObject CreateScriptObject(Random random) => TemplateLanguage.Create(random);
     }
 }

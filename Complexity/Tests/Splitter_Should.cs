@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Infrastructure;
 using NUnit.Framework;
@@ -7,38 +8,51 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
-    public class Splitter_Should
+    public class Storage_Should
     {
+
         [Test]
-        public void AcceptItself()
+        public void Throw_OnNull()
         {
-            var strings = new[] {"aa", "bb", "cc"};
-            var (s,key) = strings.SafeConcat();
-            if (s.TrySafeSplit(key, out var  xs))
-                xs.Count.Should().Be(strings.Length);
+            Action creation = () => Storage.Concat(null);
+            creation.Should()
+                    .Throw<ArgumentException>();
         }
 
         [Test]
-        public void ReturnEmptyStringOnEmptyList()
+        public void ReturnEmptyArray_OnEmptyArray()
         {
-            new List<string>().SafeConcat(out _)
-            .Should().BeEquivalentTo("");
+            Storage.Concat()
+                   .Split()
+                   .Should()
+                   .BeEquivalentTo(new string[0]);
         }
-        [Test]
-        public void NotChangeAnythingOnSingleElement()
-        {
-            new List<string>(){"a"}.SafeConcat(out var key).SafeSplit(key).Should().BeEquivalentTo("a");
-        }
+        
 
 
         [TestCase("a","b")]
         [TestCase("a","b","c","d")]
         public void SplitAndConcat(params string[] strings)
         {
-            var (s, k) = strings.SafeConcat();
-            s.TrySafeSplit(k, out var result).Should().BeTrue();
-            result.Should().BeEquivalentTo(strings);
+            Storage.Concat(strings)
+                   .Split()
+                   .Should()
+                   .BeEquivalentTo(strings);
+        }
 
+        [Test]
+        public void Map()
+        {
+            Storage.Concat("a", "b").Map(s => s.ToUpper()).Split().Should().BeEquivalentTo("A", "B");
+        }
+
+        [Test]
+        public void MapMany()
+        {
+            new[] { Storage.Concat("a", "b"), Storage.Concat("c", "d") }
+                .MapMany(arr => arr.Select(s => s.ToUpper()).ToArray())
+                .Should()   
+                .BeEquivalentTo(new[] { Storage.Concat("A", "B"), Storage.Concat("C", "D") });
         }
     }
 }

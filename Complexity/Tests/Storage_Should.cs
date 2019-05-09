@@ -47,10 +47,17 @@ namespace Tests
             Storage.Concat("a", "b").Map(s => s.ToUpper()).Split().Should().BeEquivalentTo("A", "B");
         }
 
+        /// <summary>
+        /// Если честно, я черт знает, как описать здесь нужное поведение.
+        /// Функция не должна менять ключ, использованный для склейки. Но в принципе может и менять, если не сильно.
+        /// Оставлю так и буду надеяться, что никто не будет пользоваться этим методом.
+        /// С <see cref="Domain.Entities.TaskGenerators.TemplateTaskGenerator"/> он работает адекватно и верно, так там
+        /// строка меняется вне ключа.
+        /// </summary>
         [Test]
         public void Throw_WhenMappedWithBreakingFunctions()
         {
-            Action mapping = () => Storage.Concat("a", "b").Map(_ => "_");
+            Action mapping = () => Storage.Concat("a", "b","c").Map(_ => "_");
             mapping.Should().Throw<ArgumentException>();
         }
 

@@ -17,7 +17,7 @@ namespace Domain.Entities.TaskGenerators
             string[] hints,
             string answer,
             int streak,
-            string question = "You have the code, guess a question") : base(id, streak)
+            string question = "You have the code, guess a question") : base(id, streak) //TODO: remove default value and fix Database.Filler
         {
             PossibleAnswers = possibleAnswers ?? throw new ArgumentException($"{nameof(possibleAnswers)} are null");
             TemplateCode = templateCode;
@@ -40,7 +40,20 @@ namespace Domain.Entities.TaskGenerators
         [MustBeSaved]
         public string Answer { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Создает <see cref="Task"/> из полей шаблона путем рендеринга подстановок в строках.
+        /// Состояние подстановок обрабатывается последовательно.
+        /// <para>
+        /// Порядок рендеринга такой:
+        /// <list type="bullet">
+        ///<see cref="TemplateCode"/>
+        ///<see cref="Answer"/>
+        ///<see cref="Question"/>
+        ///<see cref="Hints"/>
+        ///<see cref="PossibleAnswers"/>
+        /// </list>
+        /// </para>
+        /// </summary>
         public override Task GetTask(Random randomSeed)
         {
             var so = CreateScriptObject(randomSeed);

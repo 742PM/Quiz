@@ -35,7 +35,11 @@ namespace Application.TaskService
         /// <inheritdoc />
         public Result<None, Exception> DeleteTopic(Guid topicId)
         {
-            throw new NotImplementedException();
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+
+            taskRepository.DeleteTopic(topicId);
+            return new None();
         }
 
         /// <inheritdoc />
@@ -58,7 +62,13 @@ namespace Application.TaskService
         /// <inheritdoc />
         public Result<None, Exception> DeleteLevel(Guid topicId, Guid levelId)
         {
-            throw new NotImplementedException();
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+
+            taskRepository.DeleteLevel(topicId, levelId);
+            return new None();
         }
 
         /// <inheritdoc />
@@ -96,7 +106,15 @@ namespace Application.TaskService
         /// <inheritdoc />
         public Result<None, Exception> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            throw new NotImplementedException();
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+            if (!taskRepository.GeneratorExists(topicId, levelId, generatorId))
+                return new ArgumentException(nameof(generatorId));
+
+            taskRepository.DeleteGenerator(topicId, levelId, generatorId);
+            return new None();
         }
 
         /// <inheritdoc />

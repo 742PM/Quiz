@@ -49,5 +49,14 @@ namespace Application.Extensions
 
         public static bool LevelExists(this ITaskRepository taskRepository, Guid topicId, Guid levelId) =>
             taskRepository.FindLevel(topicId, levelId) != null;
+
+        public static bool GeneratorExists(
+            this ITaskRepository taskRepository,
+            Guid topicId,
+            Guid levelId,
+            Guid generatorId)
+        {
+            return taskRepository.FindGenerator(topicId, levelId, generatorId) != null;
+        }
     }
 }

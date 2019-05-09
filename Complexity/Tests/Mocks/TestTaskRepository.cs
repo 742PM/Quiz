@@ -32,6 +32,7 @@ namespace Tests.Mocks
 
         public Topic InsertTopic(Topic topic) => UpdateTopic(topic);
 
+        [Obsolete]
         void ITaskRepository.UpdateTopic(Topic topic)
         {
             throw new NotImplementedException();
@@ -69,6 +70,7 @@ namespace Tests.Mocks
         public TaskGenerator InsertGenerator(Guid topicId, Guid levelId, TaskGenerator entity) =>
             UpdateGenerator(topicId, levelId, entity);
 
+        [Obsolete]
         public ICollection<TaskGenerator> InsertGenerators(Guid topicId, Guid levelId, ICollection<TaskGenerator> entity)
         {
             throw new NotImplementedException();
@@ -103,16 +105,19 @@ namespace Tests.Mocks
             return FindLevel(topicId, levelId)?.Generators.FirstOrDefault(g => g.Id == generatorId);
         }
 
+        [Obsolete]
         public void DeleteTopic(Guid topicId)
         {
             throw new NotImplementedException();
         }
 
+        [Obsolete]
         public void DeleteLevel(Guid topicId, Guid levelId)
         {
             throw new NotImplementedException();
         }
 
+        [Obsolete]
         public void DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
             throw new NotImplementedException();

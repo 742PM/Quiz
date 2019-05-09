@@ -26,12 +26,17 @@ namespace DataBase
         /// <inheritdoc />
         public Level[] GetNextLevels(Guid topicId, Guid levelId)
         {
-            var topic = topicCollection.Find(t => t.Id == topicId)
+            var topic = topicCollection
+                .Find(t => t.Id == topicId)
                 .FirstOrDefault();
-            var levels = topic?.Levels?.FirstOrDefault(l => l.Id == levelId)
-                             ?.NextLevels ??
-                         new Guid[0];
-            return topic?.Levels?.Where(l => levels.Contains(l.Id))
+            var levels = topic
+                             ?.Levels
+                             ?.FirstOrDefault(l => l.Id == levelId)
+                             ?.NextLevels
+                         ?? new Guid[0];
+            return topic
+                ?.Levels
+                ?.Where(l => levels.Contains(l.Id))
                 .ToArray();
         }
 

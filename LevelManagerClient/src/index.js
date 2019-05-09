@@ -2,19 +2,8 @@ import React from 'react';
 import { render } from "react-dom";
 import {App} from "./app";
 
-const admin = {
-    name: "Admin",
-    roles: ['user', 'admin'],
-    rights: ['can_create_levels', 'can_create_topics',]
-};
-
-const user = {
-    name: "User",
-    roles: ['user'],
-    rights: []
-};
-
+// <App user={admin} />,
 render(
-    <App user={admin} />,
+    <App/>,
     document.getElementById('app')
 );

@@ -4,7 +4,7 @@ import React from "react";
 export const RightsViewer = ({user}) => (
     <div>
         <div>
-            <h4> Role of {user.name}:</h4>
+            <h4> Role of {user.username}:</h4>
             {hasRole(user, ['user']) && <p>Is User</p>}
             {hasRole(user, ['admin']) && <p>Is Admin</p>}
         </div>

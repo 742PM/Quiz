@@ -16,17 +16,21 @@ namespace Domain.Entities.TaskGenerators
             string templateCode,
             string[] hints,
             string answer,
-            int streak) : base(id, streak)
+            int streak,
+            string question = "You have the code, guess a question") : base(id, streak)
         {
-            PossibleAnswers = possibleAnswers;
+            PossibleAnswers = possibleAnswers ?? throw new ArgumentException($"{nameof(possibleAnswers)} are null");
             TemplateCode = templateCode;
-            Hints = hints;
+            Hints = hints ?? throw new ArgumentException($"{nameof(hints)} are null");
             Answer = answer;
+            Question = question;
         }
 
         [MustBeSaved] public string[] PossibleAnswers { get; }
 
         [MustBeSaved] public string TemplateCode { get; }
+
+        [MustBeSaved] public string Question { get; }
 
         [MustBeSaved] public string[] Hints { get; }
 
@@ -41,18 +45,17 @@ namespace Domain.Entities.TaskGenerators
         {
             var so = CreateScriptObject(randomSeed);
 
-            var questionAndAnswerStorage = Concat(TemplateCode, Answer);
+            var simpleFieldsStorage = Concat(TemplateCode, Answer, Question);
             var hintsStorage = Concat(Hints ?? new string[0]);
             var answersStorage = Concat(PossibleAnswers ?? new string[0]);
 
-            //var (question, answer) = result[0];
-            var fields = new[] { questionAndAnswerStorage, hintsStorage, answersStorage };
+            var fields = new[] { simpleFieldsStorage, hintsStorage, answersStorage };
 
-            var ((question, answer), hints, answers)
+            var ((code, answer, question), hints, answers)
                 = fields.MapMany(vs => Concat(vs).Map(s => Template.Parse(s).Render(so)).Split())
                         .Select(r => r.Split().ToArray())
                         .ToArray();
-            return new Task(question, hints, answer, Id, answers);
+            return new Task(code, hints, answer, Id, answers, question);
         }
 
         private static ScriptObject CreateScriptObject(Random random) => TemplateLanguage.Create(random);

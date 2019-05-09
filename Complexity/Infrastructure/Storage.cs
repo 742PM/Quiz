@@ -49,6 +49,7 @@ namespace Infrastructure
 
         public static Storage Concat(params string[] items) => new Storage(items);
 
+        [Pure]
         public string[] Split() => Concatenated?.Length == 0
                                        ? new string[0]
                                        : Concatenated?.Split(Key)?.ToArray() ?? new string[0];
@@ -71,18 +72,20 @@ namespace Infrastructure
             return new Storage(mapped, newKey, Count);
         }
 
-        public override string ToString() => $"Contains {String.Join(", ",Split())};"+$" {nameof(Count)}: {Count}, {nameof(Concatenated)}: {Concatenated}, {nameof(Key)}: {Key}";
+        public override string ToString() => $"Contains {Join(", ", Split())};" +
+                                             $" {nameof(Count)}: {Count}, {nameof(Concatenated)}: {Concatenated}, {nameof(Key)}: {Key}";
 
         [Pure]
         public static Storage[] MapMany(Storage[] items, Func<string[], string[]> mapper) =>
             items.Zip(mapper(items.Select(storage => storage.Concatenated)
-                                  .ToArray()),
-                      (storage, mapped) => new Storage(mapped, storage.Key, storage.Count))
+                                  .ToArray()), mapper(items.Select(storage => storage.Key).ToArray()),
+                      (storage, mappedValue, mappedKey) => new Storage(mappedValue, mappedKey, storage.Count))
                  .ToArray();
     }
 
     public static class StorageExtensions
     {
+        public static T Identity<T>(this T item) => item;
         public static Storage[] MapMany(this Storage[] items, Func<string[], string[]> mapper) =>
             Storage.MapMany(items, mapper);
     }

@@ -14,23 +14,26 @@ namespace Domain.Values
             string[] hints,
             string answer,
             Guid generatorId,
-            string[] possibleAnswers)
+            string[] possibleAnswers,
+            string exactQuestion)
         {
             Question = question;
             ParentGeneratorId = generatorId;
             PossibleAnswers = possibleAnswers;
+            ExactQuestion = exactQuestion;
             Hints = hints;
             Answer = answer;
         }
 
         public Task With(string answer)
         {
-            return new Task(Question, Hints, answer, ParentGeneratorId, PossibleAnswers);
+            return new Task(Question, Hints, answer, ParentGeneratorId, PossibleAnswers, ExactQuestion);
         }
 
         public string Question { get; }
 
         public string[] PossibleAnswers { get; }
+        public string ExactQuestion { get; }
 
         public string[] Hints { get; }
 
@@ -43,7 +46,7 @@ namespace Domain.Values
 
         public Task With(string[] answers)
         {
-            return new Task(Question, Hints, Answer, ParentGeneratorId, answers);
+            return new Task(Question, Hints, Answer, ParentGeneratorId, answers, ExactQuestion);
         }
 
         public void Deconstruct(

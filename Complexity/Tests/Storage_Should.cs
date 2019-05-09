@@ -8,6 +8,7 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
+    // ReSharper disable once InconsistentNaming
     public class Storage_Should
     {
 
@@ -47,12 +48,25 @@ namespace Tests
         }
 
         [Test]
+        public void Throw_WhenMappedWithBreakingFunctions()
+        {
+            Action mapping = () => Storage.Concat("a", "b").Map(_ => "_");
+            mapping.Should().Throw<ArgumentException>();
+        }
+
+        [Test]
+        public void NotChangeAnything_WhenMappedWithIdentity()
+        {
+            Storage.Concat("a", "b").Map(StorageExtensions.Identity).Split().Should().BeEquivalentTo("a", "b");
+        }
+
+        [Test]
         public void MapMany()
         {
             new[] { Storage.Concat("a", "b"), Storage.Concat("c", "d") }
                 .MapMany(arr => arr.Select(s => s.ToUpper()).ToArray())
                 .Should()   
-                .BeEquivalentTo(new[] { Storage.Concat("A", "B"), Storage.Concat("C", "D") });
+                .BeEquivalentTo(Storage.Concat("A", "B"), Storage.Concat("C", "D"));
         }
     }
 }

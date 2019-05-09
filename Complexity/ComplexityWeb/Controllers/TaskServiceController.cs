@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application;
+using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +13,11 @@ namespace ComplexityWebApi.Controllers
     public class TaskServiceController : ControllerBase
     {
         private readonly ITaskService applicationApi;
+
+        public TaskServiceController(ITaskService applicationApi)
+        {
+            this.applicationApi = applicationApi;
+        }
 
         /// <summary>
         ///     Получить список всех Topic.

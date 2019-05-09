@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application;
 using Application.Exceptions;
+using Application.QuizService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Http;

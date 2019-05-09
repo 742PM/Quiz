@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Application;
 using Application.Info;
+using Application.QuizService;
 using Application.Repositories;
 using Application.Selectors;
+using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using DataBase;
@@ -39,6 +40,7 @@ namespace ComplexityWebApi
             services.AddTransient(_ => new Random(Guid.NewGuid().GetHashCode()));
 
             services.AddScoped<IQuizService, QuizService>();
+            services.AddScoped<ITaskService, TaskService>();
 
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();

@@ -34,5 +34,11 @@ namespace Application.Repositories
         TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator entity);
 
         TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId);
+
+        void DeleteTopic(Guid topicId);
+
+        void DeleteLevel(Guid topicId, Guid levelId);
+
+        void DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId);
     }
 }

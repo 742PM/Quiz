@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Result;
 
-namespace Application
+namespace Application.TaskService
 {
     public interface ITaskService
     {

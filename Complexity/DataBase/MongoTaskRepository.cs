@@ -17,7 +17,7 @@ namespace DataBase
         {
             topicCollection = database.GetCollection<Topic>(CollectionName);
         }
-        
+
         public Topic[] GetTopics()
         {
             return topicCollection.Find(t => true).ToList().ToArray();
@@ -27,12 +27,12 @@ namespace DataBase
         public Level[] GetNextLevels(Guid topicId, Guid levelId)
         {
             var topic = topicCollection.Find(t => t.Id == topicId)
-                                       .FirstOrDefault();
+                .FirstOrDefault();
             var levels = topic?.Levels?.FirstOrDefault(l => l.Id == levelId)
-                              ?.NextLevels ??
+                             ?.NextLevels ??
                          new Guid[0];
             return topic?.Levels?.Where(l => levels.Contains(l.Id))
-                        .ToArray();
+                .ToArray();
         }
 
         /// <inheritdoc />
@@ -40,7 +40,6 @@ namespace DataBase
         {
             var topic = topicCollection.Find(t => t.Id == topicId).FirstOrDefault();
             return topic?.Levels;
-
         }
 
         /// <inheritdoc />
@@ -53,7 +52,7 @@ namespace DataBase
 
         /// <inheritdoc />
         public Topic InsertTopic(Topic topic)
-        { 
+        {
             topicCollection.InsertOne(topic);
             return topic;
         }
@@ -119,8 +118,11 @@ namespace DataBase
             }
             return generator;
         }
-        
-        public ICollection<TaskGenerator> InsertGenerators(Guid topicId, Guid levelId, ICollection<TaskGenerator> generators)
+
+        public ICollection<TaskGenerator> InsertGenerators(
+            Guid topicId,
+            Guid levelId,
+            ICollection<TaskGenerator> generators)
         {
             var topic = topicCollection.Find(t => t.Id == topicId).FirstOrDefault();
             var levels = topic?.Levels?.ToList();
@@ -140,7 +142,7 @@ namespace DataBase
 
         /// <inheritdoc />
         public TaskGenerator UpdateGenerator(Guid topicId, Guid levelId, TaskGenerator generator)
-        { 
+        {
             var topic = topicCollection.Find(t => t.Id == topicId).FirstOrDefault();
             var levels = topic?.Levels?.ToList();
             var index = levels?.FindIndex(l => l.Id == levelId) ?? -1;
@@ -168,5 +170,29 @@ namespace DataBase
             return generator;
         }
 
+        public void DeleteTopic(Guid topicId)
+        {
+            topicCollection.DeleteOne(topic => topic.Id == topicId);
+        }
+
+        public void DeleteLevel(Guid topicId, Guid levelId)
+        {
+            var topic = FindTopic(topicId);
+            var levels = topic
+                .Levels
+                .Where(level => level.Id != levelId)
+                .ToArray();
+            UpdateTopic(topic.With(levels: levels));
+        }
+
+        public void DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            var level = FindLevel(topicId, levelId);
+            var generators = level
+                .Generators
+                .Where(generator => generator.Id != generatorId)
+                .ToArray();
+            UpdateLevel(topicId, level.With(generators: generators));
+        }
     }
 }

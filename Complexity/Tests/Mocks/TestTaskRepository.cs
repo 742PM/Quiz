@@ -31,6 +31,7 @@ namespace Tests.Mocks
         }
 
         public Topic InsertTopic(Topic topic) => UpdateTopic(topic);
+
         void ITaskRepository.UpdateTopic(Topic topic)
         {
             throw new NotImplementedException();
@@ -100,6 +101,21 @@ namespace Tests.Mocks
         public TaskGenerator FindGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
             return FindLevel(topicId, levelId)?.Generators.FirstOrDefault(g => g.Id == generatorId);
+        }
+
+        public void DeleteTopic(Guid topicId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteLevel(Guid topicId, Guid levelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

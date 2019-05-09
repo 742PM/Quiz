@@ -1,6 +1,8 @@
 import React from "react";
 import {LoginForm} from "./login/LoginForm";
 import {Welcome} from "./login/Welcom";
+import {Editor} from "./Editor";
+import {RightsViewer} from "./login/RightsViewer";
 
 export class App extends React.Component {
 
@@ -8,7 +10,8 @@ export class App extends React.Component {
         super(props)
         // the initial application state
         this.state = {
-            user: null
+            user: null,
+            rights: false
         }
     }
 
@@ -27,6 +30,14 @@ export class App extends React.Component {
         this.setState({user: null})
     }
 
+    showRights() {
+        this.setState({rights: true})
+    }
+
+    hideRights() {
+        this.setState({rights: false})
+    }
+
     render() {
         // Here we pass relevant state to our child components
         // as props. Note that functions are passed using `bind` to
@@ -36,9 +47,22 @@ export class App extends React.Component {
                 <h1>Quibble level manager</h1>
                 {
                     (this.state.user) ?
-                        <Welcome onSignOut={this.signOut.bind(this)} user={this.state.user}/>
+                        <div>
+                            <Welcome
+                                onSignOut={this.signOut.bind(this)}
+                                rights={this.state.rights}
+                                user={this.state.user}
+                                onRights={
+                                    (this.state.rights) ?
+                                        this.hideRights.bind(this) :
+                                        this.showRights.bind(this)}/>
+                            <Editor user={this.state.user}/>
+                        </div>
                         : <LoginForm onSignIn={this.signIn.bind(this)}/>
                 }
+                {(this.state.rights) ?
+                    <RightsViewer user={this.state.user}/> :
+                    undefined}
             </div>
         )
     }

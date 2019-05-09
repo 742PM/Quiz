@@ -5,7 +5,7 @@ const users = [
         username: "admin",
         password: "pass",
         roles: ['user', 'admin'],
-        rights: ['can_create_levels', 'can_create_topics',]
+        rights: ['can_edit_levels', 'can_edit_topics',]
     },
     {
         username: "user",

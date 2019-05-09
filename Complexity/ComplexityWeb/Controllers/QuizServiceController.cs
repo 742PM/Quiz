@@ -111,7 +111,7 @@ namespace ComplexityWebApi.Controllers
                 case ArgumentException _:
                     return NotFound(error.Message);
                 case AccessDeniedException _:
-                    return Forbid(error.Message);
+                    return Forbid();
                 default:
                     return InternalServerError(error.Message);
             }
@@ -133,7 +133,7 @@ namespace ComplexityWebApi.Controllers
             if (isSuccess)
                 return Ok(Mapper.Map<TaskInfoDTO>(task));
             if (error is AccessDeniedException)
-                return Forbid(error.Message);
+                return Forbid();
             return InternalServerError(error.Message);
         }
 
@@ -155,7 +155,7 @@ namespace ComplexityWebApi.Controllers
             switch (error)
             {
                 case AccessDeniedException _:
-                    return Forbid(error.Message);
+                    return Forbid();
                 case OutOfHintsException _:
                     return NoContent();
                 default:
@@ -180,7 +180,7 @@ namespace ComplexityWebApi.Controllers
             if (isSuccess)
                 return Ok(result);
             if (error is AccessDeniedException)
-                return Forbid(error.Message);
+                return Forbid();
             return InternalServerError(error.Message);
         }
 

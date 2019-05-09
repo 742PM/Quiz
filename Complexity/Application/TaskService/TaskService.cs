@@ -7,6 +7,7 @@ using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using Infrastructure.Result;
+using static Infrastructure.Result.None;
 
 namespace Application.TaskService
 {
@@ -39,7 +40,7 @@ namespace Application.TaskService
                 return new ArgumentException(nameof(topicId));
 
             taskRepository.DeleteTopic(topicId);
-            return new None();
+            return Nothing;
         }
 
         /// <inheritdoc />
@@ -68,7 +69,7 @@ namespace Application.TaskService
                 return new ArgumentException(nameof(levelId));
 
             taskRepository.DeleteLevel(topicId, levelId);
-            return new None();
+            return Nothing;
         }
 
         /// <inheritdoc />
@@ -114,7 +115,7 @@ namespace Application.TaskService
                 return new ArgumentException(nameof(generatorId));
 
             taskRepository.DeleteGenerator(topicId, levelId, generatorId);
-            return new None();
+            return Nothing;
         }
 
         /// <inheritdoc />

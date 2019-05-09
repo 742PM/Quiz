@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using FluentAssertions;
-using Infrastructure;
 using NUnit.Framework;
 
 namespace Tests
@@ -75,6 +74,21 @@ namespace Tests
         public void RenderTemplate_InQuestion(string actual, string expected) =>
             TestField(question: (actual, expected));
 
+        [TestCase("{{any_of ['m','n','k']}}", "(n|m|k)", TestName = nameof(TemplateLanguage.AnyOf))]
+        [TestCase("{{random 100 200}}", @"\d{3}", TestName = nameof(TemplateLanguage.Random))]
+        public void Render_WhenBuiltInFunctionsAreUsed(string actual, string regex) =>
+            TestFieldWithRegex((actual, regex));
+
+        [TestCase("{{from1}}", @"^-?\d{0,2}$", TestName = nameof(TemplateLanguage.From))]
+        [TestCase("{{iter1}}", @"[2,3,4,5,6,7,8]$", TestName = nameof(TemplateLanguage.IterateConstant))]
+        [TestCase("{{loop_var2}}", @"(i)|(j)|(k)|(x)|(y)|(step)", TestName = nameof(TemplateLanguage.LoopVariable))]
+        [TestCase("{{to3}}", @"^(n)|(m)|(length)|(size)|(amount)$", TestName = nameof(TemplateLanguage.To))]
+        [TestCase("{{simple_operation4}}",
+            @"^(c\+\+)|(k1--)|(service\.Update\(\))|(var a = Environment\.GetVariable\(""VAR""\))|(k3\+\+)$", TestName =
+                nameof(TemplateLanguage.SimpleOperation))]
+        [TestCase("{{const5}}", @"^-?\d{0,2}[^0]$", TestName = nameof(TemplateLanguage.Const))]
+        public void Render_WhenBuiltInFieldsAreUsed(string actual, string regex) => TestFieldWithRegex((actual, regex));
+
         [Test]
         public void CreateTemplatelessTasks() => TestField();
 
@@ -89,10 +103,6 @@ namespace Tests
                                                                    answer: ("{{var}}", "4"), question: ("{{var}}", "4"),
                                                                    hints: (new[] { "{{var}}" }, new[] { "4" }),
                                                                    answers: (new[] { "{{var}}" }, new[] { "4" }));
-
-        [TestCase("{{any_of ['m','n','k']}}", "(n|m|k)", TestName = nameof(TemplateLanguage.AnyOf))]
-        [TestCase("{{random 100 200}}", @"\d{3}", TestName = nameof(TemplateLanguage.Random))]
-        public void Render_WhenBuiltInFunctionsAreUsed(string actual, string regex) => TestFieldWithRegex(code: (actual, regex));
 
         [Test]
         public void Throw_WhenHintsOrPossibleAnswers_AreNull()

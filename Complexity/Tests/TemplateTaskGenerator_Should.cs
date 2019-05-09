@@ -9,6 +9,7 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
+    // ReSharper disable once InconsistentNaming
     public class TemplateTaskGenerator_Should
     {
         private const string CodeDummy = "code";

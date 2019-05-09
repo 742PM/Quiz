@@ -16,10 +16,7 @@ namespace Domain.Entities.TaskGenerators
     public abstract class TaskGenerator : Entity
     {
         /// <inheritdoc />
-        protected TaskGenerator(Guid id, int streak) : base(id)
-        {
-            Streak = streak;
-        }
+        protected TaskGenerator(Guid id, int streak) : base(id) => Streak = streak;
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local MongoDB
         public int Streak { get; private set; }

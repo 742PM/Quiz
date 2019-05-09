@@ -23,12 +23,11 @@ namespace Domain.Entities
 
         public Level[] Levels { get; }
 
-        public Topic With(Guid? id = default,
+        public Topic With(
+            Guid? id = default,
             string name = default,
             string description = default,
-            ICollection<Level> levels = default)
-        {
-            return new Topic(id ?? Id, name ?? Name, description ?? Description, levels ?? Levels);
-        }
+            ICollection<Level> levels = default) =>
+            new Topic(id ?? Id, name ?? Name, description ?? Description, levels ?? Levels);
     }
 }

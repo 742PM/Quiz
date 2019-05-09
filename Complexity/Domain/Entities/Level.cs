@@ -34,10 +34,8 @@ namespace Domain.Entities
             Guid? id = default,
             string description = default,
             ICollection<TaskGenerator> generators = default,
-            Guid[] nextLevels = default)
-        {
-            return new Level(id ?? Id, description ?? Description, generators ?? Generators,
-                nextLevels ?? NextLevels);
-        }
+            Guid[] nextLevels = default) =>
+            new Level(id ?? Id, description ?? Description, generators ?? Generators,
+                      nextLevels ?? NextLevels);
     }
 }

@@ -8,15 +8,23 @@ namespace Domain.Entities.TaskGenerators
 {
     public partial class TemplateLanguage
     {
-        public const string LoopVariable = "loop_var";
-        public const string Const = "const";
-        public const string From = "from";
-        public const string To = "to";
-        public const string SimpleOperation = "simple_operation";
-        public const string IterateConstant = "iter";
-        public const int LoopAmount = 8;
+        [ScriptMemberIgnore] public const string LoopVariable = "loop_var";
+
+        [ScriptMemberIgnore] public const string Const = "const";
+
+        [ScriptMemberIgnore] public const string From = "from";
+
+        [ScriptMemberIgnore] public const string To = "to";
+
+        [ScriptMemberIgnore] public const string SimpleOperation = "simple_operation";
+
+        [ScriptMemberIgnore] public const string IterateConstant = "iter";
+
+        [ScriptMemberIgnore] public const int LoopAmount = 8;
+
         public const int MaxRandomConstantValue = 50;
-        public const int BaseTemplateKeywordsAmount = 5;
+
+        [ScriptMemberIgnore] public const int BaseTemplateKeywordsAmount = 5;
 
         private static readonly Dictionary<string, Func<Random, string>> NumericalSubstitutions =
             new Dictionary<string, Func<Random, string>>
@@ -70,13 +78,13 @@ namespace Domain.Entities.TaskGenerators
         private static void AddMethod<TOut, TIn1, TIn2>(
             Func<Random, TIn1, TIn2, TOut> method,
             Random random,
-            ScriptObject so)
+            IScriptObject so)
         {
             so.Import(method.Method.Name.ToSnakeCase(),
                       new Func<TIn1, TIn2, TOut>((first, second) => method(random, first, second)));
         }
 
-        public static IEnumerable<(string, string)> GenerateLiteralSubstitutions(Random random)
+        private static IEnumerable<(string, string)> GenerateLiteralSubstitutions(Random random)
         {
             var takenValues = new HashSet<string>();
             foreach (var (substitution, values) in PossibleLiteralSubstitutions)

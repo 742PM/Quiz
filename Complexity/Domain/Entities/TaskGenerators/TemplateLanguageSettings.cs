@@ -42,13 +42,13 @@ namespace Domain.Entities.TaskGenerators
             new Dictionary<string, string[]>
             {
                 [LoopVariable] = new[]
-                                 { "i", "j", "k", "x", "y", "step" }.ToArray(),
-                [To] = new[] { "n", "m", "length", "amount", "size" }.ToArray(),
+                                 { "i", "j", "k", "x", "y", "step" },
+                [To] = new[] { "n", "m", "length", "amount", "size" },
                 [SimpleOperation] = new[]
                                     {
                                         "c++", "k1--", "service.Update()", "var a = Environment.GetVariable(\"VAR\")",
                                         "k3++"
-                                    }.ToArray()
+                                    }
             };
 
         private TemplateLanguage() { }

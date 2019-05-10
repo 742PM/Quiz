@@ -106,16 +106,22 @@ namespace Tests
                                                                    answers: (new[] { "{{var}}" }, new[] { "4" }));
 
         [Test]
-        public void Throw_WhenHintsOrPossibleAnswers_AreNull()
+        public void Throw_WhenHintsAreNull()
         {
             Action nullHintsCreation = () =>
                 new TemplateTaskGenerator(IdDummy, null, CodeDummy, ArrayDummy, AnswerDummy, StreakDummy,
                                           QuestionDummy);
+
+            nullHintsCreation.Should().Throw<ArgumentException>("hints can not be null");
+        }
+
+        [Test]
+        public void Throw_WhenPossibleAnswersAreNull()
+        {
             Action nullAnswersCreation = () =>
                 new TemplateTaskGenerator(IdDummy, ArrayDummy, CodeDummy, null, AnswerDummy, StreakDummy,
                                           QuestionDummy);
             nullAnswersCreation.Should().Throw<ArgumentException>("answers can not be null");
-            nullHintsCreation.Should().Throw<ArgumentException>("hints can not be null");
         }
     }
 }

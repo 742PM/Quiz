@@ -11,14 +11,14 @@ namespace Domain.Values
     public struct Task : IEquatable<Task>
     {
         public Task(
-            string code,
+            string text,
             string[] hints,
             string answer,
             Guid generatorId,
             string[] possibleAnswers,
             string question)
         {
-            Code = code;
+            Text = text;
             ParentGeneratorId = generatorId;
             PossibleAnswers = possibleAnswers;
             Question = question;
@@ -26,9 +26,9 @@ namespace Domain.Values
             Answer = answer;
         }
 
-        public Task With(string answer) => new Task(Code, Hints, answer, ParentGeneratorId, PossibleAnswers, Question);
+        public Task With(string answer) => new Task(Text, Hints, answer, ParentGeneratorId, PossibleAnswers, Question);
 
-        public string Code { get; }
+        public string Text { get; }
 
         public string[] PossibleAnswers { get; }
         public string Question { get; }
@@ -37,12 +37,7 @@ namespace Domain.Values
 
         public string Answer { get; }
 
-//        public bool Equals(Task other)
-//        {
-//            return (Code, Hints, Answer, Question, ParentGeneratorId).Equals((other.Code, other.Hints, other.Answer, other.Question, other.ParentGeneratorId));
-//        }
-
-        public Task With(string[] answers) => new Task(Code, Hints, Answer, ParentGeneratorId, answers, Question);
+        public Task With(string[] answers) => new Task(Text, Hints, Answer, ParentGeneratorId, answers, Question);
 
         public void Deconstruct(
             out string question,
@@ -52,7 +47,7 @@ namespace Domain.Values
             out Guid generatorId,
             out string exactQuestion)
         {
-            question = Code;
+            question = Text;
             hints = Hints;
             answer = Answer;
             possibleAnswers = PossibleAnswers;
@@ -65,27 +60,14 @@ namespace Domain.Values
         public override bool Equals(object obj) => obj is Task task && Equals(task);
 
         public bool Equals(Task other) =>
-            string.Equals(Code, other.Code) && PossibleAnswers.SequenceEqual(other.PossibleAnswers) &&
+            string.Equals(Text, other.Text) && PossibleAnswers.SequenceEqual(other.PossibleAnswers) &&
             string.Equals(Question, other.Question) && Hints.SequenceEqual(other.Hints) &&
             string.Equals(Answer, other.Answer) && ParentGeneratorId.Equals(other.ParentGeneratorId);
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = Code != null ? Code.GetHashCode() : 0;
-                hashCode = (hashCode * 397) ^ (PossibleAnswers != null ? PossibleAnswers.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Question != null ? Question.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Hints != null ? Hints.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Answer != null ? Answer.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ ParentGeneratorId.GetHashCode();
-                return hashCode;
-            }
+            return (Text, Hints, Answer, ParentGeneratorId, Question, PossibleAnswers).GetHashCode();
         }
-//        public override int GetHashCode()
-//        {
-//            return (Code, Hints, Answer, ParentGeneratorId, Question,PossibleAnswers).GetHashCode();
-//        }
 
         public static bool operator ==(Task left, Task right) => Equals(left, right);
 

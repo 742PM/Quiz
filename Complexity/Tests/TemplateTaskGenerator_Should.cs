@@ -59,7 +59,7 @@ namespace Tests
                                                    actualQuestion)
                 .GetTask(new Random());
             Regex.IsMatch(actual.Answer, expectedAnswer).Should().BeTrue();
-            Regex.IsMatch(actual.Code, expectedCode).Should().BeTrue();
+            Regex.IsMatch(actual.Text, expectedCode).Should().BeTrue();
             Regex.IsMatch(actual.Question, expectedQuestion).Should().BeTrue();
             actual.PossibleAnswers.Zip(expectedAnswers, Regex.IsMatch).Should().AllBeEquivalentTo(true);
             actual.Hints.Zip(expectedHints, Regex.IsMatch).Should().AllBeEquivalentTo(true);

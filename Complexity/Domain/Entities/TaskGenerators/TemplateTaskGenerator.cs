@@ -13,7 +13,7 @@ namespace Domain.Entities.TaskGenerators
         public TemplateTaskGenerator(
             Guid id,
             string[] possibleAnswers,
-            string templateCode,
+            string text,
             string[] hints,
             string answer,
             int streak,
@@ -21,7 +21,7 @@ namespace Domain.Entities.TaskGenerators
             base(id, streak) //TODO: remove default value and fix Database.Filler
         {
             PossibleAnswers = possibleAnswers ?? throw new ArgumentException($"{nameof(possibleAnswers)} are null");
-            TemplateCode = templateCode;
+            Text = text;
             Hints = hints ?? throw new ArgumentException($"{nameof(hints)} are null");
             Answer = answer;
             Question = question;
@@ -29,7 +29,7 @@ namespace Domain.Entities.TaskGenerators
 
         [MustBeSaved] public string[] PossibleAnswers { get; }
 
-        [MustBeSaved] public string TemplateCode { get; }
+        [MustBeSaved] public string Text { get; }
 
         [MustBeSaved] public string Question { get; }
 
@@ -47,7 +47,7 @@ namespace Domain.Entities.TaskGenerators
         ///     <para>
         ///         Порядок рендеринга такой:
         ///         <list type="bullet">
-        ///             <see cref="TemplateCode" />
+        ///             <see cref="Text" />
         ///             <see cref="Answer" />
         ///             <see cref="Question" />
         ///             <see cref="Hints" />
@@ -59,7 +59,7 @@ namespace Domain.Entities.TaskGenerators
         {
             var so = CreateScriptObject(randomSeed);
 
-            var simpleFieldsStorage = Concat(TemplateCode, Answer, Question);
+            var simpleFieldsStorage = Concat(Text, Answer, Question);
             var hintsStorage = Concat(Hints ?? new string[0]);
             var answersStorage = Concat(PossibleAnswers ?? new string[0]);
 

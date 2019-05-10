@@ -4,42 +4,34 @@ using Domain.Values;
 using Infrastructure;
 using Scriban;
 using Scriban.Runtime;
+using static Infrastructure.Storage;
 
 namespace Domain.Entities.TaskGenerators
 {
     public class TemplateTaskGenerator : TaskGenerator
     {
-        public const string LoopVariable = "loop_var";
-        public const string Const = "const";
-        public const string From = "from";
-        public const string To = "to";
-        public const string IterateConstant = "iter";
-        public const int LoopAmount = 8;
-
-        public const int MaxRandomConstantValue = 50;
-        private const int BaseTemplateKeywordsAmount = 5;
-        private readonly char[] letters = Enumerable.Range('a', 26).Select(i => (char) i).ToArray();
-
-        private readonly Template template;
-
         public TemplateTaskGenerator(
             Guid id,
             string[] possibleAnswers,
             string templateCode,
             string[] hints,
             string answer,
-            int streak) : base(id, streak)
+            int streak,
+            string question = "You have the code, guess a question") :
+            base(id, streak) //TODO: remove default value and fix Database.Filler
         {
-            PossibleAnswers = possibleAnswers;
+            PossibleAnswers = possibleAnswers ?? throw new ArgumentException($"{nameof(possibleAnswers)} are null");
             TemplateCode = templateCode;
-            Hints = hints;
+            Hints = hints ?? throw new ArgumentException($"{nameof(hints)} are null");
             Answer = answer;
-            template = Template.Parse(TemplateCode);
+            Question = question;
         }
 
         [MustBeSaved] public string[] PossibleAnswers { get; }
 
         [MustBeSaved] public string TemplateCode { get; }
+
+        [MustBeSaved] public string Question { get; }
 
         [MustBeSaved] public string[] Hints { get; }
 
@@ -49,31 +41,37 @@ namespace Domain.Entities.TaskGenerators
         [MustBeSaved]
         public string Answer { get; }
 
-        private ScriptObject GetRandomizedProperties(Random random)
+        /// <summary>
+        ///     Создает <see cref="Task" /> из полей шаблона путем рендеринга подстановок в строках.
+        ///     Состояние подстановок обрабатывается последовательно.
+        ///     <para>
+        ///         Порядок рендеринга такой:
+        ///         <list type="bullet">
+        ///             <see cref="TemplateCode" />
+        ///             <see cref="Answer" />
+        ///             <see cref="Question" />
+        ///             <see cref="Hints" />
+        ///             <see cref="PossibleAnswers" />
+        ///         </list>
+        ///     </para>
+        /// </summary>
+        public override Task GetTask(Random randomSeed)
         {
-            var result = new ScriptObject
-            {
-                {LoopVariable, letters[random.Next(0, 25)]},
-                {Const, random.Next(-MaxRandomConstantValue, MaxRandomConstantValue)}
-            };
-            foreach (var i in Enumerable.Range(1, BaseTemplateKeywordsAmount))
-            {
-                result.Add($"{LoopVariable}{i}", letters[random.Next(0, 25)]);
-                result.Add($"{Const}{i}", random.Next(-MaxRandomConstantValue / 2, MaxRandomConstantValue / 2));
-                var fromValue = random.Next(-MaxRandomConstantValue, MaxRandomConstantValue);
-                var toValue = fromValue + random.Next(0, LoopAmount * MaxRandomConstantValue);
-                result.Add($"{From}{i}", fromValue);
-                result.Add($"{To}{i}", "n");
-                result.Add($"{IterateConstant}{i}", random.Next(2, 8));
-            }
+            var so = CreateScriptObject(randomSeed);
 
-            return result;
+            var simpleFieldsStorage = Concat(TemplateCode, Answer, Question);
+            var hintsStorage = Concat(Hints ?? new string[0]);
+            var answersStorage = Concat(PossibleAnswers ?? new string[0]);
+
+            var fields = new[] { simpleFieldsStorage, hintsStorage, answersStorage };
+
+            var ((code, answer, question), hints, answers)
+                = fields.MapMany(vs => Concat(vs).Map(s => Template.Parse(s).Render(so)).Split())
+                        .Select(r => r.Split().ToArray())
+                        .ToArray();
+            return new Task(code, hints, answer, Id, answers, question);
         }
 
-        /// <inheritdoc />
-        public override Task GetTask(Random randomSeed) =>
-            new Task(Randomize(randomSeed), Hints, Answer, Id, PossibleAnswers);
-
-        private string Randomize(Random randomSeed) => template.Render(GetRandomizedProperties(randomSeed));
+        private static ScriptObject CreateScriptObject(Random random) => TemplateLanguage.Create(random);
     }
 }

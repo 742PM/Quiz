@@ -33,8 +33,7 @@ namespace ComplexityWebApi.Controllers
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
             var topics = applicationApi.GetAllTopics();
-            //ToDo new DTO with Levels...
-            return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
+            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
         }
 
         /// <summary>

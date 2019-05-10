@@ -9,6 +9,8 @@ using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using DataBase;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +82,14 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
                 cfg.CreateMap<LevelInfo, LevelInfoDTO>();
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
+                cfg.CreateMap<TaskGenerator, AdminTaskGeneratorDTO>()
+                    //ToDo когда пофиксим api, настроить маппер
+                    .ForMember(x=>x.Answer, x=>x.Ignore())
+                    .ForMember(x=>x.Hints, x=>x.Ignore())
+                    .ForMember(x=>x.Question, x=>x.Ignore())
+                    .ForMember(x=>x.PossibleAnswers, x=>x.Ignore());
+                cfg.CreateMap<Level, AdminLevelDTO>();
+                cfg.CreateMap<Topic, AdminLevelDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();
             });

@@ -199,11 +199,12 @@ namespace Application.QuizService
         {
             var topicId = user.UserProgressEntity.CurrentTopicId;
             var levelId = user.UserProgressEntity.CurrentLevelId;
-            var allSolved = taskRepository.GetGeneratorsFromLevel(topicId, levelId)
-                .All(generator => IsGeneratorSolved(user, topicId, levelId, generator.Id));
-            if (!allSolved)
+            var progress = GetCurrentProgress(user.Id, topicId, levelId).Value;
+            if (progress.TasksSolved < progress.TasksCount)
                 return user;
-            var level = taskRepository.GetLevelsFromTopic(topicId)
+            //TODO: использовать NextLevels когда будет заполнена бд
+            var level = taskRepository
+                .GetLevelsFromTopic(topicId)
                 .SkipWhile(l => l.Id != levelId)
                 .Skip(1)
                 .FirstOrDefault();
@@ -235,7 +236,8 @@ namespace Application.QuizService
             var generatorId = user.UserProgressEntity.CurrentTask.ParentGeneratorId;
             var currentStreak = user.GetCurrentStreak();
             if (!IsGeneratorSolved(user, topicId, levelId, generatorId))
-                user.UserProgressEntity.TopicsProgress[topicId]
+                user.UserProgressEntity
+                    .TopicsProgress[topicId]
                     .LevelProgressEntities[levelId]
                     .CurrentLevelStreaks[generatorId] = updateFunc(currentStreak);
             return user;

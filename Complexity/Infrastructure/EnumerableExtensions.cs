@@ -39,5 +39,26 @@ namespace Infrastructure
         public static T TakeRandomOne<T>(
             this IEnumerable<T> enumerable,
             Random random = default) => enumerable.TakeRandom(random).First();
+
+        public static Dictionary<TKey, TValue> SafeToDictionary<TSource, TKey, TValue>(
+            this IEnumerable<TSource> enumerable,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TValue> valueSelector)
+        {
+            var comparer = new KeyComparer<TSource, TKey>(keySelector);
+            return enumerable
+                .Distinct(comparer)
+                .ToDictionary(keySelector, valueSelector);
+        }
+
+        public static Dictionary<TKey, TSource> SafeToDictionary<TSource, TKey>(
+            this IEnumerable<TSource> enumerable,
+            Func<TSource, TKey> keySelector)
+        {
+            var comparer = new KeyComparer<TSource, TKey>(keySelector);
+            return enumerable
+                .Distinct(comparer)
+                .ToDictionary(keySelector);
+        }
     }
 }

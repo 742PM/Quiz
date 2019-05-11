@@ -2,6 +2,7 @@
 using System.Linq;
 using Application.Repositories;
 using Application.Repositories.Entities;
+using Infrastructure;
 
 namespace Application.Extensions
 {
@@ -15,18 +16,21 @@ namespace Application.Extensions
             var progress = new UserProgressEntity(
                 Guid.NewGuid(),
                 Guid.NewGuid(),
+                userId,
+                id: Guid.NewGuid(),
                 currentTask: null,
-                userId: userId,
                 topicsProgress: taskRepository
                     .GetTopics()
-                    .ToDictionary(
+                    .SafeToDictionary(
                         topic => topic.Id,
                         topic => new TopicProgressEntity(
-                            topic.Levels
+                            topicId: topic.Id,
+                            id: Guid.NewGuid(),
+                            levelProgressEntities: topic.Levels
                                 .Take(1)
-                                .ToDictionary(
+                                .SafeToDictionary(
                                     level => level.Id,
-                                    level => level.ToProgressEntity()), topic.Id, Guid.NewGuid())), id: Guid.NewGuid());
+                                    level => level.ToProgressEntity()))));
 
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
         }

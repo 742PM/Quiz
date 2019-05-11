@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Application.Info;
 using Application.QuizService;
@@ -82,13 +83,10 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
                 cfg.CreateMap<LevelInfo, LevelInfoDTO>();
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
-                cfg.CreateMap<TaskGenerator, AdminTaskGeneratorDTO>()
-                    //ToDo когда пофиксим api, настроить маппер
-                    .ForMember(x=>x.Answer, x=>x.Ignore())
-                    .ForMember(x=>x.Hints, x=>x.Ignore())
-                    .ForMember(x=>x.Question, x=>x.Ignore())
-                    .ForMember(x=>x.PossibleAnswers, x=>x.Ignore());
-                cfg.CreateMap<Level, AdminLevelDTO>();
+                cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>()
+                    .ForMember(x => x.Question, x => x.MapFrom(t => t.Text));
+                cfg.CreateMap<Level, AdminLevelDTO>()
+                    .ForMember(x => x.Generators, x => x.MapFrom(t => t.Generators.Select(s => (TemplateTaskGenerator) s)));
                 cfg.CreateMap<Topic, AdminLevelDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();

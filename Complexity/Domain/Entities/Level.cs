@@ -14,7 +14,7 @@ namespace Domain.Entities
     [Entity]
     public class Level : Entity
     {
-        public Level(Guid id, string description, ICollection<TaskGenerator> generators, Guid[] nextLevels) : base(id)
+        public Level(Guid id, string description, TaskGenerator[] generators, Guid[] nextLevels) : base(id)
         {
             if (nextLevels == null)
                 throw new ArgumentNullException(nameof(nextLevels));
@@ -33,7 +33,7 @@ namespace Domain.Entities
         public Level With(
             Guid? id = default,
             string description = default,
-            ICollection<TaskGenerator> generators = default,
+            TaskGenerator[] generators = default,
             Guid[] nextLevels = default) =>
             new Level(id ?? Id, description ?? Description, generators ?? Generators,
                       nextLevels ?? NextLevels);

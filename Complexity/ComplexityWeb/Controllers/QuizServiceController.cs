@@ -29,11 +29,10 @@ namespace ComplexityWebApi.Controllers
         ///     GET api/topics
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
-        /// <response code="404"> Темы не найдены</response>
         [HttpGet("topics")]
         public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
         {
-            var (_, _, topics) = applicationApi.GetTopicsInfo();
+            var topics = applicationApi.GetTopicsInfo().Value;
             return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
         }
 
@@ -44,8 +43,8 @@ namespace ComplexityWebApi.Controllers
         ///     Sample request:
         ///     GET api/0/levels
         /// </remarks>
-        /// <response code="200"> Возвращает список сложностей</response>
-        /// <response code="404"> Уровни не найдены</response>
+        /// <response code="200"> Возвращает список уровней в теме</response>
+        /// <response code="404"> Id темы не найден</response>
         [HttpGet("{topicId}/levels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetLevels(Guid topicId)
         {
@@ -56,14 +55,14 @@ namespace ComplexityWebApi.Controllers
         }
 
         /// <summary>
-        ///     Возвращает список уровней в теме доступных юзеру.
+        ///     Возвращает список уровней в теме доступных пользователю.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     GET api/0/0/availableLevels
         /// </remarks>
-        /// <response code="200"> Возвращает список сложностей</response>
-        /// <response code="404"> Темы не найдены</response>
+        /// <response code="200"> Возвращает список доступных уровней</response>
+        /// <response code="404"> Id темы не найден</response>
         [HttpGet("{userId}/{topicId}/availableLevels")]
         public ActionResult<IEnumerable<LevelInfoDTO>> GetAvailableLevels(Guid userId, Guid topicId)
         {
@@ -74,14 +73,14 @@ namespace ComplexityWebApi.Controllers
         }
 
         /// <summary>
-        ///     Возвращает прогресс пользователя по текущему Level.
+        ///     Возвращает прогресс пользователя.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     GET api/0/0/0/currentProgress
         /// </remarks>
-        /// <response code="200"> Отношение решенных задач к общему колличеству задач.</response>
-        /// <response code="404"> Не удалось получить прогресс пользователя.</response>
+        /// <response code="200"> Возвращает прогресс пользователя</response>
+        /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
         public ActionResult<LevelProgressInfoDTO> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
@@ -92,14 +91,14 @@ namespace ComplexityWebApi.Controllers
         }
 
         /// <summary>
-        ///     Получить информацию о задании.
+        ///     Получить задачу.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     GET api/1/1/1/task
         /// </remarks>
-        /// <response code="200"> Возвращает информацию о задании</response>
-        /// <response code="404"> Информация о задании не была найдена</response>
+        /// <response code="200"> Возвращает задачу</response>
+        /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpGet("{userId}/{topicId}/{levelId}/task")]
         public ActionResult<TaskInfoDTO> GetTaskInfo(Guid userId, Guid topicId, Guid levelId)
         {
@@ -118,14 +117,14 @@ namespace ComplexityWebApi.Controllers
         }
 
         /// <summary>
-        ///     Возвращает информацию о уровне из такого же состояния (тема + уровень).
+        ///     Возвращает следующую задачу из текущих темы и уровня пользователя.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     GET api/1/nextTask
         /// </remarks>
-        /// <response code="200"> Возвращает информацию следующего уровня</response>
-        /// <response code="404"> Информация о следующем уровне не была найдена</response>
+        /// <response code="200"> Возвращает следующую задачу</response>
+        /// <response code="403"> Данная операция не доступна пользователю</response>
         [HttpGet("{userId}/nextTask")]
         public ActionResult<TaskInfoDTO> GetNextTaskInfo(Guid userId)
         {
@@ -138,14 +137,15 @@ namespace ComplexityWebApi.Controllers
         }
 
         /// <summary>
-        ///     Выдает подсказку на заданный уровень.
+        ///     Возвращает подсказку на текущую задачу.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     GET api/0/getHint
         /// </remarks>
-        /// <response code="200"> Возвращает подсказку на уровень</response>
-        /// <response code="404"> Подсказки закончились</response>
+        /// <response code="200"> Возвращает подсказку на текущую задачу</response>
+        /// <response code="204"> Подсказки закончились</response>
+        /// <response code="403"> Данная операция не доступна пользователю</response>
         [HttpGet("{userId}/hint")]
         public ActionResult<HintInfoDTO> GetHint(Guid userId)
         {
@@ -172,7 +172,7 @@ namespace ComplexityWebApi.Controllers
         ///     "O(1)"
         /// </remarks>
         /// <response code="200"> Возвращает bool верный ли ответ</response>
-        /// <response code="400"> Не удалось получить информацию об ответе</response>
+        /// <response code="403"> Данная операция не доступна пользователю</response>
         [HttpPost("{userId}/sendAnswer")]
         public ActionResult<bool> SendAnswer([FromBody] string answer, Guid userId)
         {

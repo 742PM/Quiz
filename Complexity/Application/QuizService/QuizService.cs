@@ -199,7 +199,7 @@ namespace Application.QuizService
         {
             var topicId = user.UserProgressEntity.CurrentTopicId;
             var levelId = user.UserProgressEntity.CurrentLevelId;
-            var progress = GetCurrentProgress(user.Id, topicId, levelId).Value;
+            var progress = GetProgress(user.Id, topicId, levelId).Value;
             if (progress.TasksSolved < progress.TasksCount)
                 return user;
             //TODO: использовать NextLevels когда будет заполнена бд

@@ -80,7 +80,7 @@ namespace Application.QuizService
         }
 
         /// <inheritdoc />
-        public Result<LevelProgressInfo, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
+        public Result<LevelProgressInfo, Exception> GetProgress(Guid userId, Guid topicId, Guid levelId)
         {
             if (!taskRepository.TopicExists(topicId))
                 return new ArgumentException(nameof(topicId));

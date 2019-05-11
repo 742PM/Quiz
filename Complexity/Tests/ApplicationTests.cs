@@ -93,7 +93,7 @@ namespace Tests
         {
             var id = AddEmptyTopic();
             application
-                .GetCurrentProgress(Guid.NewGuid(), id, Guid.NewGuid())
+                .GetProgress(Guid.NewGuid(), id, Guid.NewGuid())
                 .IsFailure
                 .Should()
                 .BeTrue();
@@ -103,7 +103,7 @@ namespace Tests
         public void GetCurrentProgress_ReturnsFailure_WhenNoTopics()
         {
             application
-                .GetCurrentProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
+                .GetProgress(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
                 .IsFailure
                 .Should()
                 .BeTrue();
@@ -114,7 +114,7 @@ namespace Tests
         {
             var (topicId, levelId) = AddTopicWithLevel();
             application
-                .GetCurrentProgress(Guid.NewGuid(), topicId, levelId)
+                .GetProgress(Guid.NewGuid(), topicId, levelId)
                 .IsSuccess
                 .Should()
                 .BeTrue();

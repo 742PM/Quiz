@@ -8,14 +8,14 @@ export class CreateLevelForm extends React.Component {
             level: ''
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
-        const target = event.target;
-        const name = target.name;
-
+    handleInputChange(event) {
+        const target = event.target
+        const name = target.name
+        const value = event.target.value
         this.setState({
             [name]: value
         });
@@ -32,14 +32,14 @@ export class CreateLevelForm extends React.Component {
                 <h3>Добавление Level</h3>
                 <label>
                     Выберите Topic, в который хотите добавить Level:
-                    <select name="topic" value={this.state.topic} onChange={this.handleChange}>
+                    <select name="topic" value={this.state.topic} onChange={this.handleInputChange}>
                         <option value="Сложность алгоритмов">Сложность алгоритмов</option>
                     </select>
                 </label>
                 <br/>
                 <label>
                     Имя Level, который хотите добавить:
-                    <textarea name="level" value={this.state.level} onChange={this.handleChange} />
+                    <textarea name="level" value={this.state.level} onChange={this.handleInputChange} />
                 </label>
                 <input type="submit" value="Create Level" />
             </form>

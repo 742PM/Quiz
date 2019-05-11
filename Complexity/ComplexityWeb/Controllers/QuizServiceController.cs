@@ -77,11 +77,11 @@ namespace ComplexityWebApi.Controllers
         /// </summary>
         /// <remarks>
         ///     Sample request:
-        ///     GET api/0/0/0/currentProgress
+        ///     GET api/0/0/0/progress
         /// </remarks>
         /// <response code="200"> Возвращает прогресс пользователя</response>
         /// <response code="404"> Id темы или уровня не найдены</response>
-        [HttpGet("{userId}/{topicId}/{levelId}/currentProgress")]
+        [HttpGet("{userId}/{topicId}/{levelId}/progress")]
         public ActionResult<LevelProgressInfoDTO> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId)
         {
             var (isSuccess, _, progress, error) = applicationApi.GetCurrentProgress(userId, topicId, levelId);

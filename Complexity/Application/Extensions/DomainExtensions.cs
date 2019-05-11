@@ -14,7 +14,7 @@ namespace Application.Extensions
         public static LevelInfo ToInfo(this Level level) => new LevelInfo(level.Id, level.Description);
 
         public static TaskInfo ToInfo(this Task task) =>
-            new TaskInfo(task.Text, task.PossibleAnswers, task.Hints.Length > 0);
+            new TaskInfo(task.Question, task.PossibleAnswers, task.Hints.Length > 0, task.Text);
 
         public static TaskInfoEntity AsInfoEntity(this Task task) =>
             new TaskInfoEntity(

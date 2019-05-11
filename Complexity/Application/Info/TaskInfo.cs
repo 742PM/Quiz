@@ -2,11 +2,12 @@
 {
     public class TaskInfo
     {
-        public TaskInfo(string question, string[] answers, bool hasHints)
+        public TaskInfo(string question, string[] answers, bool hasHints, string text)
         {
             Question = question;
             Answers = answers;
             HasHints = hasHints;
+            Text = text;
         }
 
         /// <inheritdoc />
@@ -16,5 +17,6 @@
         public string Question { get; }
         public string[] Answers { get; }
         public bool HasHints { get; }
+        public string Text { get; }
     }
 }

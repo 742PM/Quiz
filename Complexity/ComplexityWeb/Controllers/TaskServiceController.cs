@@ -30,7 +30,7 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
         [HttpGet("topics")]
-        public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
+        public ActionResult<IEnumerable<AdminTopicDTO>> GetTopics()
         {
             var topics = applicationApi.GetAllTopics();
             return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));

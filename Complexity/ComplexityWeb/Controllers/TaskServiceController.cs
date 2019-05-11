@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application;
+using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +14,11 @@ namespace ComplexityWebApi.Controllers
     {
         private readonly ITaskService applicationApi;
 
+        public TaskServiceController(ITaskService applicationApi)
+        {
+            this.applicationApi = applicationApi;
+        }
+
         /// <summary>
         ///     Получить список всех Topic.
         /// </summary>
@@ -25,11 +30,10 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
         [HttpGet("topics")]
-        public ActionResult<IEnumerable<TopicInfoDTO>> GetTopics()
+        public ActionResult<IEnumerable<AdminTopicDTO>> GetTopics()
         {
             var topics = applicationApi.GetAllTopics();
-            //ToDo new DTO with Levels...
-            return Ok(topics.Select(Mapper.Map<TopicInfoDTO>));
+            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
         }
 
         /// <summary>
@@ -130,7 +134,7 @@ namespace ComplexityWebApi.Controllers
         public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] DataBaseTemplateGeneratorWithStreakDTO templateGenerator)
         {
             var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak);
+                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak, templateGenerator.Question);
             return Ok(generatorGuid);
         }
         
@@ -171,7 +175,7 @@ namespace ComplexityWebApi.Controllers
         public ActionResult RenderTask([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
         {
             var task = applicationApi.RenderTask(templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints);
+                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Question);
 
             return Ok(task);
         }

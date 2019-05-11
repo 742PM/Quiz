@@ -4,7 +4,7 @@ using Application.Exceptions;
 using Application.Info;
 using Infrastructure.Result;
 
-namespace Application
+namespace Application.QuizService
 {
     public interface IQuizService
     {
@@ -29,7 +29,7 @@ namespace Application
         ///     Прогресс пользователя в текущих теме и уровне
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
-        Result<LevelProgressInfo, Exception> GetCurrentProgress(Guid userId, Guid topicId, Guid levelId);
+        Result<LevelProgressInfo, Exception> GetProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>
         ///     Получение задачи из конкретных темы и уровня

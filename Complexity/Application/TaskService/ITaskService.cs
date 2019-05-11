@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Result;
 
-namespace Application
+namespace Application.TaskService
 {
     public interface ITaskService
     {
@@ -61,6 +61,7 @@ namespace Application
         /// <param name="rightAnswer">Правильный ответ</param>
         /// <param name="hints">Список подсказок</param>
         /// <param name="streak">Необходимое количество подряд правильно решенных задач для прохождения</param>
+        /// <param name="question">Вопрос</param>
         /// <returns>Id добавленного генератора</returns>
         /// <exception cref="ArgumentException">Id темы или уровня не найдены</exception>
         Result<Guid, Exception> AddTemplateGenerator(
@@ -70,7 +71,7 @@ namespace Application
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
             IEnumerable<string> hints,
-            int streak);
+            int streak, string question);
 
         /// <summary>
         ///     Удалить генератор из базы данных
@@ -88,11 +89,12 @@ namespace Application
         /// <param name="possibleAnswers">Список возможных ответов (включая правильный)</param>
         /// <param name="rightAnswer">Правильный ответ</param>
         /// <param name="hints">Список подсказок</param>
+        /// <param name="question">Вопрос</param>
         /// <returns>Сгенерированная задача</returns>
         Task RenderTask(
             string template,
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
-            IEnumerable<string> hints);
+            IEnumerable<string> hints, string question);
     }
 }

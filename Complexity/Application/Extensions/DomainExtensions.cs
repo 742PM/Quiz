@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Application.Info;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Values;
+using Infrastructure;
 
 namespace Application.Extensions
 {
@@ -14,11 +14,11 @@ namespace Application.Extensions
         public static LevelInfo ToInfo(this Level level) => new LevelInfo(level.Id, level.Description);
 
         public static TaskInfo ToInfo(this Task task) =>
-            new TaskInfo(task.Question, task.PossibleAnswers, task.Hints.Length > 0);
+            new TaskInfo(task.Text, task.PossibleAnswers, task.Hints.Length > 0);
 
         public static TaskInfoEntity AsInfoEntity(this Task task) =>
             new TaskInfoEntity(
-                task.Question,
+                task.Text,
                 task.Answer,
                 task.Hints, 
                 0,
@@ -30,7 +30,7 @@ namespace Application.Extensions
         {
             return new LevelProgressEntity(
                 level.Id,
-                level.Generators.ToDictionary(generator => generator.Id, generator => 0),
+                level.Generators.SafeToDictionary(generator => generator.Id, generator => 0),
                 Guid.NewGuid());
         }
     }

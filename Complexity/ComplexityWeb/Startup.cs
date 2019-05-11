@@ -1,13 +1,17 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using Application;
 using Application.Info;
+using Application.QuizService;
 using Application.Repositories;
 using Application.Selectors;
+using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
 using DataBase;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +43,7 @@ namespace ComplexityWebApi
             services.AddTransient(_ => new Random(Guid.NewGuid().GetHashCode()));
 
             services.AddScoped<IQuizService, QuizService>();
+            services.AddScoped<ITaskService, TaskService>();
 
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();
@@ -78,6 +83,10 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
                 cfg.CreateMap<LevelInfo, LevelInfoDTO>();
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
+                cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
+                cfg.CreateMap<Level, AdminLevelDTO>()
+                    .ForMember(x => x.Generators, x => x.MapFrom(t => t.Generators.Select(s => (TemplateTaskGenerator) s)));
+                cfg.CreateMap<Topic, AdminLevelDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();
             });

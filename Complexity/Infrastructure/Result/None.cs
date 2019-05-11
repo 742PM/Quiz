@@ -1,4 +1,9 @@
 ﻿namespace Infrastructure.Result
 {
-    public class None { }
+    public sealed class None
+    {
+        public static None Nothing => new None();
+
+        private None() { }
+    }
 }

@@ -17,7 +17,7 @@ namespace Domain.Entities.TaskGenerators
             string[] hints,
             string answer,
             int streak,
-            string question = "You have the code, guess a question") :
+            string question) :
             base(id, streak) //TODO: remove default value and fix Database.Filler
         {
             PossibleAnswers = possibleAnswers ?? throw new ArgumentException($"{nameof(possibleAnswers)} are null");

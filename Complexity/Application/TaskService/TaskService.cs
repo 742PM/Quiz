@@ -80,7 +80,7 @@ namespace Application.TaskService
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
             IEnumerable<string> hints,
-            int streak)
+            int streak, string question)
         {
             if (!taskRepository.TopicExists(topicId))
                 return new ArgumentException(nameof(topicId));
@@ -100,7 +100,7 @@ namespace Application.TaskService
                         template,
                         hintsArray,
                         rightAnswer,
-                        streak))
+                        streak, question))
                 .Id;
         }
 
@@ -123,12 +123,12 @@ namespace Application.TaskService
             string template,
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
-            IEnumerable<string> hints)
+            IEnumerable<string> hints, string question)
         {
             var possibleAnswerArray = possibleAnswers as string[] ?? possibleAnswers.ToArray();
             var hintsArray = hints as string[] ?? hints.ToArray();
 
-            return new TemplateTaskGenerator(Guid.Empty, possibleAnswerArray, template, hintsArray, rightAnswer, 1)
+            return new TemplateTaskGenerator(Guid.Empty, possibleAnswerArray, template, hintsArray, rightAnswer, 1, question)
                 .GetTask(random);
         }
     }

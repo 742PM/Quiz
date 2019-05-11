@@ -135,7 +135,7 @@ namespace ComplexityWebApi.Controllers
         public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] DataBaseTemplateGeneratorWithStreakDTO templateGenerator)
         {
             var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak);
+                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak, templateGenerator.Question);
             return Ok(generatorGuid);
         }
         
@@ -176,7 +176,7 @@ namespace ComplexityWebApi.Controllers
         public ActionResult RenderTask([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
         {
             var task = applicationApi.RenderTask(templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints);
+                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Question);
 
             return Ok(task);
         }

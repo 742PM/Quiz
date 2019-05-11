@@ -45,9 +45,9 @@ namespace ComplexityWebApi
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();
 
-            var databaseName = GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable) ?? "ComplexityBot";
-            var username = GetEnvironmentVariable(MongoUsernameEnvironmentVariable) ?? "romutchio";
-            var password = GetEnvironmentVariable(MongoPasswordEnvironmentVariable) ?? "romaha434";
+            var databaseName = GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable);
+            var username = GetEnvironmentVariable(MongoUsernameEnvironmentVariable);
+            var password = GetEnvironmentVariable(MongoPasswordEnvironmentVariable);
             services.AddSingleton(MongoDatabaseInitializer.CreateMongoDatabase(databaseName, username, password));
 
             services.AddTransient<RandomTaskGeneratorSelector>();

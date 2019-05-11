@@ -24,18 +24,18 @@ namespace Domain.Entities
             NextLevels = nextLevels;
             Generators = generators.ToArray();
         }
-        
+
         public Guid[] NextLevels { get; }
         public string Description { get; }
 
         public TaskGenerator[] Generators { get; }
-        
+
         public Level With(
-            Guid? id = default, 
-            string description = default, 
-            ICollection<TaskGenerator> generators = default, 
+            Guid? id = default,
+            string description = default,
+            ICollection<TaskGenerator> generators = default,
             Guid[] nextLevels = default) =>
             new Level(id ?? Id, description ?? Description, generators ?? Generators,
-                nextLevels ?? NextLevels);
+                      nextLevels ?? NextLevels);
     }
 }

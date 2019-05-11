@@ -23,7 +23,8 @@ namespace Domain.Entities
 
         public Level[] Levels { get; }
 
-        public Topic With(Guid? id = default,
+        public Topic With(
+            Guid? id = default,
             string name = default,
             string description = default,
             ICollection<Level> levels = default) =>

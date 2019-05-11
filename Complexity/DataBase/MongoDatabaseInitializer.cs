@@ -63,8 +63,8 @@ namespace DataBase
             AutoRegisterClassMap<Topic>(c => new Topic(c.Id, c.Name, c.Description, c.Levels));
 
             AutoRegisterClassMap<TemplateTaskGenerator>(c => new TemplateTaskGenerator(c.Id, c.PossibleAnswers,
-                c.TemplateCode, c.Hints,
-                c.Answer, c.Streak));
+                c.Text, c.Hints,
+                c.Answer, c.Streak, c.Question));
             AutoRegisterClassMap<TaskGenerator>(cm => cm.SetIsRootClass(true));
             AutoRegisterClassMap<TaskInfoEntity>(c => new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
                 c.ParentGeneratorId, c.IsSolved, c.Id));

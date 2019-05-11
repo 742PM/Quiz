@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Application.Info;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Values;
+using Infrastructure;
 
 namespace Application.Extensions
 {
@@ -30,7 +30,7 @@ namespace Application.Extensions
         {
             return new LevelProgressEntity(
                 level.Id,
-                level.Generators.ToDictionary(generator => generator.Id, generator => 0),
+                level.Generators.SafeToDictionary(generator => generator.Id, generator => 0),
                 Guid.NewGuid());
         }
     }

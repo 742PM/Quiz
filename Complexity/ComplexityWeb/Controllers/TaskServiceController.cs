@@ -4,6 +4,7 @@ using System.Linq;
 using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexityWebApi.Controllers

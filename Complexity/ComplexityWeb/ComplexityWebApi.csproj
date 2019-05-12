@@ -19,6 +19,13 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\DataBase\DataBase.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\dist\main.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\main.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\vendor-manifest.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\vendor.js" />
+  </ItemGroup>
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

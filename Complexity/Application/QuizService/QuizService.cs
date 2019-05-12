@@ -166,8 +166,8 @@ namespace Application.QuizService
             }
 
             user = user.With(
-                userUserProgress.With(
-                    currentTask: currentTask.With(isSolved: true)));
+                userUserProgress.With(currentTask: currentTask.With(isSolved: true)),
+                user.UserRightsEntity);
             user = GetUserWithNewStreakIfNotSolved(user, streak => streak + 1);
             user = GetUserWithNewProgressIfLevelSolved(user);
             userRepository.Update(user);
@@ -190,7 +190,12 @@ namespace Application.QuizService
             if (currentHintIndex >= hints.Length)
                 return new OutOfHintsException("Out of hints");
 
-            user = user.With(userProgress.With(currentTask: currentTask.With(hintsTaken: currentTask.HintsTaken + 1)));
+            user = user.With(
+                userProgress.With(
+                    currentTask: currentTask.With(
+                        hintsTaken: currentTask.HintsTaken + 1)),
+                user.UserRightsEntity);
+            
             userRepository.Update(user);
             return new HintInfo(hints[currentHintIndex], currentHintIndex < hints.Length - 1);
         }
@@ -225,7 +230,7 @@ namespace Application.QuizService
         {
             var taskInfoEntity = task.AsInfoEntity();
             var progress = user.UserProgressEntity.With(topicId, levelId, currentTask: taskInfoEntity);
-            user = user.With(progress);
+            user = user.With(progress, user.UserRightsEntity);
             userRepository.Update(user);
         }
 

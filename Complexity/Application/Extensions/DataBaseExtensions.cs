@@ -32,7 +32,12 @@ namespace Application.Extensions
                                     level => level.Id,
                                     level => level.ToProgressEntity()))));
 
-            return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
+            return userRepository.FindById(userId) ?? 
+                   userRepository.Insert(
+                       new UserEntity(
+                           userId, 
+                           progress, 
+                           UserRightsEntity.CreatePlayerRights()));
         }
 
         public static int GetCurrentStreak(

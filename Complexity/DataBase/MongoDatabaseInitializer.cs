@@ -69,7 +69,8 @@ namespace DataBase
             AutoRegisterClassMap<TaskInfoEntity>(c => new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
                 c.ParentGeneratorId, c.IsSolved, c.Id));
 
-            AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity));
+            AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity, c.UserRightsEntity));
+            AutoRegisterClassMap<UserRightsEntity>(c => UserRightsEntity.CreatePlayerRights());
 
             AutoRegisterClassMap<LevelProgressEntity>(cm =>
             {

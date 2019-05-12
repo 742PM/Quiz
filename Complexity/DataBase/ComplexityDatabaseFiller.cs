@@ -5,7 +5,7 @@ using Domain.Entities.TaskGenerators;
 
 namespace DataBase
 {
-    public class DatabaseFiller
+    public class ComplexityDatabaseFiller : IDatabaseFiller
     {
         private const string Theta = "Θ";
         private const string Sqrt = "√";

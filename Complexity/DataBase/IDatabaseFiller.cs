@@ -1,5 +1,7 @@
-namespace DataBase {
-    public interface IDatabaseFiller {
+namespace DataBase
+{
+    public interface IDatabaseFiller
+    {
         void Fill(string username, string password);
     }
 }

@@ -6,7 +6,7 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            var filler = new ComplexityDatabaseFiller();
+            var filler = new HistoryDatabaseFiller();
             var username = Environment.GetEnvironmentVariable("MONGO_USERNAME");
             if (username == null)
             {

@@ -6,7 +6,8 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            var filler = new HistoryDatabaseFiller();
+            var complexityDatabaseFiller = new ComplexityDatabaseFiller();
+            var historyDatabaseFiller = new HistoryDatabaseFiller();
             var username = Environment.GetEnvironmentVariable("MONGO_USERNAME");
             if (username == null)
             {
@@ -19,7 +20,15 @@ namespace DataBase
                 Console.Write("Password: ");
                 password = Console.ReadLine();
             }
-            filler.Fill(username, password);
+            var repository = CreateRepository(username, password);
+            historyDatabaseFiller.Fill(repository);
+            complexityDatabaseFiller.Fill(repository);
+        }
+
+        private static MongoTaskRepository CreateRepository(string username, string password)
+        {
+            var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", username, password);
+            return new MongoTaskRepository(db);
         }
     }
 }

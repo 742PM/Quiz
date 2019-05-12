@@ -9,24 +9,21 @@ namespace DataBase
         public const string Question =
             "Найдите и запишите порядковые номера терминов, относящихся к другому историческому периоду.";
 
-        public void Fill(string username, string password)
+        public void Fill(MongoTaskRepository repository)
         {
-            var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", username, password);
-            var taskRepo = new MongoTaskRepository(db);
-
             var topic = new Topic(Guid.NewGuid(), "История",
                                   "Описание: в этих заданиях нужно выбрать один вариант ответа", new Level[0]);
 
             var level = new Level(Guid.NewGuid(), "История России", new TaskGenerator[0], new Guid[0]);
 
-            taskRepo.InsertTopic(topic);
-            taskRepo.InsertLevel(topic.Id, level);
+            repository.InsertTopic(topic);
+            repository.InsertLevel(topic.Id, level);
 
             var h1 = new TemplateTaskGenerator(Guid.NewGuid(),
                                                new[] { "Витте", "Канкрин", "Уваров", "Мен­ши­ков А. Д." },
                                                "Ниже приведён ряд имён го­су­дар­ствен­ных деятелей. Все они, за ис­клю­че­ни­ем одного, относятся к XIX в.",
                                                new[] { "Обратите внимание на спо­движ­ников Петра I." },
-                                               "Меншиков А. Д. ", 1, Question);
+                                               "Мен­ши­ков А. Д.", 1, Question);
 
             var h2 = new TemplateTaskGenerator(Guid.NewGuid(),
                                                new[] { "Юрьев день", "Уроч­ные лета", "Пожилое", "Устав­ная грамота" },
@@ -35,7 +32,7 @@ namespace DataBase
                                                1, Question);
 
             var h3 = new TemplateTaskGenerator(Guid.NewGuid(),
-                                               new[] { " помещик", "рядович", "пожилое", "боярин", "закуп" },
+                                               new[] { "помещик", "рядович", "пожилое", "боярин", "закуп" },
                                                "Ниже приведён пе­ре­чень терминов. Все они, за ис­клю­че­ни­ем одного, от­но­сят­ся к пе­ри­о­ду Древнерусского государства.",
                                                new[]
                                                {
@@ -60,7 +57,7 @@ namespace DataBase
                                                },
                                                "Ниже приведён пе­ре­чень терминов. Все они, за ис­клю­че­ни­ем одного, от­но­сят­ся к со­бы­ти­ям XVI—XVII вв.",
                                                new string[0], "ордынский выход", 1, Question);
-            taskRepo.InsertGenerators(topic.Id, level.Id,
+            repository.InsertGenerators(topic.Id, level.Id,
                                       new[]
                                       {
                                           h1,

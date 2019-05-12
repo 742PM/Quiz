@@ -24,7 +24,7 @@ namespace DataBase
         private const string OuterIteration = "{{iter1}}";
         private const string InnerIteration = "{{iter2}}";
 
-        private const string SimpleOperation = "\t{{simple_operation1}}\n";
+        private const string SimpleOperation = "\t{{simple_operation1}}";
         private const string PlusEqual = "+=";
         private const string MultiplyEqual = "*=";
 
@@ -42,19 +42,16 @@ namespace DataBase
         private static readonly string[] StandardDoubleAnswers = { ThetaN, ThetaNLogN, ThetaN2, ThetaN3 };
         private static readonly string[] DifficultDoubleAnswers = { ThetaLog2N, ThetaN, ThetaNLogN, ThetaN2 };
 
-        public void Fill(string username, string password)
+        public void Fill(MongoTaskRepository repository)
         {
-            var db = MongoDatabaseInitializer.CreateMongoDatabase("ComplexityBot", username, password);
-            var taskRepo = new MongoTaskRepository(db);
-
             var topic = new Topic(Guid.NewGuid(), "Сложность алгоритмов",
                 "Описание: Задачи на разные алгоритмы и разные сложности", new Level[0]);
             var singleLoopLevels = new Level(Guid.NewGuid(), "Циклы", new TaskGenerator[0], new Guid[0]);
             var doubleLoopLevels = new Level(Guid.NewGuid(), "Двойные Циклы", new TaskGenerator[0], new Guid[0]);
 
-            taskRepo.InsertTopic(topic);
-            taskRepo.InsertLevel(topic.Id, singleLoopLevels);
-            taskRepo.InsertLevel(topic.Id, doubleLoopLevels);
+            repository.InsertTopic(topic);
+            repository.InsertLevel(topic.Id, singleLoopLevels);
+            repository.InsertLevel(topic.Id, doubleLoopLevels);
 
             var forLoop1 = new TemplateTaskGenerator(Guid.NewGuid(),
                 StandardLoopAnswers,
@@ -92,7 +89,7 @@ namespace DataBase
                 SimpleOperation,
                 new string[0], Theta1, 1, Question);
 
-            taskRepo.InsertGenerators(topic.Id, singleLoopLevels.Id,
+            repository.InsertGenerators(topic.Id, singleLoopLevels.Id,
                 new[]
                 {
                     forLoop1,
@@ -180,7 +177,7 @@ namespace DataBase
                 "\t" + SimpleOperation,
                 new[] { "Арифметическая прогрессия" }, ThetaLog2N, 1, Question);
 
-            taskRepo.InsertGenerators(topic.Id, doubleLoopLevels.Id,
+            repository.InsertGenerators(topic.Id, doubleLoopLevels.Id,
                 new[]
                 {
                     double1,

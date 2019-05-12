@@ -1,7 +1,7 @@
 namespace DataBase
 {
-    public interface IDatabaseFiller
+    public  interface IDatabaseFiller
     {
-        void Fill(string username, string password);
+       void Fill(MongoTaskRepository repository);
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Application.Repositories;
+using Application.Repositories.Entities;
 using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
@@ -13,10 +15,12 @@ namespace ComplexityWebApi.Controllers
     public class TaskServiceController : ControllerBase
     {
         private readonly ITaskService applicationApi;
+        private readonly IUserRepository userRepository;
 
-        public TaskServiceController(ITaskService applicationApi)
+        public TaskServiceController(ITaskService applicationApi, IUserRepository userRepository)
         {
             this.applicationApi = applicationApi;
+            this.userRepository = userRepository;
         }
 
         /// <summary>
@@ -25,14 +29,19 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     GET service/topics
+        ///     GET service/0/topics
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает список тем</response>
-        [HttpGet("topics")]
-        public ActionResult<IEnumerable<AdminTopicDTO>> GetTopics()
+        [HttpGet("{userId}/topics")]
+        public ActionResult<IEnumerable<AdminTopicDTO>> GetTopics(Guid userId)
         {
+            var rights = GetRightsById(userId);
+            if (!rights.CanGetGeneratorsWithLevels)
+                return Forbid();
+
             var topics = applicationApi.GetAllTopics();
+
             return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
         }
 
@@ -42,7 +51,7 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/addTopic
+        ///     POST service/0/addTopic
         ///     {
         ///         "name": "Сложность алгоритмов",
         ///         "description": "Оценка сложностей алгоритмов"
@@ -50,10 +59,15 @@ namespace ComplexityWebApi.Controllers
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Topic</response>
-        [HttpPost("addTopic")]
-        public ActionResult<Guid> AddEmptyTopic([FromBody] TopicWithDescriptionDTO topic)
+        [HttpPost("{userId}/addTopic")]
+        public ActionResult<Guid> AddEmptyTopic([FromBody] TopicWithDescriptionDTO topic, Guid userId)
         {
+            var rights = GetRightsById(userId);
+            if (!rights.CanEditTopics)
+                return Forbid();
+
             var topicGuid = applicationApi.AddEmptyTopic(topic.Name, topic.Description);
+
             return Ok(topicGuid);
         }
 
@@ -63,13 +77,17 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     DELETE service/deleteTopic/1
+        ///     DELETE service/0/deleteTopic/1
         ///     </code>
         /// </remarks>
         /// <response code="200"> Topic был удален</response>
-        [HttpDelete("deleteTopic/{topicId}")]
-        public ActionResult DeleteTopic(Guid topicId)
+        [HttpDelete("{userId}/deleteTopic/{topicId}")]
+        public ActionResult DeleteTopic(Guid userId, Guid topicId)
         {
+            var rights = GetRightsById(userId);
+            if (!rights.CanEditTopics)
+                return Forbid();
+
             var (_, _) = applicationApi.DeleteTopic(topicId);
             return Ok();
         }
@@ -80,7 +98,7 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/addLevel/0
+        ///     POST service/0/addLevel/0
         ///     {
         ///         "description": "Оценка сложностей алгоритмов",
         ///         "next_levels": [0, 1],
@@ -89,10 +107,15 @@ namespace ComplexityWebApi.Controllers
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Level</response>
-        [HttpPost("addLevel/{topicId}")]
-        public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] DataBaseLevelDTO level)
+        [HttpPost("{userId}/addLevel/{topicId}")]
+        public ActionResult<Guid> AddLevel(Guid userId, Guid topicId, [FromBody] DataBaseLevelDTO level)
         {
-            var (levelGuid, _) = applicationApi.AddEmptyLevel(topicId, level.Description, level.PreviousLevels, level.NextLevels);
+            var rights = GetRightsById(userId);
+            if (!rights.CanEditLevels)
+                return Forbid();
+
+            var (levelGuid, _) =
+                applicationApi.AddEmptyLevel(topicId, level.Description, level.PreviousLevels, level.NextLevels);
             return Ok(levelGuid);
         }
 
@@ -102,13 +125,17 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     DELETE service/deleteLevel/1/0
+        ///     DELETE service/0/deleteLevel/1/0
         ///     </code>
         /// </remarks>
         /// <response code="200"> Level был удален</response>
-        [HttpDelete("deleteLevel/{topicId}/{levelId}")]
-        public ActionResult DeleteLevel(Guid topicId, Guid levelId)
+        [HttpDelete("{userId}/deleteLevel/{topicId}/{levelId}")]
+        public ActionResult DeleteLevel(Guid userId, Guid topicId, Guid levelId)
         {
+            var rights = GetRightsById(userId);
+            if (!rights.CanEditLevels)
+                return Forbid();
+
             var (_, _) = applicationApi.DeleteLevel(topicId, levelId);
             return Ok();
         }
@@ -119,7 +146,7 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/addTemplateGenerator/1/0
+        ///     POST service/0/addTemplateGenerator/1/0
         ///     {
         ///        "template": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
@@ -130,27 +157,37 @@ namespace ComplexityWebApi.Controllers
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
-        [HttpPost("addTemplateGenerator/{topicId}/{levelId}")]
-        public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] DataBaseTemplateGeneratorWithStreakDTO templateGenerator)
+        [HttpPost("{userId}/addTemplateGenerator/{topicId}/{levelId}")]
+        public ActionResult<Guid> AddTemplateGenerator(Guid userId, Guid topicId, Guid levelId,
+            [FromBody] DataBaseTemplateGeneratorWithStreakDTO templateGenerator)
         {
-            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak, templateGenerator.Question);
+            var rights = GetRightsById(userId);
+            if (!rights.CanEditGenerators)
+                return Forbid();
+
+            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Template,
+                templateGenerator.PossibleAnswers,
+                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak,
+                templateGenerator.Question);
             return Ok(generatorGuid);
         }
-        
+
         /// <summary>
         ///     Удаляет Generator из сервиса.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     DELETE service/deleteGenerator/1/0/2
+        ///     DELETE service/0/deleteGenerator/1/0/2
         ///     </code>
         /// </remarks>
         /// <response code="200"> Generator был удален</response>
-        [HttpDelete("deleteGenerator/{topicId}/{levelId}/{generatorId}")]
-        public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        [HttpDelete("{userId}/deleteGenerator/{topicId}/{levelId}/{generatorId}")]
+        public ActionResult DeleteGenerator(Guid userId, Guid topicId, Guid levelId, Guid generatorId)
         {
+            var rights = GetRightsById(userId);
+            if (!rights.CanEditGenerators)
+                return Forbid();
             var (_, _) = applicationApi.DeleteGenerator(topicId, levelId, generatorId);
             return Ok();
         }
@@ -161,7 +198,7 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/renderTask
+        ///     POST service/0/renderTask
         ///     {
         ///        "template": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
@@ -171,13 +208,23 @@ namespace ComplexityWebApi.Controllers
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает отрендереный Task</response>
-        [HttpPost("renderTask")]
-        public ActionResult RenderTask([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
+        [HttpPost("{userId}/renderTask")]
+        public ActionResult RenderTask(Guid userId, [FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
         {
+            var rights = GetRightsById(userId);
+            if (!rights.CanRenderTasks)
+                return Forbid();
+
             var task = applicationApi.RenderTask(templateGenerator.Template, templateGenerator.PossibleAnswers,
                 templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Question);
 
             return Ok(task);
+        }
+
+        private UserRightsEntity GetRightsById(Guid userId)
+        {
+            var user = userRepository.FindById(userId);
+            return user.UserRightsEntity;
         }
     }
 }

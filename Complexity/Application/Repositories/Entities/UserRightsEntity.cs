@@ -1,19 +1,20 @@
 using System;
+using System.Collections.Generic;
 using Infrastructure.DDD;
 
 namespace Application.Repositories.Entities
 {
-    public class UserRightsEntity: Entity
+    public class UserRightsEntity : Entity
     {
         private UserRightsEntity(Guid id,
-            bool canPlayOnService, 
-            bool canGetGeneratorsWithLevels, 
-            bool canEditLevels, 
-            bool canEditTopics, 
-            bool canEditGenerators, 
+            bool canPlayInService,
+            bool canGetGeneratorsWithLevels,
+            bool canEditLevels,
+            bool canEditTopics,
+            bool canEditGenerators,
             bool canRenderTasks) : base(id)
         {
-            CanPlayOnService = canPlayOnService;
+            CanPlayInService = canPlayInService;
             CanGetGeneratorsWithLevels = canGetGeneratorsWithLevels;
             CanEditLevels = canEditLevels;
             CanEditTopics = canEditTopics;
@@ -21,7 +22,21 @@ namespace Application.Repositories.Entities
             CanRenderTasks = canRenderTasks;
         }
 
-        public bool CanPlayOnService { get; }
+        public List<string> GetRights()
+        {
+            var rights = new List<string>();
+            
+            if (CanPlayInService) rights.Add("canPlayInService");
+            if (CanEditTopics) rights.Add("canEditTopics");
+            if (CanEditLevels) rights.Add("canEditLevels");
+            if (CanEditGenerators) rights.Add("canEditGenerators");
+            if (CanRenderTasks) rights.Add("canRenderTasks");
+            if (CanRenderTasks) rights.Add("canRenderTasks");
+
+            return rights;
+        }
+
+        public bool CanPlayInService { get; }
         public bool CanGetGeneratorsWithLevels { get; }
         public bool CanEditLevels { get; }
         public bool CanEditTopics { get; }
@@ -31,21 +46,21 @@ namespace Application.Repositories.Entities
         public static UserRightsEntity CreatePlayerRights()
         {
             return new UserRightsEntity(Guid.NewGuid(),
-                true, 
+                true,
                 false,
-                false, 
-                false, 
+                false,
+                false,
                 false,
                 false);
         }
-        
+
         public static UserRightsEntity CreateAdminRights()
         {
             return new UserRightsEntity(Guid.NewGuid(),
-                true, 
                 true,
-                true, 
-                true, 
+                true,
+                true,
+                true,
                 true,
                 true);
         }

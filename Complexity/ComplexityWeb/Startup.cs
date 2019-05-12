@@ -85,7 +85,8 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
                 cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
                 cfg.CreateMap<Level, AdminLevelDTO>()
-                    .ForMember(x => x.Generators, x => x.MapFrom(t => t.Generators.Select(s => (TemplateTaskGenerator) s)));
+                    .ForMember(x => x.Generators,
+                        x => x.MapFrom(t => t.Generators.Select(s => (TemplateTaskGenerator) s)));
                 cfg.CreateMap<Topic, AdminLevelDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();

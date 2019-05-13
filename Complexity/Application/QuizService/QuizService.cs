@@ -91,11 +91,12 @@ namespace Application.QuizService
                 return new ArgumentException(nameof(levelId));
 
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
-            var streaks = user
-                .UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities[levelId]
-                .CurrentLevelStreaks;
+            var levelsProgress = user.GetOrInsertTopicProgress(topicId, taskRepository).LevelProgressEntities;
+
+            if (!levelsProgress.ContainsKey(levelId))
+                return new AccessDeniedException($"User {userId} doesn't have access to level {levelId} in topic {topicId}");
+
+            var streaks = levelsProgress[levelId].CurrentLevelStreaks;
 
             var solved = streaks.Sum(pair => pair.Value);
             var total = streaks.Sum(pair => taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);

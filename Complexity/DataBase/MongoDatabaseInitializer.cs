@@ -70,6 +70,7 @@ namespace DataBase
                 c.ParentGeneratorId, c.IsSolved, c.Id));
 
             AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity));
+            AutoRegisterClassMap<AdminEntity>(c => new AdminEntity(c.Id, c.PasswordHash));
 
             AutoRegisterClassMap<LevelProgressEntity>(cm =>
             {

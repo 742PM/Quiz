@@ -43,7 +43,8 @@ namespace Application.QuizService
         public Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo()
         {
             Logger.LogInformation("Showing topics;");
-            return taskRepository.GetTopics()
+            return taskRepository
+                .GetTopics()
                 .Select(topic => topic.ToInfo())
                 .LogInfo(ts => $"Found {ts.Count()} topics", Logger)
                 .Ok();
@@ -57,7 +58,7 @@ namespace Application.QuizService
                 return taskRepository
                     .GetLevelsFromTopic(topicId)
                     .Select(level => level.ToInfo())
-                    .LogInfo(ts => $"Found {ts.Count()} levels", Logger)
+                    .LogInfo(levels => $"Found {levels.Count()} levels", Logger)
                     .Ok();
             Logger.LogError($"Did not find any levels for {topicId}");
             return new ArgumentException(nameof(topicId));
@@ -67,14 +68,16 @@ namespace Application.QuizService
         public Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId)
         {
             Logger.LogInformation($"Showing Available levels for User @ {userId} at Topic @ {topicId}");
+            var user = userRepository.FindOrInsertUser(userId, taskRepository);
+
             return !taskRepository.TopicExists(topicId)
                 ? new ArgumentException(nameof(topicId))
-                : userRepository
-                    .FindOrInsertUser(userId, taskRepository)
-                    .UserProgressEntity.TopicsProgress[topicId]
-                    .LogInfo(s => $"Found TopicProgressEntity {s}", Logger)
+                : user
+                    .GetOrInsertTopicProgress(topicId, taskRepository)
+                    .LogInfo(topicProgress => $"Found TopicProgressEntity {topicProgress}", Logger)
                     .LevelProgressEntities
-                    .Select(levelProgress => taskRepository.FindLevel(topicId, levelProgress.Key).ToInfo())
+                    .Select(levelProgress => taskRepository.FindLevel(topicId, levelProgress.Key)?.ToInfo())
+                    .Where(level => level != null)
                     .LogInfo(s => $"Found {s.Count()} levels", Logger)
                     .Ok();
         }

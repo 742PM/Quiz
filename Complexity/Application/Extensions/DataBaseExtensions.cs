@@ -23,14 +23,7 @@ namespace Application.Extensions
                     .GetTopics()
                     .SafeToDictionary(
                         topic => topic.Id,
-                        topic => new TopicProgressEntity(
-                            topicId: topic.Id,
-                            id: Guid.NewGuid(),
-                            levelProgressEntities: topic.Levels
-                                .Take(1)
-                                .SafeToDictionary(
-                                    level => level.Id,
-                                    level => level.ToProgressEntity()))));
+                        topic => topic.ToProgressEntity()));
 
             return userRepository.FindById(userId) ?? userRepository.Insert(new UserEntity(userId, progress));
         }
@@ -61,6 +54,16 @@ namespace Application.Extensions
             Guid generatorId)
         {
             return taskRepository.FindGenerator(topicId, levelId, generatorId) != null;
+        }
+
+        public static TopicProgressEntity GetOrInsertTopicProgress(
+            this UserEntity user,
+            Guid topicId,
+            ITaskRepository taskRepository)
+        {
+            if (!user.UserProgressEntity.TopicsProgress.ContainsKey(topicId))
+                user.UserProgressEntity.TopicsProgress[topicId] = taskRepository.FindTopic(topicId).ToProgressEntity();
+            return user.UserProgressEntity.TopicsProgress[topicId];
         }
     }
 }

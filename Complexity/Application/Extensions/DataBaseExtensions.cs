@@ -61,8 +61,10 @@ namespace Application.Extensions
             Guid topicId,
             ITaskRepository taskRepository)
         {
-            if (!user.UserProgressEntity.TopicsProgress.ContainsKey(topicId))
-                user.UserProgressEntity.TopicsProgress[topicId] = taskRepository.FindTopic(topicId).ToProgressEntity();
+            var topicProgress = taskRepository.FindTopic(topicId).ToProgressEntity();
+
+            user.UserProgressEntity.TopicsProgress.TryAdd(topicId, topicProgress);
+
             return user.UserProgressEntity.TopicsProgress[topicId];
         }
     }

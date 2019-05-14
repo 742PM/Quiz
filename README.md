@@ -1,6 +1,12 @@
-# ComplexityBot 
+# Quiz
 
-[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/complexitybot%20-%201%20-%20CI?branchName=master)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=3&branchName=master)
+Quiz Service:
+
+[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/quiz-service%20-%201%20-%20CI?branchName=master)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=16&branchName=master)
+
+Quiz Telegram Bot:
+
+[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/quiz-bot%20-%20CI?branchName=bot_develop)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=15&branchName=bot_develop)
 
 
 

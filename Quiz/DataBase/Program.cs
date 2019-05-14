@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataBase
 {
-    internal class Program
+    internal static class Program
     {
         public static void Main(string[] args)
         {
-            var complexityDatabaseFiller = new ComplexityDatabaseFiller();
-            var historyDatabaseFiller = new HistoryDatabaseFiller();
+            var fillers = new List<IDatabaseFiller> { new ComplexityDatabaseFiller(), new HistoryDatabaseFiller() };
             var username = Environment.GetEnvironmentVariable("MONGO_USERNAME");
             if (username == null)
             {
@@ -21,8 +22,7 @@ namespace DataBase
                 password = Console.ReadLine();
             }
             var repository = CreateRepository(username, password);
-            historyDatabaseFiller.Fill(repository);
-            complexityDatabaseFiller.Fill(repository);
+            fillers.ForEach(r => r.Fill(repository));
         }
 
         private static MongoTaskRepository CreateRepository(string username, string password)

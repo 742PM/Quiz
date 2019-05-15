@@ -131,12 +131,15 @@ namespace Application.Extensions
             UserEntity user,
             Guid topicId)
         {
-            var progress = user
-                .UserProgressEntity
-                .TopicsProgress[topicId]
+            var topicsProgress = user.UserProgressEntity.TopicsProgress;
+
+            if (!topicsProgress.ContainsKey(topicId))
+                return;
+
+            var progress = topicsProgress[topicId]
                 .GetRelevantTopicProgress(taskRepository);
 
-            user.UserProgressEntity.TopicsProgress[topicId] = progress;
+            topicsProgress[topicId] = progress;
 
             userRepository.Update(user);
         }
@@ -148,14 +151,17 @@ namespace Application.Extensions
             Guid topicId,
             Guid levelId)
         {
-            var progress = user
-                .UserProgressEntity
-                .TopicsProgress[topicId]
+            var topicsProgress = user.UserProgressEntity.TopicsProgress;
+
+            if (!topicsProgress.ContainsKey(topicId) ||
+                !topicsProgress[topicId].LevelProgressEntities.ContainsKey(levelId))
+                return;
+
+            var progress = topicsProgress[topicId]
                 .LevelProgressEntities[levelId]
                 .GetRelevantLevelProgress(topicId, taskRepository);
 
-            user.UserProgressEntity
-                .TopicsProgress[topicId]
+            topicsProgress[topicId]
                 .LevelProgressEntities[levelId] = progress;
 
             userRepository.Update(user);

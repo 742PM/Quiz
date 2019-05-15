@@ -57,7 +57,7 @@ namespace Application.Extensions
             return taskRepository.FindGenerator(topicId, levelId, generatorId) != null;
         }
 
-        public static TopicProgressEntity GetOrInsertTopicProgress(
+        public static TopicProgressEntity GetOrCreateTopicProgress(
             this UserEntity user,
             Guid topicId,
             ITaskRepository taskRepository)
@@ -69,22 +69,23 @@ namespace Application.Extensions
             return user.UserProgressEntity.TopicsProgress[topicId];
         }
 
-        public static UserEntity UpdateUserProgress(this UserEntity user, ITaskRepository taskRepository)
+        public static UserProgressEntity GetRelevantUserProgress(
+            this UserProgressEntity userProgress,
+            ITaskRepository taskRepository)
         {
             var topics = taskRepository.GetTopics();
             foreach (var topic in topics)
-                user.UserProgressEntity.TopicsProgress.TryAdd(topic.Id, topic.ToProgressEntity());
+                userProgress.TopicsProgress.TryAdd(topic.Id, topic.ToProgressEntity());
 
             var ids = topics.Select(topic => topic.Id).ToHashSet();
-            var progress = user
-                .UserProgressEntity
+            var progress = userProgress
                 .TopicsProgress
                 .TakeIfIn(ids);
 
-            return user.With(user.UserProgressEntity.With(topicsProgress: progress));
+            return userProgress.With(topicsProgress: progress);
         }
 
-        public static TopicProgressEntity UpdateTopicProgress(
+        public static TopicProgressEntity GetRelevantTopicProgress(
             this TopicProgressEntity topicProgress,
             ITaskRepository taskRepository)
         {
@@ -106,7 +107,7 @@ namespace Application.Extensions
             return topicProgress.With(progress);
         }
 
-        public static LevelProgressEntity UpdateLevelProgress(
+        public static LevelProgressEntity GetRelevantLevelProgress(
             this LevelProgressEntity levelProgress,
             Guid topicId,
             ITaskRepository taskRepository)

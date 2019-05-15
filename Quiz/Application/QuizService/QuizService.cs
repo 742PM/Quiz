@@ -8,6 +8,7 @@ using Application.Repositories;
 using Application.Repositories.Entities;
 using Application.Selectors;
 using Domain.Values;
+using Infrastructure.Extensions;
 using Infrastructure.Result;
 using Microsoft.Extensions.Logging;
 

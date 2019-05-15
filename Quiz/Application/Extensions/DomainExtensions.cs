@@ -4,7 +4,7 @@ using Application.Info;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Values;
-using Infrastructure;
+using Infrastructure.Extensions;
 
 namespace Application.Extensions
 {

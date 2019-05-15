@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Repositories;
 using Application.Repositories.Entities;
-using Infrastructure;
+using Infrastructure.Extensions;
 
 namespace Application.Extensions
 {

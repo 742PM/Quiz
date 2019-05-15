@@ -10,6 +10,7 @@ namespace Application.Extensions
             logger.LogInformation(message(item));
             return item;
         }
+
         public static T LogError<T, TLogged>(this T item, Func<T, string> message, ILogger<TLogged> logger)
         {
             logger.LogError(message(item));

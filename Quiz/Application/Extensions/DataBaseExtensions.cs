@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Repositories;
 using Application.Repositories.Entities;
@@ -66,6 +67,63 @@ namespace Application.Extensions
             user.UserProgressEntity.TopicsProgress.TryAdd(topicId, topicProgress);
 
             return user.UserProgressEntity.TopicsProgress[topicId];
+        }
+
+        public static UserEntity UpdateUserProgress(this UserEntity user, ITaskRepository taskRepository)
+        {
+            var topics = taskRepository.GetTopics();
+            foreach (var topic in topics)
+                user.UserProgressEntity.TopicsProgress.TryAdd(topic.Id, topic.ToProgressEntity());
+
+            var ids = topics.Select(topic => topic.Id).ToHashSet();
+            var progress = user
+                .UserProgressEntity
+                .TopicsProgress
+                .TakeIfIn(ids);
+
+            return user.With(user.UserProgressEntity.With(topicsProgress: progress));
+        }
+
+        public static TopicProgressEntity UpdateTopicProgress(
+            this TopicProgressEntity topicProgress,
+            ITaskRepository taskRepository)
+        {
+            var levels = taskRepository.GetLevelsFromTopic(topicProgress.TopicId);
+            if (levels.Length == 0)
+                return topicProgress.With(new Dictionary<Guid, LevelProgressEntity>());
+
+            var firstLevel = levels[0];
+
+            topicProgress
+                .LevelProgressEntities
+                .TryAdd(firstLevel.Id, firstLevel.ToProgressEntity());
+
+            var ids = levels.Select(level => level.Id).ToHashSet();
+            var progress = topicProgress
+                .LevelProgressEntities
+                .TakeIfIn(ids);
+
+            return topicProgress.With(progress);
+        }
+
+        public static LevelProgressEntity UpdateLevelProgress(
+            this LevelProgressEntity levelProgress,
+            Guid topicId,
+            ITaskRepository taskRepository)
+        {
+            var level = taskRepository.FindLevel(topicId, levelProgress.LevelId);
+            if (level is null)
+                return levelProgress;
+
+            foreach (var generator in level.Generators)
+                levelProgress.CurrentLevelStreaks.TryAdd(generator.Id, 0);
+
+            var ids = level.Generators.Select(generator => generator.Id).ToHashSet();
+            var streaks = levelProgress
+                .CurrentLevelStreaks
+                .TakeIfIn(ids);
+
+            return levelProgress.With(streaks);
         }
     }
 }

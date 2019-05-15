@@ -126,5 +126,51 @@ namespace Application.Extensions
 
             return levelProgress.With(streaks);
         }
+
+        public static void UpdateUserProgress(
+            this IUserRepository userRepository,
+            ITaskRepository taskRepository,
+            UserEntity user)
+        {
+            var progress = user.UserProgressEntity.GetRelevantUserProgress(taskRepository);
+
+            userRepository.Update(user.With(progress));
+        }
+
+        public static void UpdateTopicProgress(
+            this IUserRepository userRepository,
+            ITaskRepository taskRepository,
+            UserEntity user,
+            Guid topicId)
+        {
+            var progress = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .GetRelevantTopicProgress(taskRepository);
+
+            user.UserProgressEntity.TopicsProgress[topicId] = progress;
+
+            userRepository.Update(user);
+        }
+
+        public static void UpdateLevelProgress(
+            this IUserRepository userRepository,
+            ITaskRepository taskRepository,
+            UserEntity user,
+            Guid topicId,
+            Guid levelId)
+        {
+            var progress = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId]
+                .GetRelevantLevelProgress(topicId, taskRepository);
+
+            user.UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId] = progress;
+
+            userRepository.Update(user);
+        }
     }
 }

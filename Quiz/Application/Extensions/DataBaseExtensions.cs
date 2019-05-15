@@ -57,18 +57,6 @@ namespace Application.Extensions
             return taskRepository.FindGenerator(topicId, levelId, generatorId) != null;
         }
 
-        public static TopicProgressEntity GetOrCreateTopicProgress(
-            this UserEntity user,
-            Guid topicId,
-            ITaskRepository taskRepository)
-        {
-            var topicProgress = taskRepository.FindTopic(topicId).ToProgressEntity();
-
-            user.UserProgressEntity.TopicsProgress.TryAdd(topicId, topicProgress);
-
-            return user.UserProgressEntity.TopicsProgress[topicId];
-        }
-
         public static UserProgressEntity GetRelevantUserProgress(
             this UserProgressEntity userProgress,
             ITaskRepository taskRepository)

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application.Extensions;
 using Domain.Entities.TaskGenerators;
+using Infrastructure.Extensions;
 using Infrastructure.Result;
 
 namespace Application.Selectors

@@ -8,6 +8,7 @@ using Application.Repositories;
 using Application.Repositories.Entities;
 using Application.Selectors;
 using Domain.Values;
+using Infrastructure.Extensions;
 using Infrastructure.Result;
 using Microsoft.Extensions.Logging;
 
@@ -43,6 +44,7 @@ namespace Application.QuizService
         public Result<IEnumerable<TopicInfo>, Exception> GetTopicsInfo()
         {
             Logger.LogInformation("Showing topics;");
+
             return taskRepository
                 .GetTopics()
                 .Select(topic => topic.ToInfo())
@@ -54,12 +56,14 @@ namespace Application.QuizService
         public Result<IEnumerable<LevelInfo>, Exception> GetLevels(Guid topicId)
         {
             Logger.LogInformation($"Getting levels for topic {topicId}");
+
             if (taskRepository.TopicExists(topicId))
                 return taskRepository
                     .GetLevelsFromTopic(topicId)
                     .Select(level => level.ToInfo())
                     .LogInfo(levels => $"Found {levels.Count()} levels", Logger)
                     .Ok();
+
             Logger.LogError($"Did not find any levels for {topicId}");
             return new ArgumentException(nameof(topicId));
         }
@@ -68,18 +72,24 @@ namespace Application.QuizService
         public Result<IEnumerable<LevelInfo>, Exception> GetAvailableLevels(Guid userId, Guid topicId)
         {
             Logger.LogInformation($"Showing Available levels for User @ {userId} at Topic @ {topicId}");
+
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 
-            return !taskRepository.TopicExists(topicId)
-                ? new ArgumentException(nameof(topicId))
-                : user
-                    .GetOrInsertTopicProgress(topicId, taskRepository)
-                    .LogInfo(topicProgress => $"Found TopicProgressEntity {topicProgress}", Logger)
-                    .LevelProgressEntities
-                    .Select(levelProgress => taskRepository.FindLevel(topicId, levelProgress.Key)?.ToInfo())
-                    .Where(level => level != null)
-                    .LogInfo(s => $"Found {s.Count()} levels", Logger)
-                    .Ok();
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+
+            userRepository.UpdateUserProgress(taskRepository, user);
+            userRepository.UpdateTopicProgress(taskRepository, user, topicId);
+
+            return user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LogInfo(topicProgress => $"Found TopicProgressEntity {topicProgress}", Logger)
+                .LevelProgressEntities
+                .Select(pair => taskRepository.FindLevel(topicId, pair.Key)?.ToInfo())
+                .Where(level => level != null)
+                .LogInfo(s => $"Found {s.Count()} levels", Logger)
+                .Ok();
         }
 
         /// <inheritdoc />
@@ -91,10 +101,19 @@ namespace Application.QuizService
                 return new ArgumentException(nameof(levelId));
 
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
-            var levelsProgress = user.GetOrInsertTopicProgress(topicId, taskRepository).LevelProgressEntities;
+
+            userRepository.UpdateUserProgress(taskRepository, user);
+            userRepository.UpdateTopicProgress(taskRepository, user, topicId);
+            userRepository.UpdateLevelProgress(taskRepository, user, topicId, levelId);
+
+            var levelsProgress = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities;
 
             if (!levelsProgress.ContainsKey(levelId))
-                return new AccessDeniedException($"User {userId} doesn't have access to level {levelId} in topic {topicId}");
+                return new AccessDeniedException(
+                    $"User {userId} doesn't have access to level {levelId} in topic {topicId}");
 
             var streaks = levelsProgress[levelId].CurrentLevelStreaks;
 
@@ -121,6 +140,8 @@ namespace Application.QuizService
                 return new
                     AccessDeniedException($"User {userId} doesn't have access to level {levelId} in topic {topicId}");
 
+            userRepository.UpdateLevelProgress(taskRepository, user, topicId, levelId);
+
             var streaks = user
                 .UserProgressEntity
                 .TopicsProgress[topicId]
@@ -128,7 +149,8 @@ namespace Application.QuizService
                 .CurrentLevelStreaks;
 
             var (_, isFailure, generator, error) = generatorSelector
-                .SelectGenerator(taskRepository.GetGeneratorsFromLevel(topicId, levelId), streaks);
+                .SelectGenerator(taskRepository
+                    .GetGeneratorsFromLevel(topicId, levelId), streaks);
 
             if (isFailure)
                 return error;
@@ -162,6 +184,7 @@ namespace Application.QuizService
             var userUserProgress = user.UserProgressEntity;
             var currentTask = userUserProgress.CurrentTask;
             Logger.LogInformation($"User's current task is {currentTask}");
+
             if (currentTask.Answer != answer)
             {
                 user = GetUserWithNewStreakIfNotSolved(user, _ => 0);
@@ -206,6 +229,7 @@ namespace Application.QuizService
             var progress = GetProgress(user.Id, topicId, levelId).Value;
             if (progress.TasksSolved < progress.TasksCount)
                 return user;
+
             //TODO: использовать NextLevels когда будет заполнена бд
             var level = taskRepository
                 .GetLevelsFromTopic(topicId)
@@ -214,7 +238,10 @@ namespace Application.QuizService
                 .FirstOrDefault();
             if (level is null)
                 return user;
-            user.UserProgressEntity.TopicsProgress[topicId].LevelProgressEntities[level.Id] = level.ToProgressEntity();
+
+            user.UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[level.Id] = level.ToProgressEntity();
             return user;
         }
 
@@ -228,7 +255,9 @@ namespace Application.QuizService
         private void UpdateUserCurrentTask(UserEntity user, Guid topicId, Guid levelId, Task task)
         {
             var taskInfoEntity = task.AsInfoEntity();
-            var progress = user.UserProgressEntity.With(topicId, levelId, currentTask: taskInfoEntity);
+            var progress = user
+                .UserProgressEntity
+                .With(topicId, levelId, currentTask: taskInfoEntity);
             user = user.With(progress);
             userRepository.Update(user);
         }

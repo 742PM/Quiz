@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Infrastructure;
+using Infrastructure.Extensions;
 using Scriban.Runtime;
 using static System.Linq.Enumerable;
 

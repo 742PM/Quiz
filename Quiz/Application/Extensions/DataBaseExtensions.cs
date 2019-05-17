@@ -65,10 +65,10 @@ namespace Application.Extensions
             foreach (var topic in topics)
                 userProgress.TopicsProgress.TryAdd(topic.Id, topic.ToProgressEntity());
 
-            var ids = topics.Select(topic => topic.Id).ToHashSet();
+            var ids = topics.Select(topic => topic.Id);
             var progress = userProgress
                 .TopicsProgress
-                .TakeIfIn(ids);
+                .TakeFrom(ids);
 
             return userProgress.With(topicsProgress: progress);
         }
@@ -87,10 +87,10 @@ namespace Application.Extensions
                 .LevelProgressEntities
                 .TryAdd(firstLevel.Id, firstLevel.ToProgressEntity());
 
-            var ids = levels.Select(level => level.Id).ToHashSet();
+            var ids = levels.Select(level => level.Id);
             var progress = topicProgress
                 .LevelProgressEntities
-                .TakeIfIn(ids);
+                .TakeFrom(ids);
 
             return topicProgress.With(progress);
         }
@@ -107,10 +107,10 @@ namespace Application.Extensions
             foreach (var generator in level.Generators)
                 levelProgress.CurrentLevelStreaks.TryAdd(generator.Id, 0);
 
-            var ids = level.Generators.Select(generator => generator.Id).ToHashSet();
+            var ids = level.Generators.Select(generator => generator.Id);
             var streaks = levelProgress
                 .CurrentLevelStreaks
-                .TakeIfIn(ids);
+                .TakeFrom(ids);
 
             return levelProgress.With(streaks);
         }

@@ -5,12 +5,16 @@ namespace Infrastructure.Extensions
 {
     public static class DictionaryExtensions
     {
-        public static Dictionary<TKey, TValue> TakeIfIn<TKey, TValue>(
+        /// <summary>
+        ///     Get <see cref="Dictionary{TKey,TValue}"/> that contains only keys from <see cref="keyWhiteList"/>
+        /// </summary>
+        public static Dictionary<TKey, TValue> TakeFrom<TKey, TValue>(
             this Dictionary<TKey, TValue> dictionary,
-            HashSet<TKey> keyWhiteList)
+            IEnumerable<TKey> keyWhiteList)
         {
+            var hashSet = keyWhiteList.ToHashSet();
             return dictionary
-                .Where(pair => keyWhiteList.Contains(pair.Key))
+                .Where(pair => hashSet.Contains(pair.Key))
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
         }
     }

@@ -52,14 +52,16 @@ namespace DataBase
                     StandardLoopAnswers,
                     GetForLoop() +
                     SimpleOperation,
-                    new string[0], ThetaN, 1, Question),
+                    new string[0], 
+                    ThetaN, 1, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
                     StandardLoopAnswers,
                     GetForLoop(increment: MultiplyEqual) +
                     SimpleOperation,
-                    new[] { "Цикл с удвоением" }, ThetaLogN, 2, Question),
+                    new[] { "Цикл с удвоением" }, 
+                    ThetaLogN, 2, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -68,28 +70,32 @@ namespace DataBase
                         comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}",
                         increment: MultiplyEqual) +
                     SimpleOperation,
-                    new[] { "Свойства логарифма" }, ThetaLogN, 3, Question),
+                    new[] { "Свойства логарифма" }, 
+                    ThetaLogN, 3, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
                     StandardLoopAnswers,
                     GetForLoop(comparision: $"{OuterIterable} * {OuterIterable} < {OuterTo}") +
                     SimpleOperation,
-                    new string[0], ThetaSqrtN, 2, Question),
+                    new string[0],
+                    ThetaSqrtN, 2, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
                     StandardLoopAnswers,
                     GetForLoop(comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}") +
                     SimpleOperation,
-                    new string[0], ThetaN2, 2, Question),
+                    new string[0],
+                    ThetaN2, 2, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
                     StandardLoopAnswers,
                     GetForLoop(comparision: $"{OuterIterable} % {OuterFrom} != 0") +
                     SimpleOperation,
-                    new string[0], Theta1, 2, Question)
+                    new string[0], 
+                    Theta1, 2, Question)
             };
 
             var simpleDoubleLoops = new TaskGenerator[]
@@ -99,7 +105,8 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop() +
                     "\t" + SimpleOperation,
-                    new[] { "Независимые циклы" }, ThetaN2, 1, Question),
+                    new[] { "Независимые циклы" }, 
+                    ThetaN2, 1, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -107,7 +114,8 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop(increment: MultiplyEqual) +
                     "\t" + SimpleOperation,
-                    new[] { "Независимые циклы" }, ThetaNLogN, 1, Question),
+                    new[] { "Независимые циклы" },
+                    ThetaNLogN, 2, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -115,7 +123,8 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop(OuterIterable) +
                     "\t" + SimpleOperation,
-                    new[] { "Арифметическая прогрессия" }, ThetaN2, 1, Question),
+                    new[] { "Арифметическая прогрессия" },
+                    ThetaN2, 3, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -123,7 +132,8 @@ namespace DataBase
                     GetForLoop(increment: MultiplyEqual) +
                     GetInnerForLoop(OuterIterable) +
                     "\t" + SimpleOperation,
-                    new[] { "Геометрическая прогрессия" }, ThetaN, 1, Question),
+                    new[] { "Геометрическая прогрессия" },
+                    ThetaN, 3, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -131,7 +141,8 @@ namespace DataBase
                     GetForLoop(increment: MultiplyEqual) +
                     GetInnerForLoop(OuterIterable) +
                     "\t" + SimpleOperation,
-                    new[] { "Независимые циклы" }, ThetaNLogN, 1, Question)
+                    new[] { "Независимые циклы" },
+                    ThetaNLogN, 2, Question)
             };
 
             var hardDoubleLoops = new TaskGenerator[]
@@ -142,8 +153,8 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop(incrementValue: OuterIterable) +
                     "\t" + SimpleOperation,
-                    new[] { "Частичная сумма гармонического ряда" }, ThetaNLogN, 1,
-                    Question),
+                    new[] { "Частичная сумма гармонического ряда" }, 
+                    ThetaNLogN, 2, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -152,7 +163,7 @@ namespace DataBase
                     GetInnerForLoop(increment: MultiplyEqual, incrementValue: OuterIterable) +
                     "\t" + SimpleOperation,
                     new[] { $"log(n) {Multiply} li(n) = log(n) {Multiply} n / log(n) = n" },
-                    ThetaN, 1, Question),
+                    ThetaN, 3, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -160,8 +171,8 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop(OuterIterable, MultiplyEqual) +
                     "\t" + SimpleOperation,
-                    new[] { "Логарифм факториала, Формула Стирлинга" }, ThetaNLogN,
-                    1, Question),
+                    new[] { "Логарифм факториала, Формула Стирлинга" }, 
+                    ThetaNLogN, 3, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -169,7 +180,8 @@ namespace DataBase
                     GetForLoop(increment: MultiplyEqual) +
                     GetInnerForLoop(OuterIterable, MultiplyEqual) +
                     "\t" + SimpleOperation,
-                    new[] { "Независимые циклы" }, ThetaLog2N, 1, Question),
+                    new[] { "Независимые циклы" },
+                    ThetaLog2N, 2, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -178,7 +190,7 @@ namespace DataBase
                     GetInnerForLoop(OuterIterable, MultiplyEqual, OuterIterable) +
                     "\t" + SimpleOperation,
                     new[] { "Cмена основания логарифма и частичная сумма гармонического ряда" },
-                    ThetaLogNLogLogN, 1, Question),
+                    ThetaLogNLogLogN, 3, Question),
 
                 new TemplateTaskGenerator(
                     Guid.NewGuid(),
@@ -186,7 +198,7 @@ namespace DataBase
                     GetForLoop(increment: MultiplyEqual) +
                     GetInnerForLoop(OuterIterable, MultiplyEqual) +
                     "\t" + SimpleOperation,
-                    new[] { "Арифметическая прогрессия" }, ThetaLog2N, 1, Question)
+                    new[] { "Арифметическая прогрессия" }, ThetaLog2N, 2, Question)
             };
 
             var hardDoubleLoopsLevel = new Level(

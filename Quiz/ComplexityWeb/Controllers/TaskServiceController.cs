@@ -122,9 +122,9 @@ namespace ComplexityWebApi.Controllers
         ///     <code>
         ///     POST service/addTemplateGenerator/1/0
         ///     {
-        ///        "template": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
-        ///        "rightAnswer": "Θ(n)",
+        ///        "answer": "Θ(n)",
         ///        "hints": [],
         ///        "streak": 1
         ///     }
@@ -132,10 +132,10 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
         [HttpPost("addTemplateGenerator/{topicId}/{levelId}")]
-        public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] DataBaseTemplateGeneratorWithStreakDTO templateGenerator)
+        public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] AdminTaskGeneratorDTO templateGenerator)
         {
-            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Streak, templateGenerator.Question);
+            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Text, templateGenerator.PossibleAnswers,
+                templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak, templateGenerator.Question);
             return Ok(generatorGuid);
         }
         

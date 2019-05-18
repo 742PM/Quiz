@@ -43,18 +43,7 @@ namespace DataBase
 
         public void Fill(MongoTaskRepository repository)
         {
-            var topic = new Topic(Guid.NewGuid(), "Сложность алгоритмов",
-                "Описание: Задачи на разные алгоритмы и разные сложности", new Level[0]);
-            var doubleLoopLevelsId = Guid.NewGuid();
-            var singleLoopLevels =
-                new Level(Guid.NewGuid(), "Циклы", new TaskGenerator[0], new[] { doubleLoopLevelsId });
-            var doubleLoopLevels = new Level(doubleLoopLevelsId, "Двойные Циклы", new TaskGenerator[0], new Guid[0]);
-
-            repository.InsertTopic(topic);
-            repository.InsertLevel(topic.Id, singleLoopLevels);
-            repository.InsertLevel(topic.Id, doubleLoopLevels);
-
-            var forLoops = new[]
+            var singleLoops = new TaskGenerator[]
             {
                 new TemplateTaskGenerator(Guid.NewGuid(),
                     StandardLoopAnswers,
@@ -95,9 +84,7 @@ namespace DataBase
                     new string[0], Theta1, 2, Question)
             };
 
-            repository.InsertGenerators(topic.Id, singleLoopLevels.Id, forLoops);
-
-            var doubleLoops = new[]
+            var doubleLoops = new TaskGenerator[]
             {
                 new TemplateTaskGenerator(Guid.NewGuid(),
                     new[] { ThetaN, ThetaN2, ThetaN3 },
@@ -181,7 +168,25 @@ namespace DataBase
                     new[] { "Арифметическая прогрессия" }, ThetaLog2N, 1, Question)
             };
 
-            repository.InsertGenerators(topic.Id, doubleLoopLevels.Id, doubleLoops);
+            var doubleLoopsLevel = new Level(
+                Guid.NewGuid(),
+                "Двойные Циклы",
+                doubleLoops,
+                new Guid[0]);
+
+            var singleLoopsLevel = new Level(
+                Guid.NewGuid(),
+                "Циклы",
+                singleLoops,
+                new[] { doubleLoopsLevel.Id });
+
+            var topic = new Topic(
+                Guid.NewGuid(),
+                "Сложность алгоритмов",
+                "Описание: Задачи на разные алгоритмы и разные сложности",
+                new[] { singleLoopsLevel, doubleLoopsLevel });
+
+            repository.InsertTopic(topic);
         }
 
         private static string GetForLoop(

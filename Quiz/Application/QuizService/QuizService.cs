@@ -115,11 +115,7 @@ namespace Application.QuizService
                 return new AccessDeniedException(
                     $"User {userId} doesn't have access to level {levelId} in topic {topicId}");
 
-            var streaks = levelsProgress[levelId].CurrentLevelStreaks;
-
-            var solved = streaks.Sum(pair => pair.Value);
-            var total = streaks.Sum(pair => taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
-            return new LevelProgressInfo(total, solved);
+            return GetLevelProgress(user, topicId, levelId);
         }
 
         /// <inheritdoc />
@@ -226,7 +222,7 @@ namespace Application.QuizService
         {
             var topicId = user.UserProgressEntity.CurrentTopicId;
             var levelId = user.UserProgressEntity.CurrentLevelId;
-            var progress = GetProgress(user.Id, topicId, levelId).Value;
+            var progress = GetLevelProgress(user, topicId, levelId);
             if (progress.TasksSolved < progress.TasksCount)
                 return user;
 
@@ -274,6 +270,19 @@ namespace Application.QuizService
                     .LevelProgressEntities[levelId]
                     .CurrentLevelStreaks[generatorId] = updateFunc(currentStreak);
             return user;
+        }
+
+        private LevelProgressInfo GetLevelProgress(UserEntity user, Guid topicId, Guid levelId)
+        {
+            var streaks = user
+                .UserProgressEntity
+                .TopicsProgress[topicId]
+                .LevelProgressEntities[levelId]
+                .CurrentLevelStreaks;
+
+            var solved = streaks.Sum(pair => pair.Value);
+            var total = streaks.Sum(pair => taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
+            return new LevelProgressInfo(total, solved);
         }
 
         private static bool CurrentTaskExists(UserEntity user) => user.UserProgressEntity.CurrentTask != null;

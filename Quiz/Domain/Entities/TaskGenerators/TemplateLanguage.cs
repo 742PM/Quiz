@@ -6,12 +6,6 @@ namespace Domain.Entities.TaskGenerators
     public partial class TemplateLanguage
     {
         /// <summary>
-        ///     You can define properties and fields that will be able to be used in templates;
-        /// </summary>
-        [ScriptMemberIgnore]
-        public static int Random(Random random, int from, int to) => random.Next(from, to);
-
-        /// <summary>
         ///     This method is going to be called in another part of the type.
         ///     Use <see cref="TemplateLanguage.AddMethod" /> to add methods you want to be part of language if they have some
         ///     randomness in it;
@@ -25,6 +19,12 @@ namespace Domain.Entities.TaskGenerators
             AddMethod<object, ScriptArray>(AnyOf, random, so);
             AddMethod<int, int, int>(Random, random, so);
         }
+
+        /// <summary>
+        ///     You can define properties and fields that will be able to be used in templates;
+        /// </summary>
+        [ScriptMemberIgnore]
+        public static int Random(Random random, int from, int to) => random.Next(from, to);
 
         /// <summary>
         ///     This is an example of a method that is possible to be used in templates;

@@ -1,4 +1,5 @@
 using System;
+using Application.Repositories;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 
@@ -43,6 +44,8 @@ namespace DataBase
 
         public void Fill(MongoTaskRepository repository)
         {
+            DeleteTopics(repository);
+
             var singleLoops = new TaskGenerator[]
             {
                 new TemplateTaskGenerator(
@@ -50,7 +53,7 @@ namespace DataBase
                     StandardLoopAnswers,
                     GetForLoop() +
                     SimpleOperation,
-                    new string[0], 
+                    new string[0],
                     ThetaN, 1, Question),
 
                 new TemplateTaskGenerator(
@@ -58,7 +61,7 @@ namespace DataBase
                     StandardLoopAnswers,
                     GetForLoop(increment: MultiplyEqual) +
                     SimpleOperation,
-                    new[] { "Цикл с удвоением" }, 
+                    new[] { "Цикл с удвоением" },
                     ThetaLogN, 2, Question),
 
                 new TemplateTaskGenerator(
@@ -68,7 +71,7 @@ namespace DataBase
                         comparision: $"{OuterIterable} < {OuterTo} * {OuterTo}",
                         increment: MultiplyEqual) +
                     SimpleOperation,
-                    new[] { "Свойства логарифма" }, 
+                    new[] { "Свойства логарифма" },
                     ThetaLogN, 3, Question),
 
                 new TemplateTaskGenerator(
@@ -92,7 +95,7 @@ namespace DataBase
                     StandardLoopAnswers,
                     GetForLoop(comparision: $"{OuterIterable} % {OuterFrom} != 0") +
                     SimpleOperation,
-                    new string[0], 
+                    new string[0],
                     Theta1, 2, Question)
             };
 
@@ -103,7 +106,7 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop() +
                     "\t" + SimpleOperation,
-                    new[] { "Независимые циклы" }, 
+                    new[] { "Независимые циклы" },
                     ThetaN2, 1, Question),
 
                 new TemplateTaskGenerator(
@@ -151,7 +154,7 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop(incrementValue: OuterIterable) +
                     "\t" + SimpleOperation,
-                    new[] { "Частичная сумма гармонического ряда" }, 
+                    new[] { "Частичная сумма гармонического ряда" },
                     ThetaNLogN, 2, Question),
 
                 new TemplateTaskGenerator(
@@ -169,7 +172,7 @@ namespace DataBase
                     GetForLoop() +
                     GetInnerForLoop(OuterIterable, MultiplyEqual) +
                     "\t" + SimpleOperation,
-                    new[] { "Логарифм факториала, Формула Стирлинга" }, 
+                    new[] { "Логарифм факториала, Формула Стирлинга" },
                     ThetaNLogN, 3, Question),
 
                 new TemplateTaskGenerator(
@@ -221,7 +224,12 @@ namespace DataBase
                 Guid.NewGuid(),
                 "Сложность алгоритмов",
                 "Описание: Задачи на разные алгоритмы и разные сложности",
-                new[] { singleLoopsLevel, simpleDoubleLoopsLevel });
+                new[]
+                {
+                    singleLoopsLevel,
+                    simpleDoubleLoopsLevel,
+                    hardDoubleLoopsLevel
+                });
 
             repository.InsertTopic(topic);
         }
@@ -239,5 +247,12 @@ namespace DataBase
             string increment = PlusEqual,
             string incrementValue = InnerIteration) =>
             $"\t{GetForLoop(InnerIterable, InnerFrom, $"{InnerIterable} < {upperBound}", increment, incrementValue)}";
+
+        private static void DeleteTopics(ITaskRepository taskRepository)
+        {
+            var topics = taskRepository.GetTopics();
+            foreach (var topic in topics)
+                taskRepository.DeleteTopic(topic.Id);
+        }
     }
 }

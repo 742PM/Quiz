@@ -43,8 +43,6 @@ namespace DataBase
 
         public void Fill(MongoTaskRepository repository)
         {
-            //TODO: fix hints
-
             var singleLoops = new TaskGenerator[]
             {
                 new TemplateTaskGenerator(

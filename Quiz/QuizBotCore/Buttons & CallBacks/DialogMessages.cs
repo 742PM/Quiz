@@ -29,8 +29,7 @@ namespace QuizBotCore
                                       "задачи могут отображать не самым комфортным образом. " +
                                       "Советуем повернуть ваше устройство в горизонтальное положение.";
 
-        public const string RequestForRotateDeviceGif =
-            "https://thumbs.gfycat.com/MiserlyHorribleFossa-size_restricted.gif";
+        public const string RequestForRotateDeviceGif = "https://i.imgur.com/KPxuZ8H.png";
 
         public const string ReportThanks = "Спасибо за обратную связь. " +
                                            "Мы обязательно рассмотрим ваше сообщение 🤙🏿";

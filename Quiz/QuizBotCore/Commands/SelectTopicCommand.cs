@@ -23,6 +23,7 @@ namespace QuizBotCore.Commands
             );
 
             await client.SendTextMessageAsync(chatId, DialogMessages.Welcome, replyMarkup: keyboard);
+            await client.SendAnimationAsync(chat.Id, DialogMessages.RequestForRotateDeviceGif);
         }
     }
 }

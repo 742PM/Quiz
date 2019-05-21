@@ -5,6 +5,7 @@ using System.Reflection;
 using Application.Info;
 using Application.QuizService;
 using Application.Repositories;
+using Application.Sections;
 using Application.Selectors;
 using Application.TaskService;
 using AutoMapper;
@@ -111,12 +112,12 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
                 cfg.CreateMap<LevelInfo, LevelInfoDTO>();
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
-                cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
-                cfg.CreateMap<Level, AdminLevelDTO>()
-                    .ForMember(x => x.GeneratorIds, x => x.MapFrom(t => t.Generators.Select(s => (TemplateTaskGenerator) s)));
-                cfg.CreateMap<Topic, AdminLevelDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();
+
+                cfg.CreateMap<TopicSection, AdminTopicDTO>();
+                cfg.CreateMap<LevelSection, AdminLevelDTO>();
+                cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
             });
 
             app.UseSwagger();

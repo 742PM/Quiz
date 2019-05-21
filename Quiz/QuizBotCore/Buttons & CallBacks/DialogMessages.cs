@@ -36,6 +36,6 @@ namespace QuizBotCore
 
         public const string ReportRequesting = "Опишите вашу проблему:";
 
-        public static readonly string LevelSolved = "Уровень пройден 👌🏿\n";
+        public static readonly string LevelSolved = "🏆🏆🏆 Уровень пройден 🏆🏆🏆\n";
     }
 }

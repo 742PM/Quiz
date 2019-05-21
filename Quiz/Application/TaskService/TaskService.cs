@@ -32,6 +32,7 @@ namespace Application.TaskService
                 .Select(topic => topic.ToSection());
         }
 
+        /// <inheritdoc />
         public Result<LevelSection, Exception> GetLevel(Guid topicId, Guid levelId)
         {
             if (!taskRepository.TopicExists(topicId))
@@ -42,6 +43,7 @@ namespace Application.TaskService
             return taskRepository.FindLevel(topicId, levelId).ToSection();
         }
 
+        /// <inheritdoc />
         public Result<TemplateTaskGenerator, Exception> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
             if (!taskRepository.TopicExists(topicId))

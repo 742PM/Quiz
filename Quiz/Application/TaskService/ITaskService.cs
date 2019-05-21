@@ -14,8 +14,14 @@ namespace Application.TaskService
         /// </summary>
         IEnumerable<TopicSection> GetAllTopics();
 
+        /// <summary>
+        ///     Получить уровень из базы данных
+        /// </summary>
         Result<LevelSection, Exception> GetLevel(Guid topicId, Guid levelId);
 
+        /// <summary>
+        ///     Получить генератор из базы данных
+        /// </summary>
         Result<TemplateTaskGenerator, Exception> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId);
 
         /// <summary>

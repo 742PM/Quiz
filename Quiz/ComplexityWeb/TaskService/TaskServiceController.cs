@@ -20,7 +20,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Получить список всех Topic.
+        ///     Получить список Topic.
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -31,6 +31,40 @@ namespace QuizWebApp.TaskService
         /// <response code="200"> Возвращает список тем</response>
         [HttpGet("topics")]
         public ActionResult<IEnumerable<AdminTopicDTO>> GetTopics()
+        {
+            var topics = applicationApi.GetAllTopics();
+            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
+        }
+
+        /// <summary>
+        ///     Получить Level.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     <code>
+        ///     GET service/0/level/1
+        ///     </code>
+        /// </remarks>
+        /// <response code="200"> Возвращает уровень</response>
+        [HttpGet("{topicId}/level/{levelId}")]
+        public ActionResult<AdminLevelDTO> GetLevel(Guid topicId, Guid levelId)
+        {
+            var topics = applicationApi.GetAllTopics();
+            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
+        }
+
+        /// <summary>
+        ///     Получить TemplateGenerator.
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     <code>
+        ///     GET service/0/1/templateGenerator/2
+        ///     </code>
+        /// </remarks>
+        /// <response code="200"> Возвращает генератор</response>
+        [HttpGet("{topicId}/{levelId}/templateGenerator/{generatorId}")]
+        public ActionResult<AdminTaskGeneratorDTO> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
             var topics = applicationApi.GetAllTopics();
             return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
@@ -50,7 +84,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Topic</response>
-        [HttpPost("addTopic")]
+        [HttpPost("topic")]
         public ActionResult<Guid> AddEmptyTopic([FromBody] EmptyTopicDTO topic)
         {
             var topicGuid = applicationApi.AddEmptyTopic(topic.Name, topic.Description);
@@ -67,7 +101,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Topic был удален</response>
-        [HttpDelete("deleteTopic/{topicId}")]
+        [HttpDelete("topic/{topicId}")]
         public ActionResult DeleteTopic(Guid topicId)
         {
             applicationApi.DeleteTopic(topicId);
@@ -89,7 +123,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Level</response>
-        [HttpPost("{topicId}/addLevel")]
+        [HttpPost("{topicId}/level")]
         public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] EmptyLevelDTO level)
         {
             var levelGuid = applicationApi
@@ -108,7 +142,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Level был удален</response>
-        [HttpDelete("{topicId}/deleteLevel/{levelId}")]
+        [HttpDelete("{topicId}/level/{levelId}")]
         public ActionResult DeleteLevel(Guid topicId, Guid levelId)
         {
             applicationApi.DeleteLevel(topicId, levelId);
@@ -133,7 +167,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
-        [HttpPost("{topicId}/{levelId}addTemplateGenerator")]
+        [HttpPost("{topicId}/{levelId}/templateGenerator")]
         public ActionResult<Guid> AddTemplateGenerator(
             Guid topicId,
             Guid levelId,
@@ -156,7 +190,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Generator был удален</response>
-        [HttpDelete("{topicId}/{levelId}/deleteGenerator/{generatorId}")]
+        [HttpDelete("{topicId}/{levelId}/generator/{generatorId}")]
         public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
             applicationApi.DeleteGenerator(topicId, levelId, generatorId);
@@ -169,7 +203,7 @@ namespace QuizWebApp.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/renderTask
+        ///     POST service/taskToRender
         ///     {
         ///        "question": "Оцените временную сложность алгоритма",
         ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
@@ -180,7 +214,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает отрендереный Task</response>
-        [HttpPost("renderTask")]
+        [HttpPost("taskToRender")]
         public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
         {
             var task = applicationApi.RenderTask(

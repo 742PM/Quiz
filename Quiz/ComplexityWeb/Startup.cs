@@ -42,25 +42,8 @@ namespace ComplexityWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.WithOrigins("http://localhost:55143",
-                                "https://complexitybot.azurewebsites.net")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
-            });
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddMvc()
-                .AddJsonOptions(options =>
-                {
-                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddTransient(_ => new Random(Guid.NewGuid().GetHashCode()));
 
@@ -95,16 +78,11 @@ namespace ComplexityWebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
-            {
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
-                {
-                    HotModuleReplacement = true,
-                    ReactHotModuleReplacement = true
-                });
-            }
-
+                app.UseDeveloperExceptionPage();
+            else
+                app.UseHsts();
+            
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
@@ -130,7 +108,6 @@ namespace ComplexityWebApi
 
             app.UseStaticFiles();
             app.UseMvc();
-            app.UseSpa(spa => { spa.Options.SourcePath = "App"; });
         }
     }
 }

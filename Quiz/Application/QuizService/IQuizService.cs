@@ -29,6 +29,7 @@ namespace Application.QuizService
         ///     Прогресс пользователя в текущих теме и уровне
         /// </summary>
         /// <exception cref="ArgumentException">Неизвестный id темы или уровня</exception>
+        /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         Result<LevelProgressInfo, Exception> GetProgress(Guid userId, Guid topicId, Guid levelId);
 
         /// <summary>

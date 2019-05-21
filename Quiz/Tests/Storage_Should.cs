@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Infrastructure;
+using Infrastructure.Extensions;
 using NUnit.Framework;
 
 namespace Tests

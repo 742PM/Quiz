@@ -6,14 +6,20 @@ namespace Application.Repositories.Entities
 {
     public class TopicProgressEntity : Entity
     {
-        public TopicProgressEntity(Dictionary<Guid, LevelProgressEntity> levelProgressEntities, Guid topicId, Guid id):base(id)
+        public TopicProgressEntity(
+            Dictionary<Guid, LevelProgressEntity> levelProgressEntities,
+            Guid topicId,
+            Guid id) : base(id)
         {
             LevelProgressEntities = levelProgressEntities;
             TopicId = topicId;
         }
 
-        public Dictionary<Guid, LevelProgressEntity> LevelProgressEntities { get;  }
+        public Dictionary<Guid, LevelProgressEntity> LevelProgressEntities { get; }
 
-        public Guid TopicId { get;  }
+        public Guid TopicId { get; }
+
+        public TopicProgressEntity With(Dictionary<Guid, LevelProgressEntity> levelProgressEntities) =>
+            new TopicProgressEntity(levelProgressEntities, TopicId, Id);
     }
 }

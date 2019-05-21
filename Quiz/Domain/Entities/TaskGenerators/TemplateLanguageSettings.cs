@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Infrastructure;
+using Infrastructure.Extensions;
 using Scriban.Runtime;
 using static System.Linq.Enumerable;
 
@@ -46,9 +46,10 @@ namespace Domain.Entities.TaskGenerators
                 [To] = new[] { "n", "m", "length", "amount", "size" },
                 [SimpleOperation] = new[]
                                     {
-                                        "c++", "k1--", "service.Update()", "var a = Environment.GetVariable(\"VAR\")",
+                                        "c++", "k1--", "service.Update()", "queue.Pop()",
                                         "k3++"
-                                    }
+                                    }.Select(s=>s+";")
+                                     .ToArray()
             };
 
         private TemplateLanguage() { }

@@ -85,7 +85,7 @@ namespace Tests
         [TestCase("{{loop_var2}}", @"(i)|(j)|(k)|(x)|(y)|(step)", TestName = nameof(TemplateLanguage.LoopVariable))]
         [TestCase("{{to3}}", @"^(n)|(m)|(length)|(size)|(amount)$", TestName = nameof(TemplateLanguage.To))]
         [TestCase("{{simple_operation4}}",
-            @"^(c\+\+)|(k1--)|(service\.Update\(\))|(var a = Environment\.GetVariable\(""VAR""\))|(k3\+\+)$", TestName =
+            @"^(c\+\+)|(k1--)|(service\.Update\(\))|(queue\.Pop\(\))|(k3\+\+)$", TestName =
                 nameof(TemplateLanguage.SimpleOperation))]
         [TestCase("{{const5}}", @"^-?\d{0,2}[^0]$", TestName = nameof(TemplateLanguage.Const))]
         public void Render_WhenBuiltInFieldsAreUsed(string actual, string regex) => TestFieldWithRegex((actual, regex));

@@ -87,7 +87,15 @@ namespace ComplexityWebApi.Controllers
             var (isSuccess, _, progress, error) = applicationApi.GetProgress(userId, topicId, levelId);
             if (isSuccess)
                 return Ok(Mapper.Map<LevelProgressInfoDTO>(progress));
-            return NotFound(error.Message);
+            switch (error)
+            {
+                case ArgumentException _:
+                    return NotFound(error.Message);
+                case AccessDeniedException _:
+                    return Forbid();
+                default:
+                    return InternalServerError(error.Message);
+            }
         }
 
         /// <summary>

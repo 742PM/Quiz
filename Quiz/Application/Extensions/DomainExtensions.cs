@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Application.Info;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Values;
-using Infrastructure;
+using Infrastructure.Extensions;
 
 namespace Application.Extensions
 {
@@ -30,7 +31,20 @@ namespace Application.Extensions
         {
             return new LevelProgressEntity(
                 level.Id,
-                level.Generators.SafeToDictionary(generator => generator.Id, generator => 0),
+                level
+                    .Generators
+                    .SafeToDictionary(generator => generator.Id, generator => 0),
+                Guid.NewGuid());
+        }
+
+        public static TopicProgressEntity ToProgressEntity(this Topic topic)
+        {
+            return new TopicProgressEntity(
+                topic
+                    .Levels
+                    .Take(1)
+                    .SafeToDictionary(level => level.Id, level => level.ToProgressEntity()),
+                topic.Id,
                 Guid.NewGuid());
         }
     }

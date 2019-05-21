@@ -1,7 +1,7 @@
 ﻿using System;
 using Infrastructure.Result;
 
-namespace Application.Extensions
+namespace Infrastructure.Extensions
 {
     public static class ObjectExtensions
     {

@@ -2,6 +2,7 @@
 using System.Linq;
 using Application.Info;
 using Application.Repositories.Entities;
+using Application.Sections;
 using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Extensions;
@@ -21,9 +22,9 @@ namespace Application.Extensions
             new TaskInfoEntity(
                 task.Text,
                 task.Answer,
-                task.Hints, 
+                task.Hints,
                 0,
-                task.ParentGeneratorId, 
+                task.ParentGeneratorId,
                 false,
                 Guid.NewGuid());
 
@@ -46,6 +47,30 @@ namespace Application.Extensions
                     .SafeToDictionary(level => level.Id, level => level.ToProgressEntity()),
                 topic.Id,
                 Guid.NewGuid());
+        }
+
+        public static TopicSection ToSection(this Topic topic)
+        {
+            return new TopicSection(
+                topic.Id,
+                topic.Name,
+                topic.Description,
+                topic
+                    .Levels
+                    .Select(level => level.Id)
+                    .ToArray());
+        }
+
+        public static LevelSection ToSection(this Level level)
+        {
+            return new LevelSection(
+                level.Id, 
+                level.Description,
+                level.NextLevels, 
+                level
+                    .Generators
+                    .Select(generator => generator.Id)
+                    .ToArray());
         }
     }
 }

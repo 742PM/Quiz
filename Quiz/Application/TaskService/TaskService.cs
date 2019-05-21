@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Extensions;
 using Application.Repositories;
+using Application.Sections;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
@@ -24,7 +25,34 @@ namespace Application.TaskService
         }
 
         /// <inheritdoc />
-        public IEnumerable<Topic> GetAllTopics() => taskRepository.GetTopics();
+        public IEnumerable<TopicSection> GetAllTopics()
+        {
+            return taskRepository
+                .GetTopics()
+                .Select(topic => topic.ToSection());
+        }
+
+        public Result<LevelSection, Exception> GetLevel(Guid topicId, Guid levelId)
+        {
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+
+            return taskRepository.FindLevel(topicId, levelId).ToSection();
+        }
+
+        public Result<TemplateTaskGenerator, Exception> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+            if (!taskRepository.GeneratorExists(topicId, levelId, generatorId))
+                return new ArgumentException(nameof(generatorId));
+
+            return (TemplateTaskGenerator) taskRepository.FindGenerator(topicId, levelId, generatorId);
+        }
 
         /// <inheritdoc />
         public Guid AddEmptyTopic(string name, string description)
@@ -81,7 +109,8 @@ namespace Application.TaskService
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
             IEnumerable<string> hints,
-            int streak, string question)
+            int streak,
+            string question)
         {
             if (!taskRepository.TopicExists(topicId))
                 return new ArgumentException(nameof(topicId));
@@ -124,12 +153,14 @@ namespace Application.TaskService
             string template,
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
-            IEnumerable<string> hints, string question)
+            IEnumerable<string> hints,
+            string question)
         {
             var possibleAnswerArray = possibleAnswers as string[] ?? possibleAnswers.ToArray();
             var hintsArray = hints as string[] ?? hints.ToArray();
 
-            return new TemplateTaskGenerator(Guid.Empty, possibleAnswerArray, template, hintsArray, rightAnswer, 1, question)
+            return new TemplateTaskGenerator(Guid.Empty, possibleAnswerArray, template, hintsArray, rightAnswer, 1,
+                    question)
                 .GetTask(random);
         }
     }

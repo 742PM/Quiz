@@ -49,8 +49,8 @@ namespace QuizWebApp.TaskService
         [HttpGet("{topicId}/level/{levelId}")]
         public ActionResult<AdminLevelDTO> GetLevel(Guid topicId, Guid levelId)
         {
-            var topics = applicationApi.GetAllTopics();
-            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
+            var level = applicationApi.GetLevel(topicId, levelId);
+            return Ok();
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace QuizWebApp.TaskService
         [HttpGet("{topicId}/{levelId}/templateGenerator/{generatorId}")]
         public ActionResult<AdminTaskGeneratorDTO> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            var topics = applicationApi.GetAllTopics();
-            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
+            var generator = applicationApi.GetTemplateGenerator(topicId, levelId, generatorId);
+            return Ok();
         }
 
         /// <summary>

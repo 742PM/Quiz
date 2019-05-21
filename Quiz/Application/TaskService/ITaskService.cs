@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.Entities;
+using Application.Sections;
+using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using Infrastructure.Result;
 
@@ -11,7 +12,11 @@ namespace Application.TaskService
         /// <summary>
         ///     Получить все темы из базы данных
         /// </summary>
-        IEnumerable<Topic> GetAllTopics();
+        IEnumerable<TopicSection> GetAllTopics();
+
+        Result<LevelSection, Exception> GetLevel(Guid topicId, Guid levelId);
+
+        Result<TemplateTaskGenerator, Exception> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId);
 
         /// <summary>
         ///     Добавить пустую тему в базу данных
@@ -71,7 +76,8 @@ namespace Application.TaskService
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
             IEnumerable<string> hints,
-            int streak, string question);
+            int streak,
+            string question);
 
         /// <summary>
         ///     Удалить генератор из базы данных
@@ -95,6 +101,7 @@ namespace Application.TaskService
             string template,
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
-            IEnumerable<string> hints, string question);
+            IEnumerable<string> hints,
+            string question);
     }
 }

@@ -1,11 +1,10 @@
-using System;
 using Newtonsoft.Json;
 
-namespace ComplexityWebApi.DTO
+namespace QuizWebApp.DTO
 {
-    public class TopicWithDescriptionDTO
+    public class EmptyTopicDTO
     {
-        public TopicWithDescriptionDTO(string name, string description)
+        public EmptyTopicDTO(string name, string description)
         {
             Name = name;
             Description = description;

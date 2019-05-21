@@ -4,10 +4,10 @@ using System.Linq;
 using Application.TaskService;
 using AutoMapper;
 using ComplexityWebApi.DTO;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using QuizWebApp.DTO;
 
-namespace ComplexityWebApi.Controllers
+namespace QuizWebApp.Controllers
 {
     [Route("service")]
     [ApiController]
@@ -52,7 +52,7 @@ namespace ComplexityWebApi.Controllers
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Topic</response>
         [HttpPost("addTopic")]
-        public ActionResult<Guid> AddEmptyTopic([FromBody] TopicWithDescriptionDTO topic)
+        public ActionResult<Guid> AddEmptyTopic([FromBody] EmptyTopicDTO topic)
         {
             var topicGuid = applicationApi.AddEmptyTopic(topic.Name, topic.Description);
             return Ok(topicGuid);
@@ -71,7 +71,7 @@ namespace ComplexityWebApi.Controllers
         [HttpDelete("deleteTopic/{topicId}")]
         public ActionResult DeleteTopic(Guid topicId)
         {
-            var (_, _) = applicationApi.DeleteTopic(topicId);
+            applicationApi.DeleteTopic(topicId);
             return Ok();
         }
 
@@ -81,19 +81,21 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/addLevel/0
+        ///     POST service/0/addLevel
         ///     {
         ///         "description": "Оценка сложностей алгоритмов",
-        ///         "next_levels": [0, 1],
-        ///         "previous_levels": [2, 3]
+        ///         "nextLevels": [0, 1],
+        ///         "previousLevels": [2, 3]
         ///     }
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Level</response>
-        [HttpPost("addLevel/{topicId}")]
-        public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] DataBaseLevelDTO level)
+        [HttpPost("{topicId}/addLevel")]
+        public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] EmptyLevelDTO level)
         {
-            var (levelGuid, _) = applicationApi.AddEmptyLevel(topicId, level.Description, level.PreviousLevels, level.NextLevels);
+            var levelGuid = applicationApi
+                .AddEmptyLevel(topicId, level.Description, level.PreviousLevels, level.NextLevels)
+                .Value;
             return Ok(levelGuid);
         }
 
@@ -103,14 +105,14 @@ namespace ComplexityWebApi.Controllers
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     DELETE service/deleteLevel/1/0
+        ///     DELETE service/1/deleteLevel/1
         ///     </code>
         /// </remarks>
         /// <response code="200"> Level был удален</response>
-        [HttpDelete("deleteLevel/{topicId}/{levelId}")]
+        [HttpDelete("{topicId}/deleteLevel/{levelId}")]
         public ActionResult DeleteLevel(Guid topicId, Guid levelId)
         {
-            var (_, _) = applicationApi.DeleteLevel(topicId, levelId);
+            applicationApi.DeleteLevel(topicId, levelId);
             return Ok();
         }
 
@@ -122,6 +124,7 @@ namespace ComplexityWebApi.Controllers
         ///     <code>
         ///     POST service/addTemplateGenerator/1/0
         ///     {
+        ///        "question": "Оцените временную сложность алгоритма",
         ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
         ///        "answer": "Θ(n)",
@@ -131,52 +134,62 @@ namespace ComplexityWebApi.Controllers
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
-        [HttpPost("addTemplateGenerator/{topicId}/{levelId}")]
-        public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] AdminTaskGeneratorDTO templateGenerator)
+        [HttpPost("{topicId}/{levelId}addTemplateGenerator")]
+        public ActionResult<Guid> AddTemplateGenerator(
+            Guid topicId,
+            Guid levelId,
+            [FromBody] TemplateGeneratorDTO templateGenerator)
         {
-            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Text, templateGenerator.PossibleAnswers,
-                templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak, templateGenerator.Question);
+            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Text,
+                templateGenerator.PossibleAnswers,
+                templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
+                templateGenerator.Question);
             return Ok(generatorGuid);
         }
-        
+
         /// <summary>
         ///     Удаляет Generator из сервиса.
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     DELETE service/deleteGenerator/1/0/2
+        ///     DELETE service/1/0/deleteGenerator/2
         ///     </code>
         /// </remarks>
         /// <response code="200"> Generator был удален</response>
-        [HttpDelete("deleteGenerator/{topicId}/{levelId}/{generatorId}")]
+        [HttpDelete("{topicId}/{levelId}/deleteGenerator/{generatorId}")]
         public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            var (_, _) = applicationApi.DeleteGenerator(topicId, levelId, generatorId);
+            applicationApi.DeleteGenerator(topicId, levelId, generatorId);
             return Ok();
         }
 
         /// <summary>
-        ///     Рендерит и возвращает Task по шаблону полученому в запросе
+        ///     Рендерит и возвращает Task по шаблону, полученному в запросе
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     <code>
         ///     POST service/renderTask
         ///     {
-        ///        "template": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
+        ///        "question": "Оцените временную сложность алгоритма",
+        ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
         ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
-        ///        "rightAnswer": "Θ(n)",
+        ///        "answer": "Θ(n)",
         ///        "hints": []
         ///     }
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает отрендереный Task</response>
         [HttpPost("renderTask")]
-        public ActionResult RenderTask([FromBody] DataBaseTemplateGeneratorDTO templateGenerator)
+        public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
         {
-            var task = applicationApi.RenderTask(templateGenerator.Template, templateGenerator.PossibleAnswers,
-                templateGenerator.RightAnswer, templateGenerator.Hints, templateGenerator.Question);
+            var task = applicationApi.RenderTask(
+                templateGenerator.Text,
+                templateGenerator.PossibleAnswers,
+                templateGenerator.Answer,
+                templateGenerator.Hints,
+                templateGenerator.Question);
 
             return Ok(task);
         }

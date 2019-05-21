@@ -49,8 +49,10 @@ namespace QuizWebApp.TaskService
         [HttpGet("{topicId}/level/{levelId}")]
         public ActionResult<AdminLevelDTO> GetLevel(Guid topicId, Guid levelId)
         {
-            var level = applicationApi.GetLevel(topicId, levelId);
-            return Ok();
+            var (_, isFailure, level, error) = applicationApi.GetLevel(topicId, levelId);
+            if (isFailure)
+                return NotFound(error.Message);
+            return Ok(level);
         }
 
         /// <summary>
@@ -66,8 +68,10 @@ namespace QuizWebApp.TaskService
         [HttpGet("{topicId}/{levelId}/templateGenerator/{generatorId}")]
         public ActionResult<AdminTaskGeneratorDTO> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            var generator = applicationApi.GetTemplateGenerator(topicId, levelId, generatorId);
-            return Ok();
+            var (_, isFailure, generator, error) = applicationApi.GetTemplateGenerator(topicId, levelId, generatorId);
+            if (isFailure)
+                return NotFound(error.Message);
+            return Ok(generator);
         }
 
         /// <summary>
@@ -104,7 +108,9 @@ namespace QuizWebApp.TaskService
         [HttpDelete("topic/{topicId}")]
         public ActionResult DeleteTopic(Guid topicId)
         {
-            applicationApi.DeleteTopic(topicId);
+            var (_, isFailure, _, error) = applicationApi.DeleteTopic(topicId);
+            if (isFailure)
+                return NotFound(error.Message);
             return Ok();
         }
 
@@ -126,10 +132,15 @@ namespace QuizWebApp.TaskService
         [HttpPost("{topicId}/level")]
         public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] EmptyLevelDTO level)
         {
-            var levelGuid = applicationApi
-                .AddEmptyLevel(topicId, level.Description, level.PreviousLevels, level.NextLevels)
-                .Value;
-            return Ok(levelGuid);
+            var (_, isFailure, id, error) = applicationApi
+                .AddEmptyLevel(
+                    topicId,
+                    level.Description,
+                    level.PreviousLevels,
+                    level.NextLevels);
+            if (isFailure)
+                return NotFound(error.Message);
+            return Ok(id);
         }
 
         /// <summary>
@@ -145,7 +156,9 @@ namespace QuizWebApp.TaskService
         [HttpDelete("{topicId}/level/{levelId}")]
         public ActionResult DeleteLevel(Guid topicId, Guid levelId)
         {
-            applicationApi.DeleteLevel(topicId, levelId);
+            var (_, isFailure, _, error) = applicationApi.DeleteLevel(topicId, levelId);
+            if (isFailure)
+                return NotFound(error.Message);
             return Ok();
         }
 
@@ -173,11 +186,17 @@ namespace QuizWebApp.TaskService
             Guid levelId,
             [FromBody] TemplateGeneratorDTO templateGenerator)
         {
-            var (generatorGuid, _) = applicationApi.AddTemplateGenerator(topicId, levelId, templateGenerator.Text,
-                templateGenerator.PossibleAnswers,
-                templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
-                templateGenerator.Question);
-            return Ok(generatorGuid);
+            var (_, isFailure, id, error) = applicationApi
+                .AddTemplateGenerator(
+                    topicId,
+                    levelId,
+                    templateGenerator.Text,
+                    templateGenerator.PossibleAnswers,
+                    templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
+                    templateGenerator.Question);
+            if (isFailure)
+                return NotFound(error.Message);
+            return Ok(id);
         }
 
         /// <summary>
@@ -193,7 +212,9 @@ namespace QuizWebApp.TaskService
         [HttpDelete("{topicId}/{levelId}/generator/{generatorId}")]
         public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            applicationApi.DeleteGenerator(topicId, levelId, generatorId);
+            var (_, isFailure, _, error) = applicationApi.DeleteGenerator(topicId, levelId, generatorId);
+            if (isFailure)
+                return NotFound(error.Message);
             return Ok();
         }
 

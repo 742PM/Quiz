@@ -4,11 +4,11 @@ using System.Linq;
 using Application.Exceptions;
 using Application.QuizService;
 using AutoMapper;
-using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizWebApp.QuizService.DTO;
 
-namespace ComplexityWebApi.Controllers
+namespace QuizWebApp.QuizService
 {
     [Route("api")]
     [ApiController]

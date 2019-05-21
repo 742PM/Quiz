@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.TaskService;
 using AutoMapper;
-using ComplexityWebApi.DTO;
 using Microsoft.AspNetCore.Mvc;
-using QuizWebApp.DTO;
+using QuizWebApp.TaskService.DTO;
 
-namespace QuizWebApp.Controllers
+namespace QuizWebApp.TaskService
 {
     [Route("service")]
     [ApiController]
@@ -165,7 +164,7 @@ namespace QuizWebApp.Controllers
         }
 
         /// <summary>
-        ///     Рендерит и возвращает Task по шаблону, полученному в запросе
+        ///     Рендерит и возвращает Task по шаблону из запроса
         /// </summary>
         /// <remarks>
         ///     Sample request:

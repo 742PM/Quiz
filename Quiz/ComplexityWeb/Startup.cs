@@ -8,7 +8,6 @@ using Application.Repositories;
 using Application.Selectors;
 using Application.TaskService;
 using AutoMapper;
-using ComplexityWebApi.DTO;
 using DataBase;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
@@ -20,6 +19,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using QuizWebApp.QuizService.DTO;
+using QuizWebApp.TaskService.DTO;
 using Swashbuckle.AspNetCore.Swagger;
 using static System.Environment;
 

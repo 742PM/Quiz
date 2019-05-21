@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace QuizWebApp.DTO
+namespace QuizWebApp.TaskService.DTO
 {
     public class TemplateGeneratorDTO
     {

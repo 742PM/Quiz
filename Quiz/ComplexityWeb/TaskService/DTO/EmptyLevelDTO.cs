@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace QuizWebApp.DTO
+namespace QuizWebApp.TaskService.DTO
 {
     public class EmptyLevelDTO
     {

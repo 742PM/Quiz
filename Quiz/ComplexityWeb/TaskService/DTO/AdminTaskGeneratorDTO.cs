@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace ComplexityWebApi.DTO
+namespace QuizWebApp.TaskService.DTO
 {
     public class AdminTaskGeneratorDTO
     {

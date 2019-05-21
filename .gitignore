@@ -432,3 +432,5 @@ typings/
 bundle.js
 
 node_modules
+/Quiz/ComplexityWeb/wwwroot/dist
+/Quiz/DataView

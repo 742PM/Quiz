@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bot", "Bot", "{F97ECF76-96D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{04B404F3-8DEA-4FFE-A691-718CD0E8EEAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataView", "DataView\DataView.csproj", "{856FF93A-D5E5-4D43-AB28-01322CE8D651}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,18 @@ Global
 		{9E18DF2D-93E4-4D66-BAA9-8BBF0A581B50}.Release|x64.Build.0 = Release|Any CPU
 		{9E18DF2D-93E4-4D66-BAA9-8BBF0A581B50}.Release|x86.ActiveCfg = Release|Any CPU
 		{9E18DF2D-93E4-4D66-BAA9-8BBF0A581B50}.Release|x86.Build.0 = Release|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Debug|x64.Build.0 = Debug|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Debug|x86.Build.0 = Debug|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Release|Any CPU.Build.0 = Release|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Release|x64.ActiveCfg = Release|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Release|x64.Build.0 = Release|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Release|x86.ActiveCfg = Release|Any CPU
+		{856FF93A-D5E5-4D43-AB28-01322CE8D651}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

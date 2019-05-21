@@ -429,4 +429,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-dist/
+bundle.js
+
+node_modules

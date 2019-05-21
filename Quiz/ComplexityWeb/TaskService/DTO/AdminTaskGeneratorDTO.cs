@@ -5,7 +5,14 @@ namespace QuizWebApp.TaskService.DTO
 {
     public class AdminTaskGeneratorDTO
     {
-        public AdminTaskGeneratorDTO(Guid id, string text, int streak, string question, string[] possibleAnswers, string[] hints, string answer)
+        public AdminTaskGeneratorDTO(
+            Guid id,
+            string text,
+            int streak,
+            string question,
+            string[] possibleAnswers,
+            string[] hints,
+            string answer)
         {
             Id = id;
             Text = text;
@@ -17,7 +24,7 @@ namespace QuizWebApp.TaskService.DTO
         }
 
         [JsonProperty("id")] public Guid Id { get; }
-        
+
         [JsonProperty("text")] public string Text { get; }
 
         [JsonProperty("streak")] public int Streak { get; }

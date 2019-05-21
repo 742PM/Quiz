@@ -5,14 +5,14 @@ namespace QuizWebApp.TaskService.DTO
 {
     public class AdminTopicDTO
     {
-        public AdminTopicDTO(string name, Guid id, AdminLevelDTO[] levels)
+        public AdminTopicDTO(string name, Guid id, Guid[] levelIds)
         {
             Name = name;
             Id = id;
-            Levels = levels;
+            LevelIds = levelIds;
         }
 
-        [JsonProperty("levels")] public AdminLevelDTO[] Levels { get; }
+        [JsonProperty("levelIds")] public Guid[] LevelIds { get; }
 
         [JsonProperty("id")] public Guid Id { get; }
 

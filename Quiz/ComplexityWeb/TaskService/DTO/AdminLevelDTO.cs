@@ -5,12 +5,12 @@ namespace QuizWebApp.TaskService.DTO
 {
     public class AdminLevelDTO
     {
-        public AdminLevelDTO(Guid id, string description, Guid[] nextLevels, AdminTaskGeneratorDTO[] generators)
+        public AdminLevelDTO(Guid id, string description, Guid[] nextLevels, Guid[] generatorIds)
         {
             Id = id;
             Description = description;
             NextLevels = nextLevels;
-            Generators = generators;
+            GeneratorIds = generatorIds;
         }
 
         [JsonProperty("id")] public Guid Id { get; }
@@ -19,6 +19,6 @@ namespace QuizWebApp.TaskService.DTO
 
         [JsonProperty("nextLevels")] public Guid[] NextLevels { get; }
 
-        [JsonProperty("generators")] public AdminTaskGeneratorDTO[] Generators { get; }
+        [JsonProperty("generatorIds")] public Guid[] GeneratorIds { get; }
     }
 }

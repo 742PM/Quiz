@@ -16,6 +16,7 @@ namespace QuizWebHookBot
     public class Startup
     {
         private const string DatabaseName = "telegramUsers";
+        const string ServiceUri = "https://quiz-service.azurewebsites.net";
 
         public Startup(IConfiguration configuration)
         {
@@ -26,14 +27,13 @@ namespace QuizWebHookBot
             new MongoClient(connectionString).GetDatabase(DatabaseName);
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddScoped<IUpdateService, UpdateService>();
             services.AddSingleton<IBotService, BotService>();
-            services.AddScoped<IQuizService> (_ => new Requester("https://complexitybot.azurewebsites.net"));
+            services.AddScoped<IQuizService> (_ => new Requester(ServiceUri));
 //            services.AddSingleton(_ => new MongoClient("mongodb://localhost:27017").GetDatabase("QuizDatabase"));
             services.AddSingleton(_ => new MongoClient(
                 "mongodb://romutchio:romaha434" +

@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
+using QuizBotCore.Database;
 using QuizRequestService.DTO;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace QuizBotCore.Commands
 {
@@ -27,10 +29,16 @@ namespace QuizBotCore.Commands
                 if (isCorrect.Value)
                 {
                     await client.SendTextMessageAsync(chat.Id, DialogMessages.CorrectAnswer);
+                    await RemoveButtonsForPreviousTask(user, chat, client);
                     await new ShowTaskCommand(topicDto,levelDto, true).ExecuteAsync(chat, client, serviceManager);
                 }
                 else await client.SendTextMessageAsync(chat.Id, DialogMessages.WrongAnswer);
             }
+        }
+
+        private async Task RemoveButtonsForPreviousTask(UserEntity user, Chat chat, TelegramBotClient client)
+        {
+            await client.EditMessageReplyMarkupAsync(chat.Id, user.MessageId, InlineKeyboardMarkup.Empty());
         }
     }
 }

@@ -4,6 +4,8 @@ import {Welcome} from "./login/Welcom";
 import {Editor} from "./Editor";
 import {RightsViewer} from "./login/RightsViewer";
 
+import '../styles/App.css';
+
 export class App extends React.Component {
 
     constructor(props) {
@@ -45,6 +47,7 @@ export class App extends React.Component {
         return (
             <div>
                 <h1>Quibble level manager</h1>
+                <div class="main">
                 {
                     (this.state.user) ?
                         <div>
@@ -60,6 +63,7 @@ export class App extends React.Component {
                         </div>
                         : <LoginForm onSignIn={this.signIn.bind(this)}/>
                 }
+                </div>
                 {(this.state.rights) ?
                     <RightsViewer user={this.state.user}/> :
                     undefined}

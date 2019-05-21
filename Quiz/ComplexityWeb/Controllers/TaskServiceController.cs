@@ -84,8 +84,8 @@ namespace ComplexityWebApi.Controllers
         ///     POST service/addLevel/0
         ///     {
         ///         "description": "Оценка сложностей алгоритмов",
-        ///         "next_levels": [0, 1],
-        ///         "previous_levels": [2, 3]
+        ///         "previous_levels": [2, 3],
+        ///         "next_levels": [0, 1]
         ///     }
         ///     </code>
         /// </remarks>

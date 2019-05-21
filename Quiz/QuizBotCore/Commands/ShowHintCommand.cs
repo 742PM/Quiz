@@ -1,6 +1,10 @@
+using System.Linq;
 using System.Threading.Tasks;
+using QuizBotCore.Database;
+using QuizBotCore.States;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace QuizBotCore.Commands
 {
@@ -10,9 +14,30 @@ namespace QuizBotCore.Commands
         {
             var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
             var hint = serviceManager.quizService.GetHint(user.Id);
-            if (hint == null)
-                await client.SendTextMessageAsync(chat.Id, DialogMessages.NoHints);
-            else await client.SendTextMessageAsync(chat.Id, hint.HintText);
+            await client.SendTextMessageAsync(chat.Id, hint.HintText);
+            if (!hint.HasNext)
+                await EditReplyButtons(user, chat, client, serviceManager);
+        }
+
+        private async Task EditReplyButtons(UserEntity user, Chat chat, TelegramBotClient client, ServiceManager serviceManager)
+        {
+            var messageId = user.MessageId;
+            var controlButtons = new[]
+            {
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back)
+            };
+            var state = user.CurrentState as TaskState;
+            var task = serviceManager.quizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
+            var answers = task.Answers.Select((e, index) => (letter: DialogMessages.Alphabet[index], answer: $"{e}"))
+                .ToList();
+            var keyboard = new InlineKeyboardMarkup(new[]
+            {
+                answers.Select(x => InlineKeyboardButton
+                    .WithCallbackData(x.letter.ToString(), x.answer)),
+                controlButtons
+            });
+            await client.EditMessageReplyMarkupAsync(chat.Id, messageId, keyboard);
         }
     }
 }

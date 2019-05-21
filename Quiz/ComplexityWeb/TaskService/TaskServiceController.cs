@@ -46,6 +46,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает уровень</response>
+        /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpGet("{topicId}/level/{levelId}")]
         public ActionResult<AdminLevelDTO> GetLevel(Guid topicId, Guid levelId)
         {
@@ -65,6 +66,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает генератор</response>
+        /// <response code="404"> Id темы, уровня или генератора не найдены</response>
         [HttpGet("{topicId}/{levelId}/templateGenerator/{generatorId}")]
         public ActionResult<AdminTaskGeneratorDTO> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
@@ -105,6 +107,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Topic был удален</response>
+        /// <response code="404"> Id темы не найден</response>
         [HttpDelete("topic/{topicId}")]
         public ActionResult DeleteTopic(Guid topicId)
         {
@@ -129,6 +132,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового Level</response>
+        /// <response code="404"> Id темы не найден</response>
         [HttpPost("{topicId}/level")]
         public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] EmptyLevelDTO level)
         {
@@ -153,6 +157,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Level был удален</response>
+        /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpDelete("{topicId}/level/{levelId}")]
         public ActionResult DeleteLevel(Guid topicId, Guid levelId)
         {
@@ -180,6 +185,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
+        /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpPost("{topicId}/{levelId}/templateGenerator")]
         public ActionResult<Guid> AddTemplateGenerator(
             Guid topicId,
@@ -209,6 +215,7 @@ namespace QuizWebApp.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Generator был удален</response>
+        /// <response code="404"> Id темы, уровня или генератора не найдены</response>
         [HttpDelete("{topicId}/{levelId}/generator/{generatorId}")]
         public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {

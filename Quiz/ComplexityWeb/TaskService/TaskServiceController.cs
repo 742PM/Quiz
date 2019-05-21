@@ -20,7 +20,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Получить список Topic.
+        ///     Получить список тем
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -37,7 +37,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Получить Level.
+        ///     Получить уровень по id
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -57,7 +57,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Получить TemplateGenerator.
+        ///     Получить генератор по id
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -77,7 +77,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Добавляет в сервис новый пустой Topic.
+        ///     Добавляет в сервис новый пустую тему
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -89,7 +89,7 @@ namespace QuizWebApp.TaskService
         ///     }
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Возвращает Guid от нового Topic</response>
+        /// <response code="200"> Возвращает Id от новой темы</response>
         [HttpPost("topic")]
         public ActionResult<Guid> AddEmptyTopic([FromBody] EmptyTopicDTO topic)
         {
@@ -98,7 +98,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Удаляет Topic из сервиса.
+        ///     Удаляет тему из сервиса
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -106,7 +106,7 @@ namespace QuizWebApp.TaskService
         ///     DELETE service/deleteTopic/1
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Topic был удален</response>
+        /// <response code="200"> Тема была успешно удалена</response>
         /// <response code="404"> Id темы не найден</response>
         [HttpDelete("topic/{topicId}")]
         public ActionResult DeleteTopic(Guid topicId)
@@ -118,20 +118,20 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Добавляет в сервис новый пустой Level.
+        ///     Добавляет в сервис пустой уровень
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     <code>
         ///     POST service/0/addLevel
         ///     {
-        ///         "description": "Оценка сложностей алгоритмов",
+        ///         "description": "Оценка сложности алгоритмов",
         ///         "nextLevels": [0, 1],
         ///         "previousLevels": [2, 3]
         ///     }
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Возвращает Guid от нового Level</response>
+        /// <response code="200"> Возвращает Id нового уровня</response>
         /// <response code="404"> Id темы не найден</response>
         [HttpPost("{topicId}/level")]
         public ActionResult<Guid> AddLevel(Guid topicId, [FromBody] EmptyLevelDTO level)
@@ -148,7 +148,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Удаляет Level из сервиса.
+        ///     Удаляет уровень из сервиса.
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -156,7 +156,7 @@ namespace QuizWebApp.TaskService
         ///     DELETE service/1/deleteLevel/1
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Level был удален</response>
+        /// <response code="200"> уровень был успешно удален</response>
         /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpDelete("{topicId}/level/{levelId}")]
         public ActionResult DeleteLevel(Guid topicId, Guid levelId)
@@ -168,7 +168,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Добавляет в сервис новый TemplateGenerator.
+        ///     Добавляет в сервис новый генератор
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -177,14 +177,14 @@ namespace QuizWebApp.TaskService
         ///     {
         ///        "question": "Оцените временную сложность алгоритма",
         ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
-        ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
-        ///        "answer": "Θ(n)",
+        ///        "possibleAnswers": ["Θ(1)", "Θ(log({{to1}}))", "Θ({{to1}})"],
+        ///        "answer": "Θ({{to1}})",
         ///        "hints": [],
         ///        "streak": 1
         ///     }
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Возвращает Guid от нового TemplateGenerator</response>
+        /// <response code="200"> Возвращает Id нового генератора</response>
         /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpPost("{topicId}/{levelId}/templateGenerator")]
         public ActionResult<Guid> AddTemplateGenerator(
@@ -206,7 +206,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Удаляет Generator из сервиса.
+        ///     Удаляет генератор из сервиса.
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -214,7 +214,7 @@ namespace QuizWebApp.TaskService
         ///     DELETE service/1/0/deleteGenerator/2
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Generator был удален</response>
+        /// <response code="200"> Генератор был успешно удален</response>
         /// <response code="404"> Id темы, уровня или генератора не найдены</response>
         [HttpDelete("{topicId}/{levelId}/generator/{generatorId}")]
         public ActionResult DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
@@ -226,7 +226,7 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Рендерит и возвращает Task по шаблону из запроса
+        ///     Рендерит и возвращает задачу по шаблону из запроса
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -235,13 +235,13 @@ namespace QuizWebApp.TaskService
         ///     {
         ///        "question": "Оцените временную сложность алгоритма",
         ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
-        ///        "possibleAnswers": ["Θ(1)", "Θ(log(n))"],
-        ///        "answer": "Θ(n)",
+        ///        "possibleAnswers": ["Θ(1)", "Θ(log({{to1}}))", "Θ({{to1}})"],
+        ///        "answer": "Θ({{to1}})",
         ///        "hints": []
         ///     }
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Возвращает отрендереный Task</response>
+        /// <response code="200"> Возвращает отрендеренную задачу</response>
         [HttpPost("taskToRender")]
         public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
         {

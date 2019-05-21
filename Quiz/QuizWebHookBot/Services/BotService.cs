@@ -10,7 +10,7 @@ namespace QuizWebHookBot.Services
 
         public BotService(IOptions<BotConfiguration> config)
         {
-            Client = Environment.GetEnvironmentVariable(TelegramTokenVariableName)??new TelegramBotClient("854957716:AAHjU_wFLwX5Sz23CV-9qs-kSYAcVqewERU");
+            Client = new TelegramBotClient(Environment.GetEnvironmentVariable(TelegramTokenVariableName) ?? "854957716:AAHjU_wFLwX5Sz23CV-9qs-kSYAcVqewERU");
         }
         
         public TelegramBotClient Client { get; }

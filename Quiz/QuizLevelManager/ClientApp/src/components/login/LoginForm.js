@@ -50,16 +50,16 @@ export class LoginForm extends React.Component {
         return (
             <form onSubmit={this.handleSignIn.bind(this)}>
                 <h3>Sign in</h3>
-                <div class="input">
-                <input type="text" ref="username" placeholder="enter you username"/>
-                <br/>
+                <div>
+                    <input type="text" ref="username" placeholder="enter you username"/>
+                    <br/>
                 </div>
-                <div class="input">
-                <input type="password" ref="password" placeholder="enter password"/>
-                <br/>
+                <div>
+                    <input type="password" ref="password" placeholder="enter password"/>
+                    <br/>
                 </div>
-                <div class="submit">
-                <input type="submit" value="Login" class="submit"/>
+                <div>
+                    <input type="submit" value="Login"/>
                 </div>
             </form>
         )

@@ -1,5 +1,5 @@
 import React from "react";
-import {serverUrl} from "../../../config"
+import {serverUrl} from "../../config"
 import '../../styles/EditorForm.css'
 
 export class CreateTopicForm extends React.Component {

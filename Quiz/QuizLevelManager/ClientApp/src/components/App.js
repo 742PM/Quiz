@@ -47,7 +47,7 @@ export class App extends React.Component {
         return (
             <div>
                 <h1>Quibble level manager</h1>
-                <div class="main" className="main">
+                <div className="main">
                 {
                     (this.state.user) ?
                         <div>

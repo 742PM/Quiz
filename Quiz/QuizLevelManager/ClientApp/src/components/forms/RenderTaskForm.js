@@ -1,15 +1,14 @@
 import React from "react";
 import '../../styles/EditorForm.css'
 
-export class CreateGeneratorForm extends React.Component {
+export class RenderTaskForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\\r\\nc++\\r\\n",
             possibleAnswers: '["O(n)", "O(n*log(n)", "O(log(n)"]',
             rightAnswers: "O(1)",
-            hints: "[]",
-            streak: 1
+            hints: "[]"
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -26,20 +25,19 @@ export class CreateGeneratorForm extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('Вы создали Generator: ' + this.state.template);
+        alert('Отрендереный генератор: ' + this.state.template);
         event.preventDefault();
     }
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <h3>Параметры с которыми хотите создать Generator:</h3>
+                <h3>Параметры с которыми хотите отрендерить Task</h3>
                 <br/>
                 <label>
                     <p>Template:</p>
                     <textarea className="bigTextarea"
                         name="template"
-                        type="text"
                         value={this.state.template}
                         onChange={this.handleInputChange}/>
                 </label>
@@ -48,7 +46,6 @@ export class CreateGeneratorForm extends React.Component {
                     <p>Possible Answers:</p>
                     <textarea className="bigTextarea"
                         name="possibleAnswer"
-                        type="text"
                         value={this.state.possibleAnswers}
                         onChange={this.handleInputChange}/>
                 </label>
@@ -57,7 +54,6 @@ export class CreateGeneratorForm extends React.Component {
                     <p>Hints:</p>
                     <textarea className="bigTextarea"
                         name="hints"
-                        type="text"
                         value={this.state.hints}
                         onChange={this.handleInputChange}/>
                 </label>
@@ -65,19 +61,9 @@ export class CreateGeneratorForm extends React.Component {
                 <label>
                     <p>Right Answer:</p>
                     <textarea className="smallTextarea"
-                        name="rightAnswer"
-                        type="text"
-                        value={this.state.rightAnswers}
-                        onChange={this.handleInputChange}/>
-                </label>
-                <br/>
-                <label>
-                    <p>Streak:</p>
-                    <textarea className="smallTextarea"
-                        name="hints"
-                        type="number"
-                        value={this.state.streak}
-                        onChange={this.handleInputChange}/>
+                              name="rightAnswer"
+                              value={this.state.rightAnswers}
+                              onChange={this.handleInputChange}/>
                 </label>
                 <br/><br/>
                 <input className="button2" type="submit" value="Submit" />

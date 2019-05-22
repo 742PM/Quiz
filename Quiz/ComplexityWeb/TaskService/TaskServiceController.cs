@@ -53,7 +53,7 @@ namespace QuizWebApp.TaskService
             var (_, isFailure, level, error) = applicationApi.GetLevel(topicId, levelId);
             if (isFailure)
                 return NotFound(error.Message);
-            return Ok(level);
+            return Ok(Mapper.Map<AdminLevelDTO>(level));
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace QuizWebApp.TaskService
             var (_, isFailure, generator, error) = applicationApi.GetTemplateGenerator(topicId, levelId, generatorId);
             if (isFailure)
                 return NotFound(error.Message);
-            return Ok(generator);
+            return Ok(Mapper.Map<AdminTaskGeneratorDTO>(generator));
         }
 
         /// <summary>

@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 
 namespace QuizWebApp.TaskService.DTO
 {
-    public class AdminTaskGeneratorDTO
+    public class AdminTemplateGeneratorDTO
     {
-        public AdminTaskGeneratorDTO(
+        public AdminTemplateGeneratorDTO(
             Guid id,
             string text,
             int streak,

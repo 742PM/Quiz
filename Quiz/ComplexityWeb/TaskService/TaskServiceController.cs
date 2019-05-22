@@ -31,12 +31,12 @@ namespace QuizWebApp.TaskService
         /// <response code="200"> Возвращает генераторы</response>
         /// <response code="404"> Id темы или уровня не найдены</response>
         [HttpGet("{topicId}/{levelId}/templateGenerators")]
-        public ActionResult<IEnumerable<AdminTaskGeneratorDTO>> GetTemplateGenerators(Guid topicId, Guid levelId)
+        public ActionResult<IEnumerable<AdminTemplateGeneratorDTO>> GetTemplateGenerators(Guid topicId, Guid levelId)
         {
             var (_, isFailure, generators, error) = applicationApi.GetTemplateGenerators(topicId, levelId);
             if (isFailure)
                 return NotFound(error.Message);
-            return Ok(generators.Select(Mapper.Map<AdminTaskGeneratorDTO>));
+            return Ok(generators.Select(Mapper.Map<AdminTemplateGeneratorDTO>));
         }
 
         /// <summary>

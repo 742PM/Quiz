@@ -86,7 +86,7 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();
-                cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
+                cfg.CreateMap<TemplateTaskGenerator, AdminTemplateGeneratorDTO>();
             });
 
             app.UseSwagger();

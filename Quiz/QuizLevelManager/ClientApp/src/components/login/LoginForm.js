@@ -21,17 +21,17 @@ const users = [
             'can_render_tasks',
             'can_get_levels_tasks_generators']
     },
-]
+];
 
 export class LoginForm extends React.Component {
 
     // Using a class based component here because we're accessing DOM refs
 
     handleSignIn(e) {
-        e.preventDefault()
-        let username = this.refs.username.value
-        let password = this.refs.password.value
-        let user = LoginForm.validateUser(username, password)
+        e.preventDefault();
+        let username = this.refs.username.value;
+        let password = this.refs.password.value;
+        let user = LoginForm.validateUser(username, password);
         if (user)
             this.props.onSignIn(user)
     }

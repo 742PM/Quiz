@@ -15,4 +15,4 @@ export const Welcome = ({user, rights, onRights, onSignOut})=> {
             <a href="javascript:" onClick={onSignOut}>Sign out</a>
         </div>
     )
-}
+};

@@ -15,9 +15,9 @@ export class CreateTopicForm extends React.Component {
     }
 
     handleChange(event) {
-        const target = event.target
-        const name = target.name
-        const value = target.value
+        const target = event.target;
+        const name = target.name;
+        const value = target.value;
         this.setState({
             [name]: value
         });

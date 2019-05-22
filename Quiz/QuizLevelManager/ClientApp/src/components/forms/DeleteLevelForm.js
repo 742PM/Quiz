@@ -13,9 +13,9 @@ export class DeleteLevelForm extends React.Component {
     }
 
     handleInputChange(event) {
-        const target = event.target
-        const name = target.name
-        const value = event.target.value
+        const target = event.target;
+        const name = target.name;
+        const value = event.target.value;
         this.setState({
             [name]: value
         });

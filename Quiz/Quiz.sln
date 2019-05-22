@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bot", "Bot", "{F97ECF76-96D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{04B404F3-8DEA-4FFE-A691-718CD0E8EEAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizLevelManager", "QuizLevelManager\QuizLevelManager.csproj", "{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,18 @@ Global
 		{9E18DF2D-93E4-4D66-BAA9-8BBF0A581B50}.Release|x64.Build.0 = Release|Any CPU
 		{9E18DF2D-93E4-4D66-BAA9-8BBF0A581B50}.Release|x86.ActiveCfg = Release|Any CPU
 		{9E18DF2D-93E4-4D66-BAA9-8BBF0A581B50}.Release|x86.Build.0 = Release|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Debug|x64.Build.0 = Debug|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Release|x64.ActiveCfg = Release|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Release|x64.Build.0 = Release|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{4EC01D8D-7BBC-4754-AB8F-9782DC3CC5AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

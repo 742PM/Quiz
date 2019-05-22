@@ -14,6 +14,7 @@ using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
@@ -78,6 +79,16 @@ namespace ComplexityWebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.Use((context, next) =>
+            {
+                if (context.Request.Headers.Any(k => k.Key.Contains("Origin")) && context.Request.Method == "OPTIONS")
+                {
+                    context.Response.StatusCode = 200;
+                    return context.Response.WriteAsync("handled");
+                }
+
+                return next.Invoke();
+            });
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else

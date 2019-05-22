@@ -1,25 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Application.Info;
 using Application.QuizService;
 using Application.Repositories;
-using Application.Sections;
 using Application.Selectors;
 using Application.TaskService;
 using AutoMapper;
 using DataBase;
-using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using QuizWebApp.QuizService.DTO;
 using QuizWebApp.TaskService.DTO;
 using Swashbuckle.AspNetCore.Swagger;
@@ -92,9 +86,6 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();
-
-                cfg.CreateMap<TopicSection, AdminTopicDTO>();
-                cfg.CreateMap<LevelSection, AdminLevelDTO>();
                 cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
             });
 

@@ -20,60 +20,23 @@ namespace QuizWebApp.TaskService
         }
 
         /// <summary>
-        ///     Получить список тем
+        ///     Получить генераторы из уровня
         /// </summary>
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     GET service/topics
+        ///     GET service/0/1/templateGenerators
         ///     </code>
         /// </remarks>
-        /// <response code="200"> Возвращает список тем</response>
-        [HttpGet("topics")]
-        public ActionResult<IEnumerable<AdminTopicDTO>> GetTopics()
-        {
-            var topics = applicationApi.GetAllTopics();
-            return Ok(topics.Select(Mapper.Map<AdminTopicDTO>));
-        }
-
-        /// <summary>
-        ///     Получить уровень по id
-        /// </summary>
-        /// <remarks>
-        ///     Sample request:
-        ///     <code>
-        ///     GET service/0/level/1
-        ///     </code>
-        /// </remarks>
-        /// <response code="200"> Возвращает уровень</response>
+        /// <response code="200"> Возвращает генераторы</response>
         /// <response code="404"> Id темы или уровня не найдены</response>
-        [HttpGet("{topicId}/level/{levelId}")]
-        public ActionResult<AdminLevelDTO> GetLevel(Guid topicId, Guid levelId)
+        [HttpGet("{topicId}/{levelId}/templateGenerators")]
+        public ActionResult<IEnumerable<AdminTaskGeneratorDTO>> GetTemplateGenerators(Guid topicId, Guid levelId)
         {
-            var (_, isFailure, level, error) = applicationApi.GetLevel(topicId, levelId);
+            var (_, isFailure, generators, error) = applicationApi.GetTemplateGenerators(topicId, levelId);
             if (isFailure)
                 return NotFound(error.Message);
-            return Ok(Mapper.Map<AdminLevelDTO>(level));
-        }
-
-        /// <summary>
-        ///     Получить генератор по id
-        /// </summary>
-        /// <remarks>
-        ///     Sample request:
-        ///     <code>
-        ///     GET service/0/1/templateGenerator/2
-        ///     </code>
-        /// </remarks>
-        /// <response code="200"> Возвращает генератор</response>
-        /// <response code="404"> Id темы, уровня или генератора не найдены</response>
-        [HttpGet("{topicId}/{levelId}/templateGenerator/{generatorId}")]
-        public ActionResult<AdminTaskGeneratorDTO> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
-        {
-            var (_, isFailure, generator, error) = applicationApi.GetTemplateGenerator(topicId, levelId, generatorId);
-            if (isFailure)
-                return NotFound(error.Message);
-            return Ok(Mapper.Map<AdminTaskGeneratorDTO>(generator));
+            return Ok(generators.Select(Mapper.Map<AdminTaskGeneratorDTO>));
         }
 
         /// <summary>

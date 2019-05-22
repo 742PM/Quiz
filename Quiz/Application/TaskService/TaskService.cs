@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Extensions;
 using Application.Repositories;
-using Application.Sections;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
@@ -25,35 +24,18 @@ namespace Application.TaskService
         }
 
         /// <inheritdoc />
-        public IEnumerable<TopicSection> GetAllTopics()
+        public Result<IEnumerable<TemplateTaskGenerator>, Exception> GetTemplateGenerators(Guid topicId, Guid levelId)
         {
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+
             return taskRepository
-                .GetTopics()
-                .Select(topic => topic.ToSection());
-        }
-
-        /// <inheritdoc />
-        public Result<LevelSection, Exception> GetLevel(Guid topicId, Guid levelId)
-        {
-            if (!taskRepository.TopicExists(topicId))
-                return new ArgumentException(nameof(topicId));
-            if (!taskRepository.LevelExists(topicId, levelId))
-                return new ArgumentException(nameof(levelId));
-
-            return taskRepository.FindLevel(topicId, levelId).ToSection();
-        }
-
-        /// <inheritdoc />
-        public Result<TemplateTaskGenerator, Exception> GetTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
-        {
-            if (!taskRepository.TopicExists(topicId))
-                return new ArgumentException(nameof(topicId));
-            if (!taskRepository.LevelExists(topicId, levelId))
-                return new ArgumentException(nameof(levelId));
-            if (!taskRepository.GeneratorExists(topicId, levelId, generatorId))
-                return new ArgumentException(nameof(generatorId));
-
-            return (TemplateTaskGenerator) taskRepository.FindGenerator(topicId, levelId, generatorId);
+                .FindLevel(topicId, levelId)
+                .Generators
+                .Cast<TemplateTaskGenerator>()
+                .Ok();
         }
 
         /// <inheritdoc />

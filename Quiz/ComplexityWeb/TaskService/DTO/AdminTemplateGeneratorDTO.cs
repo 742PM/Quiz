@@ -1,11 +1,18 @@
 using System;
 using Newtonsoft.Json;
 
-namespace ComplexityWebApi.DTO
+namespace QuizWebApp.TaskService.DTO
 {
-    public class AdminTaskGeneratorDTO
+    public class AdminTemplateGeneratorDTO
     {
-        public AdminTaskGeneratorDTO(Guid id, string text, int streak, string question, string[] possibleAnswers, string[] hints, string answer)
+        public AdminTemplateGeneratorDTO(
+            Guid id,
+            string text,
+            int streak,
+            string question,
+            string[] possibleAnswers,
+            string[] hints,
+            string answer)
         {
             Id = id;
             Text = text;
@@ -17,7 +24,7 @@ namespace ComplexityWebApi.DTO
         }
 
         [JsonProperty("id")] public Guid Id { get; }
-        
+
         [JsonProperty("text")] public string Text { get; }
 
         [JsonProperty("streak")] public int Streak { get; }

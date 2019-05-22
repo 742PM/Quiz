@@ -47,18 +47,18 @@ export class App extends React.Component {
         return (
             <div>
                 <h1>Quibble level manager</h1>
-                <div class="main">
+                <div class="main" className="main">
                 {
                     (this.state.user) ?
                         <div>
-                            <Welcome
-                                onSignOut={this.signOut.bind(this)}
-                                rights={this.state.rights}
-                                user={this.state.user}
-                                onRights={
-                                    (this.state.rights) ?
-                                        this.hideRights.bind(this) :
-                                        this.showRights.bind(this)}/>
+                            {/*<Welcome*/}
+                            {/*    onSignOut={this.signOut.bind(this)}*/}
+                            {/*    rights={this.state.rights}*/}
+                            {/*    user={this.state.user}*/}
+                            {/*    onRights={*/}
+                            {/*        (this.state.rights) ?*/}
+                            {/*            this.hideRights.bind(this) :*/}
+                            {/*            this.showRights.bind(this)}/>*/}
                             <Editor user={this.state.user}/>
                         </div>
                         : <LoginForm onSignIn={this.signIn.bind(this)}/>

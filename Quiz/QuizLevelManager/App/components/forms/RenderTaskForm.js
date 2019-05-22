@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/EditorForm.css'
 
 export class RenderTaskForm extends React.Component {
     constructor(props) {
@@ -34,8 +35,8 @@ export class RenderTaskForm extends React.Component {
                 <h3>Параметры с которыми хотите отрендерить Task</h3>
                 <br/>
                 <label>
-                    Template:
-                    <input
+                    <p>Template:</p>
+                    <textarea className="bigTextarea"
                         name="template"
                         type="text"
                         value={this.state.template}
@@ -43,8 +44,8 @@ export class RenderTaskForm extends React.Component {
                 </label>
                 <br/>
                 <label>
-                    Possible Answers:
-                    <input
+                    <p>Possible Answers:</p>
+                    <textarea className="bigTextarea"
                         name="possibleAnswer"
                         type="text"
                         value={this.state.possibleAnswers}
@@ -52,23 +53,24 @@ export class RenderTaskForm extends React.Component {
                 </label>
                 <br/>
                 <label>
-                    Right Answer:
-                    <input
-                        name="rightAnswer"
-                        type="text"
-                        value={this.state.rightAnswers}
-                        onChange={this.handleInputChange}/>
-                </label>
-                <br/>
-                <label>
-                    Hints:
-                    <input
+                    <p>Hints:</p>
+                    <textarea className="bigTextarea"
                         name="hints"
                         type="text"
                         value={this.state.hints}
                         onChange={this.handleInputChange}/>
                 </label>
-                <input type="submit" value="Submit" />
+                <br/>
+                <label>
+                    <p>Right Answer:</p>
+                    <textarea className="smallTextarea"
+                              name="rightAnswer"
+                              type="text"
+                              value={this.state.rightAnswers}
+                              onChange={this.handleInputChange}/>
+                </label>
+                <br/><br/>
+                <input className="button2" type="submit" value="Submit" />
             </form>
         );
     }

@@ -1,0 +1,15 @@
+.button1 {
+    background-color: #EDC7B7;
+    color: black;
+    font-size: 24px;
+    border-radius: 8px;
+    width: 300px;
+    display: table;
+    margin: auto;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+} /* Green */
+
+.center {
+    display: table;
+    margin: auto;
+}

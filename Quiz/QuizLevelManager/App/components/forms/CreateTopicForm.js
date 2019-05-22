@@ -1,7 +1,6 @@
 import React from "react";
-
-// const serverUrl = "https://complexitybot.azurewebsites.net"
-// const serverUrl = "http://localhost:5000"
+import {serverUrl} from "../../../config"
+import '../../styles/EditorForm.css'
 
 export class CreateTopicForm extends React.Component {
     constructor(props) {
@@ -25,9 +24,9 @@ export class CreateTopicForm extends React.Component {
     }
 
     handleSubmit(event) {
-        fetch("./service/addTopic", {
+        fetch(serverUrl + "service/addTopic", {
             method: "post",
-            mode: "same-origin",
+            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "text/plain"
@@ -55,15 +54,16 @@ export class CreateTopicForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <h3>Добавление Topic</h3>
                 <label>
-                    Имя Topic, который хотите добавить:
-                    <textarea name="value" value={this.state.value} onChange={this.handleChange}/>
+                    <p>Имя Topic, который хотите добавить:</p>
+                    <textarea className="smallTextarea" name="value" value={this.state.value} onChange={this.handleChange}/>
                 </label>
                 <br/>
                 <label>
-                    Описание задания для Topic:
-                    <textarea name="description" value={this.state.description} onChange={this.handleChange}/>
+                    <p>Описание задания для Topic:</p>
+                    <textarea className="smallTextarea" name="description" value={this.state.description} onChange={this.handleChange}/>
                 </label>
-                <input type="submit" value="Create Topic"/>
+                <br/><br/>
+                <input className="button2" type="submit" value="Create Topic"/>
             </form>
         );
     }

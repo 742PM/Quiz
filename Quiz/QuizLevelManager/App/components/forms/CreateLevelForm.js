@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/EditorForm.css'
 
 export class CreateLevelForm extends React.Component {
     constructor(props) {
@@ -31,17 +32,18 @@ export class CreateLevelForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <h3>Добавление Level</h3>
                 <label>
-                    Выберите Topic, в который хотите добавить Level:
+                    <p>Выберите Topic, в который хотите добавить Level:</p>
                     <select name="topic" value={this.state.topic} onChange={this.handleInputChange}>
                         <option value="Сложность алгоритмов">Сложность алгоритмов</option>
                     </select>
                 </label>
                 <br/>
                 <label>
-                    Имя Level, который хотите добавить:
-                    <textarea name="level" value={this.state.level} onChange={this.handleInputChange} />
+                    <p>Имя Level, который хотите добавить:</p>
+                    <textarea className="smallTextarea" name="level" value={this.state.level} onChange={this.handleInputChange} />
                 </label>
-                <input type="submit" value="Create Level" />
+                <br/><br/>
+                <input className="button2" type="submit" value="Create Level" />
             </form>
         );
     }

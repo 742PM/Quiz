@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/EditorForm.css'
 
 export class DeleteGeneratorForm extends React.Component {
     constructor(props) {
@@ -32,14 +33,14 @@ export class DeleteGeneratorForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <h3>Удаление Generator</h3>
                 <label>
-                    Выберите Topic, из которого хотите удалить Generator:
+                    <p>Выберите Topic, из которого хотите удалить Generator:</p>
                     <select name="topic" value={this.state.topic} onChange={this.handleInputChange}>
                         <option value="Сложность алгоритмов">Сложность алгоритмов</option>
                     </select>
                 </label>
                 <br/>
                 <label>
-                    Выберите Level, из которого хотите удалить Generator:
+                    <p>Выберите Level, из которого хотите удалить Generator:</p>
                     <select name="level" value={this.state.level} onChange={this.handleInputChange}>
                         <option value="Циклы">Циклы</option>
                         <option value="Двойные циклы">Двойные циклы</option>
@@ -47,12 +48,13 @@ export class DeleteGeneratorForm extends React.Component {
                 </label>
                 <br/>
                 <label>
-                    Выберите Generator, который хотите удалить:
+                    <p>Выберите Generator, который хотите удалить:</p>
                     <select name="generator" value={this.state.generator} onChange={this.handleInputChange}>
                         <option value="generator_1">Generator 1</option>
                     </select>
                 </label>
-                <input type="submit" value="Submit" />
+                <br/><br/>
+                <input className="button2" type="submit" value="Submit" />
             </form>
         );
     }

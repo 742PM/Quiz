@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/EditorForm.css'
 
 export class CreateGeneratorForm extends React.Component {
     constructor(props) {
@@ -35,8 +36,8 @@ export class CreateGeneratorForm extends React.Component {
                 <h3>Параметры с которыми хотите создать Generator:</h3>
                 <br/>
                 <label>
-                    Template:
-                    <input
+                    <p>Template:</p>
+                    <textarea className="bigTextarea"
                         name="template"
                         type="text"
                         value={this.state.template}
@@ -44,8 +45,8 @@ export class CreateGeneratorForm extends React.Component {
                 </label>
                 <br/>
                 <label>
-                    Possible Answers:
-                    <input
+                    <p>Possible Answers:</p>
+                    <textarea className="bigTextarea"
                         name="possibleAnswer"
                         type="text"
                         value={this.state.possibleAnswers}
@@ -53,17 +54,8 @@ export class CreateGeneratorForm extends React.Component {
                 </label>
                 <br/>
                 <label>
-                    Right Answer:
-                    <input
-                        name="rightAnswer"
-                        type="text"
-                        value={this.state.rightAnswers}
-                        onChange={this.handleInputChange}/>
-                </label>
-                <br/>
-                <label>
-                    Hints:
-                    <input
+                    <p>Hints:</p>
+                    <textarea className="bigTextarea"
                         name="hints"
                         type="text"
                         value={this.state.hints}
@@ -71,14 +63,24 @@ export class CreateGeneratorForm extends React.Component {
                 </label>
                 <br/>
                 <label>
-                    Streak:
-                    <input
+                    <p>Right Answer:</p>
+                    <textarea className="smallTextarea"
+                        name="rightAnswer"
+                        type="text"
+                        value={this.state.rightAnswers}
+                        onChange={this.handleInputChange}/>
+                </label>
+                <br/>
+                <label>
+                    <p>Streak:</p>
+                    <textarea className="smallTextarea"
                         name="hints"
                         type="number"
                         value={this.state.streak}
                         onChange={this.handleInputChange}/>
                 </label>
-                <input type="submit" value="Submit" />
+                <br/><br/>
+                <input className="button2" type="submit" value="Submit" />
             </form>
         );
     }

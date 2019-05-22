@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/EditorForm.css'
 
 export class DeleteLevelForm extends React.Component {
     constructor(props) {
@@ -30,20 +31,21 @@ export class DeleteLevelForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <h3>Удаление Level</h3>
                 <label>
-                    Выберите Topic, из которого хотите удалить Level:
+                    <p>Выберите Topic, из которого хотите удалить Level:</p>
                     <select name="topic" value={this.state.topic} onChange={this.handleInputChange}>
                         <option value="Сложность алгоритмов">Сложность алгоритмов</option>
                     </select>
                 </label>
                 <br/>
                 <label>
-                    Выберите Level, который хотите удалить:
+                    <p>Выберите Level, который хотите удалить:</p>
                     <select name="level" value={this.state.level} onChange={this.handleInputChange}>
                         <option value="Циклы">Циклы</option>
                         <option value="Двойные циклы">Двойные циклы</option>
                     </select>
                 </label>
-                <input type="submit" value="Submit" />
+                <br/><br/>
+                <input className="button2" type="submit" value="Submit" />
             </form>
         );
     }

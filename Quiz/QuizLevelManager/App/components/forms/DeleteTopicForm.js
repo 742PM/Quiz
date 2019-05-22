@@ -1,4 +1,6 @@
 import React from "react";
+import {serverUrl} from "../../../config"
+import '../../styles/EditorForm.css'
 
 export class DeleteTopicForm extends React.Component {
     constructor(props) {
@@ -14,7 +16,7 @@ export class DeleteTopicForm extends React.Component {
     }
 
     componentWillMount() {
-        fetch("./service/topics")
+        fetch(serverUrl + "/service/topics")
             .then(response => response.json())
             .then(d => {
                 this.setState({data: d});
@@ -31,7 +33,11 @@ export class DeleteTopicForm extends React.Component {
     }
 
     handleSubmit(event) {
-        fetch("./service/deleteTopic/" + this.state.id, {method: "delete"})
+        fetch(serverUrl + "/service/deleteTopic/" + this.state.id,
+            {
+                mode: "no-cors",
+                method: "delete"
+            })
             .then(() => {
                 alert('Вы удалили Topic: ' + this.state.value + ' с Id: ' + this.state.id);
                 event.preventDefault();
@@ -43,14 +49,15 @@ export class DeleteTopicForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <h3>Удаление Topic</h3>
                 <label>
-                    Выберите Topic, который хотите удалить:
+                    <p>Выберите Topic, который хотите удалить:</p>
                     <select value={this.state.id} onChange={this.handleChange}>
-                        {this.state.data.map(fbb =>
-                            <option label={fbb.name} value={fbb.id} name={fbb.name}>{fbb.name}</option>
+                        {this.state.data.map(topic =>
+                            <option label={topic.name} value={topic.id} name={topic.name}>{topic.name}</option>
                         )};
                     </select>
                 </label>
-                <input type="submit" value="Submit"/>
+                <br/><br/>
+                <input className="button2" type="submit" value="Submit"/>
             </form>
         );
     }

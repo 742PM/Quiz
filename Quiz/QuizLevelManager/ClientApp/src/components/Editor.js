@@ -11,7 +11,7 @@ import '../styles/Editor.css'
 
 export class Editor extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             user: props.user,
             createTopic: false,

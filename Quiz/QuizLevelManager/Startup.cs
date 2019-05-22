@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
@@ -47,18 +46,15 @@ namespace QuizLevelManager
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    "default",
+                    "{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
+                if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
             });
         }
     }

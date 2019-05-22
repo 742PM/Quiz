@@ -9,7 +9,7 @@ import '../styles/App.css';
 export class App extends React.Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         // the initial application state
         this.state = {
             user: null,

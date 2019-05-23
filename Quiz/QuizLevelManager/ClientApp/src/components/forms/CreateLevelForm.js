@@ -5,7 +5,8 @@ export class CreateLevelForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            topic: 'Сложность алгоритмов',
+            topicId: '',
+            topicValue: '',
             level: '',
             topics: []
         };
@@ -32,9 +33,34 @@ export class CreateLevelForm extends React.Component {
         });
     }
 
+    handleChange1(event) {
+        this.setState({
+            topicId: event.target.value,
+            topicValue: event.target.label
+        });
+    }
+
     handleSubmit(event) {
-        alert('Был создан пустой Level: ' + this.state.kevek);
-        event.preventDefault();
+        fetch(`proxy/${this.state.topicId}/level`, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+                {
+                    "description": this.state.description,
+                    "nextLevels": this.state.description,
+                    "previousLevels": this.state.description
+                }
+            )
+        }).catch(resp => {
+            console.log("error")
+        }).then(() => {
+            alert('Был создан пустой Level: ' + this.state.level);
+            event.preventDefault();
+        }).catch(resp => {
+            console.log("error")
+        })
     }
 
     render() {
@@ -43,7 +69,7 @@ export class CreateLevelForm extends React.Component {
                 <h3>Добавление Level</h3>
                 <label>
                     <p>Выберите Topic, в который хотите добавить Level:</p>
-                    <select name="topic" value={this.state.topic} onChange={this.handleInputChange}>
+                    <select name="topic" value={this.state.topic} onChange={this.handleChange1}>
                         {this.state.topics.map(topic =>
                             <option label={topic.name} value={topic.id} name={topic.name}>{topic.name}</option>
                         )};

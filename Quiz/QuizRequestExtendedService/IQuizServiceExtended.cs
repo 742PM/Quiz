@@ -11,5 +11,6 @@ namespace QuizRequestExtendedService
         IEnumerable<AdminTemplateGeneratorDTO> GetTemplateGenerators(Guid topicId, Guid levelId);
         Guid AddEmptyTopic(EmptyTopicDTO topic);
         void DeleteTopic(Guid topicId);
+        TemplateGeneratorDTO RenderTask(TemplateGeneratorForRenderDTO templateGenerator);
     }
 }

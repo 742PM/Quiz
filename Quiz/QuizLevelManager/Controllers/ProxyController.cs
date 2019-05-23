@@ -47,5 +47,12 @@ namespace QuizLevelManager.Controllers
             service.DeleteTopic(topicId);
             return Ok();
         }
+        
+        
+        [HttpPost("tasktorender")]
+        public ActionResult<TaskDTO> RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
+        {
+            return Ok(service.RenderTask(templateGenerator));
+        }
     }
 }

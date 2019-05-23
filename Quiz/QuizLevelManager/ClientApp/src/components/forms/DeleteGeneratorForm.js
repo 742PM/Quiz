@@ -6,8 +6,11 @@ export class DeleteGeneratorForm extends React.Component {
         super(props);
         this.state = {
             topic: 'Cложность алгоритмов',
+            topicId: '',
             level: 'Циклы',
+            levelId: '',
             generator: 'Generator 1',
+            generatorId: '',
             topics: [],
             levels: [],
             templateGenerators: []
@@ -16,19 +19,24 @@ export class DeleteGeneratorForm extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
     componentWillMount() {
         fetch("/proxy/topics")
             .then(response => response.json())
             .then(resp => {
-                this.setState({topics: resp});
+                this.setState({topics: resp, topicId: resp[0].id});
                 fetch(`/proxy/${resp[0].id}/levels/`)
                     .then(response2 => response2.json())
                     .then(resp2 => {
-                        this.setState({levels: resp2});
+                        this.setState({levels: resp2, levelId: resp2[0].id});
                         fetch(`/proxy/${resp[0].id}/${resp2[0].id}/templateGenerators/`)
                             .then(response3 => response3.json())
                             .then(resp3 => {
-                                this.setState({templateGenerators: resp3});
+                                this.setState({
+                                    templateGenerators: resp3,
+                                    generatorId: resp3[0].id,
+                                    generator: resp3[0].text,
+                                });
                             })
                             .catch(error => console.error(error))
                     })
@@ -41,14 +49,52 @@ export class DeleteGeneratorForm extends React.Component {
         const target = event.target;
         const name = target.name;
         const value = event.target.value;
-        this.setState({
-            [name]: value
-        });
+        if (name === 'topic') {
+            fetch(`/proxy/${value}/levels/`)
+                .then(response2 => response2.json())
+                .then(resp2 => {
+                    this.setState({levels: resp2});
+                    fetch(`/proxy/${value}/${resp2[0].id}/templateGenerators/`)
+                        .then(response3 => response3.json())
+                        .then(resp3 => {
+                            this.setState({templateGenerators: resp3});
+                        })
+                        .catch(error => console.error(error))
+                })
+                .catch(error => console.error(error))
+            this.setState({
+                topicId: value,
+                topic: event.target.label
+            });
+        } else if (name == 'level') {
+            fetch(`/proxy/${this.state.topicId}/${value}/templateGenerators/`)
+                .then(response3 => response3.json())
+                .then(resp3 => {
+                    this.setState({templateGenerators: resp3});
+                })
+                .catch(error => console.error(error))
+            this.setState({
+                levelId: value,
+                level: event.target.label
+            });
+        } else {
+            this.setState({
+                generatorId: value,
+                generator: event.target.label
+            });
+        }
     }
 
     handleSubmit(event) {
-        alert('Вы удалили Generator: ' + this.state.generator);
-        event.preventDefault();
+        fetch(`./proxy/${this.state.topicId}/${this.state.levelId}/generator/${this.state.generatorId}`,
+            {
+                mode: "same-origin",
+                method: "delete"
+            })
+            .then(() => {
+                alert('Вы удалили Generator: \n\n' + this.state.generator);
+                event.preventDefault();
+            })
     }
 
     render() {
@@ -82,7 +128,7 @@ export class DeleteGeneratorForm extends React.Component {
                     </select>
                 </label>
                 <br/><br/>
-                <input className="button2" type="submit" value="Submit" />
+                <input className="button2" type="submit" value="Submit"/>
             </form>
         );
     }

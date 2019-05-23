@@ -7,6 +7,8 @@ export class DeleteLevelForm extends React.Component {
         this.state = {
             topic: 'Cложность алгоритмов',
             level: 'Циклы',
+            topicId: '',
+            levelId: '',
             topics: [],
             levels: []
         };
@@ -19,14 +21,12 @@ export class DeleteLevelForm extends React.Component {
         fetch("/proxy/topics")
             .then(response => response.json())
             .then(resp => {
-                this.setState({topics: resp});
+                this.setState({topics: resp, topicId: resp[0].id});
                 console.log(resp);
                 fetch(`/proxy/${resp[0].id}/levels/`)
                     .then(response2 => response2.json())
                     .then(resp2 => {
-                        this.setState({levels: resp2});
-                        console.log(resp2)
-                        console.log(this.state)
+                        this.setState({levels: resp2, levelId:resp2[0].id});
                     })
                     .catch(error => console.error(error))
             })
@@ -37,25 +37,35 @@ export class DeleteLevelForm extends React.Component {
         const target = event.target;
         const name = target.name;
         const value = event.target.value;
-        if (name === 'topic')
-        {
+        if (name === 'topic') {
             fetch(`/proxy/${value}/levels/`)
                 .then(response2 => response2.json())
                 .then(resp2 => {
                     this.setState({levels: resp2});
-                    console.log(resp2)
-                    console.log(this.state)
                 })
                 .catch(error => console.error(error))
+            this.setState({
+                topicId: value,
+                topic: event.target.label
+            });
+        } else {
+            this.setState({
+                levelId: value,
+                level: event.target.label
+            });
         }
-        this.setState({
-            [name]: value
-        });
     }
 
     handleSubmit(event) {
-        alert('Вы удалили Level: ' + this.state.level);
-        event.preventDefault();
+        fetch(`./proxy/${this.state.topicId}/level/${this.state.levelId}`,
+            {
+                mode: "same-origin",
+                method: "delete"
+            })
+            .then(() => {
+                alert('Вы удалили Level: ' + this.state.level);
+                event.preventDefault();
+            })
     }
 
     render() {

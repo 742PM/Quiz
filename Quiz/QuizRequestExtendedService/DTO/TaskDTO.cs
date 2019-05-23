@@ -1,15 +1,16 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace QuizRequestExtendedService.DTO
 {
     public class TaskDTO
     {
-        public string Question { get; set; }
-        public string Text { get; set; }
+        [JsonProperty("question")] public string Question { get; set; }
+        [JsonProperty("text")] public string Text { get; set; }
         public IEnumerable<string> Answers { get; set; }
         public bool HasHints { get; set; }
 
-        public TaskDTO(string question, IEnumerable<string> answers, bool hasHints, string text)
+        public TaskDTO(string question, string text, IEnumerable<string> answers, bool hasHints)
         {
             Question = question;
             Text = text;

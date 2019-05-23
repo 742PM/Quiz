@@ -55,9 +55,32 @@ namespace QuizRequestExtendedService
         {
             var client = new RestClient(serverUri + $"/service/topic/{topicId}");
             var request = new RestRequest(Method.DELETE);
-            var content = client.Execute(request);
+            client.Execute(request);
+        }
+        
+        public void DeleteLevel(Guid topicId, Guid levelId)
+        {
+            var client = new RestClient(serverUri + $"/service/topic/{topicId}");
+            var request = new RestRequest(Method.DELETE);
+            client.Execute(request);
+        }
+        
+        public void DeleteTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            var client = new RestClient(serverUri + $"/service/topic/{topicId}");
+            var request = new RestRequest(Method.DELETE);
+            client.Execute(request);
+        }
 
-            Console.WriteLine(content.ResponseStatus);
+        public TemplateGeneratorDTO RenderTask(TemplateGeneratorForRenderDTO templateGenerator)
+        {
+            var client = new RestClient(serverUri + $"/service/tasktorender");
+            var request = new RestRequest(Method.POST);
+            request.AddJsonBody(templateGenerator);
+            var content = client.Execute(request);
+            var task = JsonConvert.DeserializeObject<TemplateGeneratorDTO>(content.Content);
+
+            return task;
         }
 
         private IRestResponse SendGetRequest(IRestClient client, Method method, Parameter parameter = null)

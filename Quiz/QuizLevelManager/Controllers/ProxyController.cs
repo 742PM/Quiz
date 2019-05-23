@@ -22,15 +22,30 @@ namespace QuizLevelManager.Controllers
         {
             return Ok(service.GetTopics());
         }
+
         [HttpGet("{topicId}/levels")]
         public ActionResult<IEnumerable<LevelDTO>> GetLevels(Guid topicId)
         {
             return Ok(service.GetLevels(topicId));
         }
+
         [HttpGet("{topicId}/{levelId}/templateGenerators")]
         public ActionResult<IEnumerable<AdminTemplateGeneratorDTO>> GetTemplateGenerators(Guid topicId, Guid levelId)
         {
             return Ok(service.GetTemplateGenerators(topicId, levelId));
+        }
+
+        [HttpPost("topic")]
+        public ActionResult<Guid> AddEmptyTopic([FromBody] EmptyTopicDTO topic)
+        {
+            return Ok(service.AddEmptyTopic(topic));
+        }
+
+        [HttpDelete("topic/{topicId}")]
+        public ActionResult<Guid> DeleteTopic(Guid topicId)
+        {
+            service.DeleteTopic(topicId);
+            return Ok();
         }
     }
 }

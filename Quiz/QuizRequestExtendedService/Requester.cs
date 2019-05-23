@@ -31,13 +31,33 @@ namespace QuizRequestExtendedService
             var levels = JsonConvert.DeserializeObject<List<LevelDTO>>(content.Content);
             return levels;
         }
-        
+
         public IEnumerable<AdminTemplateGeneratorDTO> GetTemplateGenerators(Guid topicId, Guid levelId)
         {
             var client = new RestClient(serverUri + $"/service/{topicId}/{levelId}/templateGenerators");
             var content = SendGetRequest(client, Method.GET);
-            var levels = JsonConvert.DeserializeObject<List<AdminTemplateGeneratorDTO>>(content.Content);
-            return levels;
+            var templateGenerators = JsonConvert.DeserializeObject<List<AdminTemplateGeneratorDTO>>(content.Content);
+            return templateGenerators;
+        }
+
+        public Guid AddEmptyTopic(EmptyTopicDTO topic)
+        {
+            var client = new RestClient(serverUri + $"/service/topic");
+            var request = new RestRequest(Method.POST);
+            request.AddJsonBody(topic);
+            var content = client.Execute(request);
+            var topicId = JsonConvert.DeserializeObject<Guid>(content.Content);
+
+            return topicId;
+        }
+
+        public void DeleteTopic(Guid topicId)
+        {
+            var client = new RestClient(serverUri + $"/service/topic/{topicId}");
+            var request = new RestRequest(Method.DELETE);
+            var content = client.Execute(request);
+
+            Console.WriteLine(content.ResponseStatus);
         }
 
         private IRestResponse SendGetRequest(IRestClient client, Method method, Parameter parameter = null)
@@ -48,9 +68,10 @@ namespace QuizRequestExtendedService
             for (var i = 0; i < MaxRetries; i++)
             {
                 var response = client.Execute(request);
-                if (response.IsSuccessful) 
+                if (response.IsSuccessful)
                     return response;
             }
+
             return null;
         }
     }

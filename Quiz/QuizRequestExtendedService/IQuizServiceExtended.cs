@@ -9,5 +9,7 @@ namespace QuizRequestExtendedService
         IEnumerable<TopicDTO> GetTopics();
         IEnumerable<LevelDTO> GetLevels(Guid topicId);
         IEnumerable<AdminTemplateGeneratorDTO> GetTemplateGenerators(Guid topicId, Guid levelId);
+        Guid AddEmptyTopic(EmptyTopicDTO topic);
+        void DeleteTopic(Guid topicId);
     }
 }

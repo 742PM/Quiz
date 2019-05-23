@@ -4,10 +4,10 @@ namespace QuizRequestExtendedService.DTO
 {
     public class EmptyTopicDTO
     {
-        public EmptyTopicDTO(string name, string description)
+        public EmptyTopicDTO(string description, string name)
         {
-            Name = name;
             Description = description;
+            Name = name;
         }
 
         [JsonProperty("description")] public string Description { get; }

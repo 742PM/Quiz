@@ -6,11 +6,21 @@ export class CreateLevelForm extends React.Component {
         super(props);
         this.state = {
             topic: 'Сложность алгоритмов',
-            level: ''
+            level: '',
+            topics: []
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    componentWillMount() {
+        fetch("/proxy/topics")
+            .then(response => response.json())
+            .then(d => {
+                this.setState({topics: d});
+                console.log(d)
+            })
+            .catch(error => console.error(error))
     }
 
     handleInputChange(event) {
@@ -34,7 +44,9 @@ export class CreateLevelForm extends React.Component {
                 <label>
                     <p>Выберите Topic, в который хотите добавить Level:</p>
                     <select name="topic" value={this.state.topic} onChange={this.handleInputChange}>
-                        <option value="Сложность алгоритмов">Сложность алгоритмов</option>
+                        {this.state.topics.map(topic =>
+                            <option label={topic.name} value={topic.id} name={topic.name}>{topic.name}</option>
+                        )};
                     </select>
                 </label>
                 <br/>

@@ -1,5 +1,4 @@
 import React from "react";
-import {serverUrl} from "../../config"
 import '../../styles/EditorForm.css'
 
 export class CreateTopicForm extends React.Component {
@@ -24,14 +23,11 @@ export class CreateTopicForm extends React.Component {
     }
 
     handleSubmit(event) {
-        fetch(serverUrl + "service/addTopic", {
+        fetch("proxy/topic", {
             method: "post",
-            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "text/plain"
             },
-
             body: JSON.stringify(
                 {
                     "name": this.state.value,
@@ -42,7 +38,6 @@ export class CreateTopicForm extends React.Component {
             console.log("error")
         }).then(() => {
             alert('Был создан пустой Topic: ' + this.state.value);
-            event.preventDefault();
         }).catch(resp => {
             console.log("error")
         })

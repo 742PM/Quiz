@@ -5,10 +5,11 @@ export class RenderTaskForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\\r\\nc++\\r\\n",
-            possibleAnswers: '["O(n)", "O(n*log(n)", "O(log(n)"]',
-            rightAnswers: "O(1)",
-            hints: "[]"
+            template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})c++",
+            possibleAnswers: '[]',
+            rightAnswer: "O(1)",
+            hints: "[]",
+            question: "Оцените временную сложность алгоритма"
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -25,7 +26,30 @@ export class RenderTaskForm extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('Отрендереный генератор: ' + this.state.template);
+        fetch("proxy/tasktorender", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+                {
+                    "text": this.state.template,
+                    "question": this.state.question,
+                    "possibleAnswers": [],
+                        // (this.state.possibleAnswers),
+                    "answer": (this.state.rightAnswer),
+                    "hints": []
+                    // this.state.hints
+                })
+        }).catch(resp => {
+            console.log("error")
+        }).then(resp => resp.json()
+        ).then((resp) => {
+            console.log(resp)
+            alert(`Отрендереный генератор: \n\n${resp.text}`);
+        }).catch(resp => {
+            console.log("error")
+        })
         event.preventDefault();
     }
 
@@ -34,39 +58,47 @@ export class RenderTaskForm extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <h3>Параметры с которыми хотите отрендерить Task</h3>
                 <br/>
+                {/*<label>*/}
+                {/*    <p>Question:</p>*/}
+                {/*    <textarea className="smallTextarea"*/}
+                {/*              name="question"*/}
+                {/*              value={this.state.question}*/}
+                {/*              onChange={this.handleInputChange}/>*/}
+                {/*</label>*/}
+                {/*<br/>*/}
                 <label>
                     <p>Template:</p>
                     <textarea className="bigTextarea"
-                        name="template"
-                        value={this.state.template}
-                        onChange={this.handleInputChange}/>
-                </label>
-                <br/>
-                <label>
-                    <p>Possible Answers:</p>
-                    <textarea className="bigTextarea"
-                        name="possibleAnswer"
-                        value={this.state.possibleAnswers}
-                        onChange={this.handleInputChange}/>
-                </label>
-                <br/>
-                <label>
-                    <p>Hints:</p>
-                    <textarea className="bigTextarea"
-                        name="hints"
-                        value={this.state.hints}
-                        onChange={this.handleInputChange}/>
-                </label>
-                <br/>
-                <label>
-                    <p>Right Answer:</p>
-                    <textarea className="smallTextarea"
-                              name="rightAnswer"
-                              value={this.state.rightAnswers}
+                              name="template"
+                              value={this.state.template}
                               onChange={this.handleInputChange}/>
                 </label>
+                {/*<br/>*/}
+                {/*<label>*/}
+                {/*    <p>Possible Answers:</p>*/}
+                {/*    <textarea className="bigTextarea"*/}
+                {/*              name="possibleAnswers"*/}
+                {/*              value={this.state.possibleAnswers}*/}
+                {/*              onChange={this.handleInputChange}/>*/}
+                {/*</label>*/}
+                {/*<br/>*/}
+                {/*<label>*/}
+                {/*    <p>Hints:</p>*/}
+                {/*    <textarea className="bigTextarea"*/}
+                {/*              name="hints"*/}
+                {/*              value={this.state.hints}*/}
+                {/*              onChange={this.handleInputChange}/>*/}
+                {/*</label>*/}
+                {/*<br/>*/}
+                {/*<label>*/}
+                {/*    <p>Right Answer:</p>*/}
+                {/*    <textarea className="smallTextarea"*/}
+                {/*              name="rightAnswer"*/}
+                {/*              value={this.state.rightAnswer}*/}
+                {/*              onChange={this.handleInputChange}/>*/}
+                {/*</label>*/}
                 <br/><br/>
-                <input className="button2" type="submit" value="Submit" />
+                <input className="button2" type="submit" value="Submit"/>
             </form>
         );
     }

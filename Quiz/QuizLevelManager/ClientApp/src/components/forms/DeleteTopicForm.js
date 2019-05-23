@@ -1,5 +1,4 @@
 import React from "react";
-import {serverUrl} from "../../config"
 import '../../styles/EditorForm.css'
 
 export class DeleteTopicForm extends React.Component {
@@ -16,7 +15,7 @@ export class DeleteTopicForm extends React.Component {
     }
 
     componentWillMount() {
-        fetch(serverUrl + "/service/topics")
+        fetch("/proxy/topics")
             .then(response => response.json())
             .then(d => {
                 this.setState({data: d});
@@ -33,14 +32,14 @@ export class DeleteTopicForm extends React.Component {
     }
 
     handleSubmit(event) {
-        fetch(serverUrl + "/service/deleteTopic/" + this.state.id,
+        fetch("./proxy/topic/" + this.state.id,
             {
-                mode: "no-cors",
+                mode: "same-origin",
                 method: "delete"
             })
             .then(() => {
                 alert('Вы удалили Topic: ' + this.state.value + ' с Id: ' + this.state.id);
-                event.preventDefault();
+                event.persist();
             })
     }
 

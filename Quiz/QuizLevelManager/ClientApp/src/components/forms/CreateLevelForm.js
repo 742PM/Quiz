@@ -8,10 +8,11 @@ export class CreateLevelForm extends React.Component {
             topicId: '',
             topicValue: '',
             level: '',
-            topics: []
+            topics: [],
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleChange1 = this.handleChange1.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     componentWillMount() {
@@ -48,9 +49,9 @@ export class CreateLevelForm extends React.Component {
             },
             body: JSON.stringify(
                 {
-                    "description": this.state.description,
-                    "nextLevels": this.state.description,
-                    "previousLevels": this.state.description
+                    "description": this.state.level,
+                    "nextLevels": [],
+                    "previousLevels": []
                 }
             )
         }).catch(resp => {

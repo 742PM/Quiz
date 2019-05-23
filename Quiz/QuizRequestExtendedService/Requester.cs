@@ -51,23 +51,45 @@ namespace QuizRequestExtendedService
             return topicId;
         }
 
+        public Guid AddEmptyLevel(Guid topicId, EmptyLevelDTO level)
+        {
+            var client = new RestClient(serverUri + $"/service/{topicId}/level");
+            var request = new RestRequest(Method.POST);
+            request.AddJsonBody(level);
+            var content = client.Execute(request);
+            var levelId = JsonConvert.DeserializeObject<Guid>(content.Content);
+
+            return levelId;
+        }
+
+        public Guid AddEmptyGenerator(Guid topicId, Guid levelId, TemplateGeneratorDTO topic)
+        {
+            var client = new RestClient(serverUri + $"/service/{topicId}/{levelId}/templateGenerator");
+            var request = new RestRequest(Method.POST);
+            request.AddJsonBody(topic);
+            var content = client.Execute(request);
+            var generatorId = JsonConvert.DeserializeObject<Guid>(content.Content);
+
+            return generatorId;
+        }
+
         public void DeleteTopic(Guid topicId)
         {
             var client = new RestClient(serverUri + $"/service/topic/{topicId}");
             var request = new RestRequest(Method.DELETE);
             client.Execute(request);
         }
-        
+
         public void DeleteLevel(Guid topicId, Guid levelId)
         {
-            var client = new RestClient(serverUri + $"/service/topic/{topicId}");
+            var client = new RestClient(serverUri + $"/service/{topicId}/level/{levelId}");
             var request = new RestRequest(Method.DELETE);
             client.Execute(request);
         }
-        
+
         public void DeleteTemplateGenerator(Guid topicId, Guid levelId, Guid generatorId)
         {
-            var client = new RestClient(serverUri + $"/service/topic/{topicId}");
+            var client = new RestClient(serverUri + $"/service/{topicId}/{levelId}/generator/{generatorId}");
             var request = new RestRequest(Method.DELETE);
             client.Execute(request);
         }

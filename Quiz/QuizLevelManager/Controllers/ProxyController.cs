@@ -47,6 +47,32 @@ namespace QuizLevelManager.Controllers
             service.DeleteTopic(topicId);
             return Ok();
         }
+
+        [HttpPost("{topicId}/level")]
+        public ActionResult<Guid> AddEmptyLevel(Guid topicId, [FromBody] EmptyLevelDTO level)
+        {
+            return Ok(service.AddEmptyLevel(topicId, level));
+        }
+
+        [HttpDelete("{topicId}/level/{levelId}")]
+        public ActionResult<Guid> DeleteLevel(Guid topicId, Guid levelId)
+        {
+            service.DeleteLevel(topicId, levelId);
+            return Ok();
+        }
+
+        [HttpPost("{topicId}/{levelId}/templategenerator")]
+        public ActionResult<Guid> AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] TemplateGeneratorDTO generator)
+        {
+            return Ok(service.AddEmptyGenerator(topicId, levelId, generator));
+        }
+
+        [HttpDelete("{topicId}/{levelId}/generator/{generatorId}")]
+        public ActionResult<Guid> DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            service.DeleteTemplateGenerator(topicId, levelId, generatorId);
+            return Ok();
+        }
         
         
         [HttpPost("tasktorender")]

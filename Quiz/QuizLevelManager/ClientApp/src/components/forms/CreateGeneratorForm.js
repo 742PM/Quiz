@@ -72,7 +72,7 @@ export class CreateGeneratorForm extends React.Component {
     }
 
     handleSubmit(event) {
-        fetch("proxy/tasktorender", {
+        fetch(`proxy/${this.state.topicId}/${this.state.levelId}/templategenerator`, {
             method: "post",
             headers: {
                 "Content-Type": "application/json",

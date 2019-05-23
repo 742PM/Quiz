@@ -32,6 +32,7 @@ namespace QuizBotCore.Commands
             var task = await GetTask(user, chat, client, serviceManager);
             if (task != null)
             {
+                //todo: id message должно в репорт колбеке надо привязать на кнопку, а не последнее сообщение
                 var message = await SendTask(task, chat, user, client, serviceManager.quizService, serviceManager.logger);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
                 serviceManager.userRepository.Update(newUser);
@@ -90,15 +91,16 @@ namespace QuizBotCore.Commands
             return answerBlock;
         }
 
-        private static InlineKeyboardMarkup PrepareButtons(TaskDTO task, ILogger logger,
+        private InlineKeyboardMarkup PrepareButtons(TaskDTO task, ILogger logger,
             IEnumerable<(char letter, string answer)> answers)
         {
+            var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id}\n{levelDto.Id}";
             var controlButtons = new[]
             {
                 InlineKeyboardButton
                     .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
                 InlineKeyboardButton
-                    .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
+                    .WithCallbackData(ButtonNames.Report, reportCallback)
             };
             logger.LogInformation($"HasHints: {task.HasHints}");
             if (task.HasHints)
@@ -110,7 +112,7 @@ namespace QuizBotCore.Commands
                         InlineKeyboardButton
                             .WithCallbackData(ButtonNames.Hint, StringCallbacks.Hint),
                         InlineKeyboardButton
-                            .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
+                            .WithCallbackData(ButtonNames.Report, reportCallback)
                     };
             var keyboard = new InlineKeyboardMarkup(new[]
             {

@@ -30,7 +30,7 @@ namespace QuizBotCore.Commands
                 {
                     await client.SendTextMessageAsync(chat.Id, DialogMessages.CorrectAnswer);
                     await RemoveButtonsForPreviousTask(user, chat, client);
-                    await new ShowTaskCommand(topicDto,levelDto, true).ExecuteAsync(chat, client, serviceManager);
+                    await new ShowTaskCommand(topicDto, levelDto, true).ExecuteAsync(chat, client, serviceManager);
                 }
                 else await client.SendTextMessageAsync(chat.Id, DialogMessages.WrongAnswer);
             }
@@ -38,7 +38,13 @@ namespace QuizBotCore.Commands
 
         private async Task RemoveButtonsForPreviousTask(UserEntity user, Chat chat, TelegramBotClient client)
         {
-            await client.EditMessageReplyMarkupAsync(chat.Id, user.MessageId, InlineKeyboardMarkup.Empty());
+            var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id}\n{levelDto.Id}";
+            var reportButton = new[]
+            {
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
+            };
+            await client.EditMessageReplyMarkupAsync(chat.Id, user.MessageId, reportButton);
         }
     }
 }

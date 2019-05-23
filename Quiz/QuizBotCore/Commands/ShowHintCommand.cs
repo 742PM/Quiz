@@ -22,17 +22,18 @@ namespace QuizBotCore.Commands
         private async Task EditReplyButtons(UserEntity user, Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
             var messageId = user.MessageId;
+            var state = user.CurrentState as TaskState;
+            var task = serviceManager.quizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
+            var reportCallback = $"{StringCallbacks.Report}\n{state.TopicDto.Id}\n{state.LevelDto.Id}";
             var controlButtons = new[]
             {
                 InlineKeyboardButton
                     .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
                 InlineKeyboardButton
-                    .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
+                    .WithCallbackData(ButtonNames.Report, reportCallback)
 
                 
             };
-            var state = user.CurrentState as TaskState;
-            var task = serviceManager.quizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
             var answers = task.Answers.Select((e, index) => (letter: DialogMessages.Alphabet[index], answer: $"{e}"))
                 .ToList();
             var keyboard = new InlineKeyboardMarkup(new[]

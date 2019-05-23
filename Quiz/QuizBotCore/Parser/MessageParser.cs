@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using QuizBotCore.States;
@@ -30,7 +31,7 @@ namespace QuizBotCore.Parser
                 case LevelSelectionState state:
                     return LevelSelectionStateParser(state, update, quizService, logger);
                 case TaskState _:
-                    return TaskStateParser(update);
+                    return TaskStateParser(update, quizService, logger);
                 case ReportState _:
                     return ReportStateParser(update);
             }
@@ -57,7 +58,7 @@ namespace QuizBotCore.Parser
             return new InvalidTransition();
         }
 
-        private Transition TaskStateParser(Update update)
+        private Transition TaskStateParser(Update update, IQuizService quizService, ILogger logger)
         {
             switch (update.Type)
             {
@@ -70,8 +71,17 @@ namespace QuizBotCore.Parser
                             return new BackTransition();
                         case StringCallbacks.Hint:
                             return new ShowHintTransition();
-                        case StringCallbacks.Report:
-                            return new ReportTransition();
+                        case var t when t.Contains(StringCallbacks.Report):
+                            logger.LogInformation($"Parsed callback {callbackData}");
+                            var callbackQuery = t.Split('\n');
+                            var topicId = callbackQuery[1];
+                            var levelId = callbackQuery[2];
+                            logger.LogInformation($"topicId: {topicId}");
+                            logger.LogInformation($"levelId: {levelId}");
+                            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == Guid.Parse(topicId));
+                            var levelDto = quizService.GetLevels(topicDto.Id)
+                                .FirstOrDefault(x => x.Id == Guid.Parse(levelId));
+                            return new ReportTransition(topicDto, levelDto);
                         default:
                             return new CorrectTransition(callbackData);
                     }

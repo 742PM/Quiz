@@ -32,14 +32,27 @@ namespace QuizBotCore
                     return (new TopicSelectionState(), new FeedBackCommand()); 
                 case var t when t.state is UnknownUserState:
                     return (new TopicSelectionState(), new SelectTopicCommand());
-                case var t when t.state is ReportState reportState && t.transition is ReplyReportTransition reportTransition:
-                    return (new TopicSelectionState(), new SendReportTaskCommand(reportState, reportTransition.MessageId));
+                case var t when t.state is ReportState reportState:
+                    return ProcessReportState(reportState, t.transition);
                 case var t when t.state is TopicSelectionState topicSelectionState:
                     return ProcessTopicSelectionState(topicSelectionState, t.transition);
                 case var t when t.state is LevelSelectionState levelSelectionState:
                     return ProcessLevelSelectionState(levelSelectionState, t.transition);
                 case var t when t.state is TaskState taskState:
                     return ProcessTaskState(taskState, t.transition);
+            }
+
+            return default;
+        }
+
+        private static (State, ICommand) ProcessReportState(ReportState state, Transition transition)
+        {
+            switch (transition)
+            {
+                case ReplyReportTransition reportTransition:
+                    return (new LevelSelectionState(state.TopicDto), new SendReportTaskCommand(state, reportTransition.MessageId));
+                case CancelTransition cancelTransition:
+                    return (new TaskState(state.TopicDto, state.LevelDto), new ShowTaskCommand(state.TopicDto, state.LevelDto)); 
             }
 
             return default;
@@ -53,7 +66,7 @@ namespace QuizBotCore
                     return (new LevelSelectionState(state.TopicDto), new SelectLevelCommand(state.TopicDto));
                 case ShowHintTransition _:
                     return (state, new ShowHintCommand());
-                case ReportTransition _:
+                case ReportTransition reportTransition:
                     return (new ReportState(state.TopicDto,state.LevelDto), new ReportTaskCommand());
                 case CorrectTransition correctTransition:
                     return (state, new CheckTaskCommand(state.TopicDto, state.LevelDto, correctTransition.Content));

@@ -39,8 +39,21 @@ namespace QuizBotCore.Parser
 
         private Transition ReportStateParser(Update update)
         {
-            if (update.Type == UpdateType.Message)
-                return new ReplyReportTransition(update.Message.MessageId);
+            switch (update.Type)
+            {
+                case UpdateType.Message:
+                {
+                    return new ReplyReportTransition(update.Message.MessageId);
+                }
+                case UpdateType.CallbackQuery:
+                {
+                    var callbackData = update.CallbackQuery.Data;
+                    if (callbackData == StringCallbacks.Cancel)
+                        return new CancelTransition();
+                    break;
+                }
+            }
+            
             return new InvalidTransition();
         }
 
@@ -57,18 +70,13 @@ namespace QuizBotCore.Parser
                             return new BackTransition();
                         case StringCallbacks.Hint:
                             return new ShowHintTransition();
+                        case StringCallbacks.Report:
+                            return new ReportTransition();
                         default:
                             return new CorrectTransition(callbackData);
                     }
                 }
 
-                case UpdateType.Message:
-                {
-                    var message = update.Message.Text;
-                    if (message == UserCommands.ReportTask)
-                        return new ReportTransition();
-                    break;
-                }
             }
 
             return new InvalidTransition();

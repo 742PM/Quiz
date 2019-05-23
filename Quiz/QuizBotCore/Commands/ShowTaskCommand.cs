@@ -96,7 +96,9 @@ namespace QuizBotCore.Commands
             var controlButtons = new[]
             {
                 InlineKeyboardButton
-                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back)
+                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
             };
             logger.LogInformation($"HasHints: {task.HasHints}");
             if (task.HasHints)
@@ -106,7 +108,9 @@ namespace QuizBotCore.Commands
                         InlineKeyboardButton
                             .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
                         InlineKeyboardButton
-                            .WithCallbackData(ButtonNames.Hint, StringCallbacks.Hint)
+                            .WithCallbackData(ButtonNames.Hint, StringCallbacks.Hint),
+                        InlineKeyboardButton
+                            .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
                     };
             var keyboard = new InlineKeyboardMarkup(new[]
             {
@@ -130,14 +134,13 @@ namespace QuizBotCore.Commands
             var questionFormatted = "```csharp\n" +
                                     $"{task.Text}\n" +
                                     "```";
-            
+
             return $"{topicName}" +
                    $"{levelName}" +
                    $"{progress}" +
                    $"{question}\n" +
                    $"{questionFormatted}\n" +
-                   $"{answers}\n\n" +
-                   $"{UserCommands.ReportTask}";
+                   $"{answers}\n\n";
         }
     }
 }

@@ -38,7 +38,7 @@ namespace QuizBotCore.Commands
 
         private async Task RemoveButtonsForPreviousTask(UserEntity user, Chat chat, TelegramBotClient client)
         {
-            var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id}\n{levelDto.Id}";
+            var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id.ToString()}\n{levelDto.Id.ToString()}";
             var reportButton = new[]
             {
                 InlineKeyboardButton

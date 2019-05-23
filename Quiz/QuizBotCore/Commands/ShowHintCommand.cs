@@ -24,7 +24,7 @@ namespace QuizBotCore.Commands
             var messageId = user.MessageId;
             var state = user.CurrentState as TaskState;
             var task = serviceManager.quizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
-            var reportCallback = $"{StringCallbacks.Report}\n{state.TopicDto.Id}\n{state.LevelDto.Id}";
+            var reportCallback = $"{StringCallbacks.Report}\n{state.TopicDto.Id.ToString()}\n{state.LevelDto.Id.ToString()}";
             var controlButtons = new[]
             {
                 InlineKeyboardButton

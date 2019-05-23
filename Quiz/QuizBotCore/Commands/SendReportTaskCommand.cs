@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using QuizBotCore.States;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -19,6 +20,7 @@ namespace QuizBotCore.Commands
 
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
+            serviceManager.logger.LogInformation($"Sending report from {chat.Id}");
             var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
             var reportUserInfo = $"Report message from: {chat.Id};\n" +
                                  $"UserId: {user.Id};\n" +

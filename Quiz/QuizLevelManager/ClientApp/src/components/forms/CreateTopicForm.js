@@ -23,6 +23,7 @@ export class CreateTopicForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch("proxy/topic", {
             method: "post",
             headers: {

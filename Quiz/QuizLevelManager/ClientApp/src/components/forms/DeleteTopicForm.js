@@ -32,6 +32,7 @@ export class DeleteTopicForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch("./proxy/topic/" + this.state.id,
             {
                 mode: "same-origin",
@@ -39,7 +40,6 @@ export class DeleteTopicForm extends React.Component {
             })
             .then(() => {
                 alert('Вы удалили Topic: ' + this.state.value + ' с Id: ' + this.state.id);
-                event.persist();
             })
     }
 

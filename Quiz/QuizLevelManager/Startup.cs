@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ namespace QuizLevelManager
 {
     public class Startup
     {
+        private const string ServerUrlEnvironmentVariable = "SERVER_URL";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -21,7 +24,7 @@ namespace QuizLevelManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddScoped<IQuizServiceExtended>(x => new Requester("https://quiz-service.azurewebsites.net/"));
+            services.AddScoped<IQuizServiceExtended>(x => new Requester(Environment.GetEnvironmentVariable(ServerUrlEnvironmentVariable)));
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });

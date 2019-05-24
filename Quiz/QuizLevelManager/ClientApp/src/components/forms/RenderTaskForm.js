@@ -5,7 +5,7 @@ export class RenderTaskForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})c++",
+            template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\n    c++",
             possibleAnswers: '[]',
             rightAnswer: "O(1)",
             hints: "[]",
@@ -26,6 +26,7 @@ export class RenderTaskForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch("proxy/tasktorender", {
             method: "post",
             headers: {
@@ -35,22 +36,18 @@ export class RenderTaskForm extends React.Component {
                 {
                     "text": this.state.template,
                     "question": this.state.question,
-                    "possibleAnswers": [],
-                        // (this.state.possibleAnswers),
+                    "possibleAnswers": JSON.parse(this.state.possibleAnswers),
                     "answer": (this.state.rightAnswer),
-                    "hints": []
-                    // this.state.hints
+                    "hints": JSON.parse(this.state.hints)
                 })
         }).catch(resp => {
             console.log("error")
         }).then(resp => resp.json()
         ).then((resp) => {
-            console.log(resp)
             alert(`Отрендереный генератор: \n\n${resp.text}`);
         }).catch(resp => {
             console.log("error")
         })
-        event.preventDefault();
     }
 
     render() {

@@ -11,11 +11,12 @@ export class CreateGeneratorForm extends React.Component {
             levelId: '',
             topics: [],
             levels: [],
-            template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\\r\\nc++\\r\\n",
+            template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\n    c++",
             possibleAnswers: '["O(n)", "O(n*log(n)", "O(log(n)"]',
-            rightAnswer: "O(1)",
+            rightAnswer: "O(n)",
             hints: "[]",
-            streak: 1
+            streak: 1,
+            question: 'Оцените временную сложность данного алгоритма:'
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -42,7 +43,7 @@ export class CreateGeneratorForm extends React.Component {
                 .then(resp2 => {
                     this.setState({levels: resp2});
                 })
-                .catch(error => console.error(error))
+                .catch(error => console.error(error));
             this.setState({
                 topicId: value,
                 topic: event.target.label
@@ -72,6 +73,7 @@ export class CreateGeneratorForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch(`proxy/${this.state.topicId}/${this.state.levelId}/templategenerator`, {
             method: "post",
             headers: {
@@ -81,12 +83,10 @@ export class CreateGeneratorForm extends React.Component {
                 {
                     "text": this.state.template,
                     "question": this.state.question,
-                    "possibleAnswers": [],
-                    // (this.state.possibleAnswers),
+                    "possibleAnswers": JSON.parse(this.state.possibleAnswers),
                     "answer": (this.state.rightAnswer),
-                    "hints": [],
+                    "hints": JSON.parse(this.state.hints),
                     "streak": this.state.streak
-                    // this.state.hints
                 })
         }).catch(resp => {
             console.log("error")
@@ -130,6 +130,14 @@ export class CreateGeneratorForm extends React.Component {
                 </label>
                 <br/>
                 <label>
+                    <p>Question:</p>
+                    <textarea className="smallTextarea"
+                              name="question"
+                              value={this.state.question}
+                              onChange={this.handleInputChange}/>
+                </label>
+                <br/>
+                <label>
                     <p>Possible Answers:</p>
                     <textarea className="bigTextarea"
                               name="possibleAnswers"
@@ -149,7 +157,7 @@ export class CreateGeneratorForm extends React.Component {
                     <p>Right Answer:</p>
                     <textarea className="smallTextarea"
                               name="rightAnswer"
-                              value={this.state.rightAnswers}
+                              value={this.state.rightAnswer}
                               onChange={this.handleInputChange}/>
                 </label>
                 <br/>

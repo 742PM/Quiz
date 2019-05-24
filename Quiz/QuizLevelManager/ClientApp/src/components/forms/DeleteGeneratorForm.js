@@ -61,7 +61,7 @@ export class DeleteGeneratorForm extends React.Component {
                         })
                         .catch(error => console.error(error))
                 })
-                .catch(error => console.error(error))
+                .catch(error => console.error(error));
             this.setState({
                 topicId: value,
                 topic: event.target.label
@@ -72,7 +72,7 @@ export class DeleteGeneratorForm extends React.Component {
                 .then(resp3 => {
                     this.setState({templateGenerators: resp3});
                 })
-                .catch(error => console.error(error))
+                .catch(error => console.error(error));
             this.setState({
                 levelId: value,
                 level: event.target.label
@@ -86,6 +86,7 @@ export class DeleteGeneratorForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch(`./proxy/${this.state.topicId}/${this.state.levelId}/generator/${this.state.generatorId}`,
             {
                 mode: "same-origin",
@@ -93,7 +94,6 @@ export class DeleteGeneratorForm extends React.Component {
             })
             .then(() => {
                 alert('Вы удалили Generator: \n\n' + this.state.generator);
-                event.preventDefault();
             })
     }
 

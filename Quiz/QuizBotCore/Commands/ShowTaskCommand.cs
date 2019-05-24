@@ -94,7 +94,9 @@ namespace QuizBotCore.Commands
         private InlineKeyboardMarkup PrepareButtons(TaskDTO task, ILogger logger,
             IEnumerable<(char letter, string answer)> answers)
         {
+            
             var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id.ToString()}\n{levelDto.Id.ToString()}";
+            logger.LogInformation(reportCallback);
             var controlButtons = new[]
             {
                 InlineKeyboardButton

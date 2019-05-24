@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;
 using QuizBotCore.States;
 using QuizBotCore.Transitions;
@@ -71,7 +72,7 @@ namespace QuizBotCore.Parser
                             return new BackTransition();
                         case StringCallbacks.Hint:
                             return new ShowHintTransition();
-                        case var t when t.Contains(StringCallbacks.Report):
+                        case var t when t.StartsWith(StringCallbacks.Report):
                             return HandleReportCallback(t, quizService, logger);
                         default:
                             return new CorrectTransition(callbackData);
@@ -85,10 +86,8 @@ namespace QuizBotCore.Parser
 
         private ReportTransition HandleReportCallback(string callback, IQuizService quizService, ILogger logger)
         {
-            var callbackQuery = callback.Split('\n');
-            var messageId = int.Parse(callbackQuery[1]);
-            var topicId = callbackQuery[2];
-            var levelId = callbackQuery[3];
+            var (_, message, topicId, levelId) = callback.Split('\n').ToArray();
+            var messageId = int.Parse(message);
             logger.LogInformation($"topicId: {topicId}");
             logger.LogInformation($"levelId: {levelId}");
             var topidGuid = new Guid(Convert.FromBase64String(topicId));

@@ -4,8 +4,8 @@ namespace QuizBotCore
 {
     public static class DialogMessages
     {
-        public const string CorrectAnswer = "А ты прав!";
-        public const string WrongAnswer = "Подумай еще.";
+        public const string CorrectAnswer = "Верно ✅";
+        public const string WrongAnswer = "Подумай еще ❌";
         public const string FeedbackMessage = "Есть вопрос? Пиши нам!";
         public static readonly (string, string) FeedbackContact = ("Антон", "telegram.me/funfine");
         public const string NextTaskNotAvailable = "Реши эту, а потом подумаем о следующей";
@@ -20,7 +20,6 @@ namespace QuizBotCore
         public const string LevelName = "Уровень:";
         public const char ProgressFilled = '⬤';
         public const char ProgressEmpty = '◯';
-        public const string NoHints = "Подсказок нет";
 
         public const string Welcome = "Привет! Я Quibble бот, представляю из себя бесконечную викторину. \n" +
                                       "Решай задачки, открывай новые уровни, становись лучше. \n" +

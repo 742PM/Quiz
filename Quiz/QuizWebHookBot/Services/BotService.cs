@@ -1,6 +1,6 @@
-using Microsoft.Extensions.Options;
 using Telegram.Bot;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace QuizWebHookBot.Services
 {
@@ -8,9 +8,11 @@ namespace QuizWebHookBot.Services
     {
         private const string TelegramTokenVariableName = "TELEGRAM_TOKEN";
 
-        public BotService(IOptions<BotConfiguration> config)
+        public BotService(ILogger<BotService> logger)
         {
-            Client = new TelegramBotClient(Environment.GetEnvironmentVariable(TelegramTokenVariableName) ?? "854957716:AAHjU_wFLwX5Sz23CV-9qs-kSYAcVqewERU");
+            var environmentVariable = Environment.GetEnvironmentVariable(TelegramTokenVariableName);
+            logger.LogInformation($"Got token {environmentVariable}");
+            Client = new TelegramBotClient(environmentVariable ?? "854957716:AAHjU_wFLwX5Sz23CV-9qs-kSYAcVqewERU");
         }
         
         public TelegramBotClient Client { get; }

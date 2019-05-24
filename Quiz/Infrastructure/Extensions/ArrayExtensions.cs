@@ -23,5 +23,16 @@ namespace Infrastructure.Extensions
             second = array[1];
             third = array[2];
         }
+        public static void Deconstruct<T>(this T[] array, out T first, out T second, out T third, out T forth)
+        {
+            if (array is null)
+                throw new ArgumentException("Null can not be deconstructed");
+            if (array.Length != 4)
+                throw new ArgumentException($"Amount of items in array is not 4 - it is {array.Length}");
+            first = array[0];
+            second = array[1];
+            third = array[2];
+            forth = array[3];
+        }
     }
 }

@@ -11,5 +11,7 @@ namespace QuizRequestService.DTO
             Id = id;
             Name = name;
         }
+
+        public override string ToString() => $"{nameof(Name)}: {Name}";
     }
 }

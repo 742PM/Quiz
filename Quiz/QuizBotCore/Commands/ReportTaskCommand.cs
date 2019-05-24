@@ -10,7 +10,11 @@ namespace QuizBotCore.Commands
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
             var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
-            await client.SendTextMessageAsync(chat.Id, DialogMessages.ReportRequesting);
+            var cancelKey = new InlineKeyboardMarkup(
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Cancel, StringCallbacks.Cancel)
+            );
+            await client.SendTextMessageAsync(chat.Id, DialogMessages.ReportRequesting, replyMarkup: cancelKey);
         }
     }
 }

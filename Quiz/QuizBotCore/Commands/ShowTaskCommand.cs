@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using QuizBotCore.Database;
@@ -32,11 +34,11 @@ namespace QuizBotCore.Commands
             var task = await GetTask(user, chat, client, serviceManager);
             if (task != null)
             {
-                var message = await SendTask(task, chat, user, client, serviceManager.quizService, serviceManager.logger);
+                var message = await SendTask(task, chat, user, client, serviceManager.quizService,
+                    serviceManager.logger);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
                 serviceManager.userRepository.Update(newUser);
             }
-            
         }
 
         private async Task<TaskDTO> GetTask(UserEntity user, Chat chat, TelegramBotClient client,
@@ -69,10 +71,19 @@ namespace QuizBotCore.Commands
             var message = FormatMessage(task, progress, answerBlock, isSolvedLevel);
             logger.LogInformation($"messageToSend : {message}");
 
-            var keyboard = PrepareButtons(task, logger, answers);
+            var keyboard = PrepareButtons(user, task, logger, answers);
 
-            return await client.SendTextMessageAsync(chat.Id, message, replyMarkup: keyboard,
-                parseMode: ParseMode.Markdown);
+            var taskMessage = await client.SendTextMessageAsync(chat.Id, message,
+                ParseMode.Markdown);
+            var reportCallback = taskMessage.MessageId.CreateMessageReportCallback(topicDto.Id, levelDto.Id);
+            var reportButton = new[]
+            {
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Report, reportCallback)
+            };
+            var keyboardWithReport = new InlineKeyboardMarkup(keyboard.InlineKeyboard.Append(reportButton));
+            await client.EditMessageReplyMarkupAsync(chat.Id, taskMessage.MessageId, keyboardWithReport);
+            return taskMessage;
         }
 
         private static string PrepareProgress(ILogger logger, ProgressDTO userProgress)
@@ -90,13 +101,13 @@ namespace QuizBotCore.Commands
             return answerBlock;
         }
 
-        private static InlineKeyboardMarkup PrepareButtons(TaskDTO task, ILogger logger,
+        private InlineKeyboardMarkup PrepareButtons(UserEntity user, TaskDTO task, ILogger logger,
             IEnumerable<(char letter, string answer)> answers)
         {
             var controlButtons = new[]
             {
                 InlineKeyboardButton
-                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back)
+                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
             };
             logger.LogInformation($"HasHints: {task.HasHints}");
             if (task.HasHints)
@@ -123,21 +134,20 @@ namespace QuizBotCore.Commands
             var levelName = $"{DialogMessages.LevelName} {levelDto.Description} \n";
             var progress = $"{DialogMessages.Progress} {progressBar}\n";
             var question = $"{task.Question}\n";
-            
+
             if (isSolved)
                 progress = $"{progress}\n{DialogMessages.LevelSolved}\n";
 
             var questionFormatted = "```csharp\n" +
                                     $"{task.Text}\n" +
                                     "```";
-            
+
             return $"{topicName}" +
                    $"{levelName}" +
                    $"{progress}" +
                    $"{question}\n" +
                    $"{questionFormatted}\n" +
-                   $"{answers}\n\n" +
-                   $"{UserCommands.ReportTask}";
+                   $"{answers}\n\n";
         }
     }
 }

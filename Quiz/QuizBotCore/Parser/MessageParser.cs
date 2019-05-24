@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;
 using QuizBotCore.States;
 using QuizBotCore.Transitions;
@@ -30,7 +32,7 @@ namespace QuizBotCore.Parser
                 case LevelSelectionState state:
                     return LevelSelectionStateParser(state, update, quizService, logger);
                 case TaskState _:
-                    return TaskStateParser(update);
+                    return TaskStateParser(update, quizService, logger);
                 case ReportState _:
                     return ReportStateParser(update);
             }
@@ -39,12 +41,25 @@ namespace QuizBotCore.Parser
 
         private Transition ReportStateParser(Update update)
         {
-            if (update.Type == UpdateType.Message)
-                return new ReplyReportTransition(update.Message.MessageId);
+            switch (update.Type)
+            {
+                case UpdateType.Message:
+                {
+                    return new ReplyReportTransition(update.Message.MessageId);
+                }
+                case UpdateType.CallbackQuery:
+                {
+                    var callbackData = update.CallbackQuery.Data;
+                    if (callbackData == StringCallbacks.Cancel)
+                        return new CancelTransition();
+                    break;
+                }
+            }
+            
             return new InvalidTransition();
         }
 
-        private Transition TaskStateParser(Update update)
+        private Transition TaskStateParser(Update update, IQuizService quizService, ILogger logger)
         {
             switch (update.Type)
             {
@@ -57,21 +72,32 @@ namespace QuizBotCore.Parser
                             return new BackTransition();
                         case StringCallbacks.Hint:
                             return new ShowHintTransition();
+                        case var t when t.StartsWith(StringCallbacks.Report):
+                            return HandleReportCallback(t, quizService, logger);
                         default:
                             return new CorrectTransition(callbackData);
                     }
                 }
 
-                case UpdateType.Message:
-                {
-                    var message = update.Message.Text;
-                    if (message == UserCommands.ReportTask)
-                        return new ReportTransition();
-                    break;
-                }
             }
 
             return new InvalidTransition();
+        }
+
+        private ReportTransition HandleReportCallback(string callback, IQuizService quizService, ILogger logger)
+        {
+            var (_, message, topicId, levelId) = callback.Split('\n').ToArray();
+            var messageId = int.Parse(message);
+            logger.LogInformation($"topicId: {topicId}");
+            logger.LogInformation($"levelId: {levelId}");
+            var topidGuid = new Guid(Convert.FromBase64String(topicId));
+            var levelGuid = new Guid(Convert.FromBase64String(levelId));
+            logger.LogInformation($"topicId: {topidGuid.ToString()}");
+            logger.LogInformation($"levelId: {levelGuid.ToString()}");
+            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == topidGuid);
+            var levelDto = quizService.GetLevels(topicDto.Id)
+                .FirstOrDefault(x => x.Id == levelGuid);
+            return new ReportTransition(messageId, topicDto, levelDto);
         }
 
         private Transition LevelSelectionStateParser(LevelSelectionState state, Update update, 

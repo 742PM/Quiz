@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/LoginForm.css'
+import '../../styles/Login.css'
 
 const users = [
     {
@@ -48,20 +48,16 @@ export class LoginForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSignIn.bind(this)}>
-                <h3>Sign in</h3>
-                <div>
-                    <input type="text" ref="username" placeholder="enter you username"/>
-                    <br/>
-                </div>
-                <div>
-                    <input type="password" ref="password" placeholder="enter password"/>
-                    <br/>
-                </div>
-                <div>
+            <div id="login">
+                <form name='form-login' onSubmit={this.handleSignIn.bind(this)}>
+                    <span className="fontawesome-user"></span>
+                    <input type="text" ref="username" id="user" placeholder="Username"/>
+
+                    <span className="fontawesome-lock"></span>
+                    <input type="password" ref="password" id="pass" placeholder="Password"/>
+
                     <input type="submit" value="Login"/>
-                </div>
-            </form>
-        )
+                </form>
+            </div>)
     }
 }

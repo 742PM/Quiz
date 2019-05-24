@@ -6,8 +6,8 @@ export class RenderTaskForm extends React.Component {
         super(props);
         this.state = {
             template: "for (int i = {{from1}}; i < {{to1}}; i += {{iter1}})\n    c++",
-            possibleAnswers: '[]',
-            rightAnswer: "O(1)",
+            possibleAnswers: '["O(n)"]',
+            rightAnswer: "O(n)",
             hints: "[]",
             question: "Оцените временную сложность алгоритма"
         };

@@ -27,27 +27,27 @@ Quiz Telegram Bot:
 > Более того, никому не нравится решать однотипные скучные задачи.
 > И всем хочется решать задачки без сложностей с регистрацией, новыми сервисами и прочими неприятностями.
 ### Предметная область
-> [Классы предметной области](Complexity/Domain/)
+> [Классы предметной области](Quiz/Domain)
 ### Точки расширения
-> На данный момент весь сервис состоит из двух проектов:
-> * [Веб-сервис](https://github.com/complexitybot/Quiz)
-> * [Телеграм-бот](https://github.com/complexitybot/QuizBot)
+> Приложение представляет из себя Веб-сервис:
+> * [Веб-сервис](Quiz/ComplexityWeb/)
 
 > Коммуникация между ними происходит по HTTP, что позволяет как добавлять неограниченное количество клиентов к сервису,
 > так и создавать реплики сервисов для одного клиента.
 
-> * [Генерация задач](Complexity/Domain/Entities/TaskGenerators/) может расширяться с помощью разных методик рандомизации и создания.
+> * [Генерация задач](Quiz/Domain/Entities/TaskGenerators/) может расширяться с помощью разных методик рандомизации и создания.
 
-> * [Стратегия выбора порядка задач для пользователя](Complexity/Application/ITaskGeneratorSelector.cs) может быть любой.
+> * [Стратегия выбора порядка задач для пользователя](Quiz/Application/Selectors/ITaskGeneratorSelector.cs) может быть любой.
 
 > * Возможно создание клиента-администратора для настройки и управления сервисом.
 ### DI-контейнер
-> Точкой сборки является [Web-сервис](Complexity/ComplexityWeb/) на ASP.Net Core.
-> Пока используется [встроенный в ASP.Net Core контейнер](Complexity/ComplexityWeb/Startup.cs),
+> Точкой сборки является [Web-сервис](Quiz/ComplexityWeb/) на ASP.Net Core.
+> Пока используется [встроенный в ASP.Net Core контейнер](Quiz/ComplexityWeb/Startup.cs),
 > в будущем может измениться.
 ### Попробовать в действии
-> * [Веб-сервис](https://complexitybot.azurewebsites.net/index.html)
-> * [Телеграм-бот](t.me/quiblebot)
+> * [Веб-сервис (Swagger)](https://quiz-service.azurewebsites.net/swagger/index.html)
+> * [Редактор уровней](https://quiz-editor.azurewebsites.net/index.html)
+> * [Телеграм-бот](https://telegram.me/quiblebot)
 
 
 <!-- ABOUT THE PROJECT -->

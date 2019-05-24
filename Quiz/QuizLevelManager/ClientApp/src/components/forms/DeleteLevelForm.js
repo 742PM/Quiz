@@ -43,7 +43,7 @@ export class DeleteLevelForm extends React.Component {
                 .then(resp2 => {
                     this.setState({levels: resp2});
                 })
-                .catch(error => console.error(error))
+                .catch(error => console.error(error));
             this.setState({
                 topicId: value,
                 topic: event.target.label
@@ -57,6 +57,7 @@ export class DeleteLevelForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch(`./proxy/${this.state.topicId}/level/${this.state.levelId}`,
             {
                 mode: "same-origin",
@@ -64,7 +65,6 @@ export class DeleteLevelForm extends React.Component {
             })
             .then(() => {
                 alert('Вы удалили Level: ' + this.state.level);
-                event.preventDefault();
             })
     }
 

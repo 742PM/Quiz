@@ -42,6 +42,7 @@ export class CreateLevelForm extends React.Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         fetch(`proxy/${this.state.topicId}/level`, {
             method: "post",
             headers: {
@@ -58,7 +59,6 @@ export class CreateLevelForm extends React.Component {
             console.log("error")
         }).then(() => {
             alert('Был создан пустой Level: ' + this.state.level);
-            event.preventDefault();
         }).catch(resp => {
             console.log("error")
         })

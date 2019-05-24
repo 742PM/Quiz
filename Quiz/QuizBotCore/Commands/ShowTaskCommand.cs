@@ -81,8 +81,8 @@ namespace QuizBotCore.Commands
                 InlineKeyboardButton
                     .WithCallbackData(ButtonNames.Report, reportCallback)
             };
-            keyboard.InlineKeyboard.Append(reportButton);
-            await client.EditMessageReplyMarkupAsync(chat.Id, taskMessage.MessageId, keyboard);
+            var keyboardWithReport = new InlineKeyboardMarkup(keyboard.InlineKeyboard.Append(reportButton));
+            await client.EditMessageReplyMarkupAsync(chat.Id, taskMessage.MessageId, keyboardWithReport);
             return taskMessage;
         }
 

@@ -78,13 +78,13 @@ namespace QuizBotCore.Parser
                             var levelId = callbackQuery[2];
                             logger.LogInformation($"topicId: {topicId}");
                             logger.LogInformation($"levelId: {levelId}");
-                            topicId = BitConverter.ToString(Convert.FromBase64String(topicId));
-                            levelId = BitConverter.ToString(Convert.FromBase64String(levelId));
-                            logger.LogInformation($"topicId: {topicId}");
-                            logger.LogInformation($"levelId: {levelId}");
-                            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == Guid.Parse(topicId));
+                            var topidGuid = new Guid(Convert.FromBase64String(topicId));
+                            var levelGuid = new Guid(Convert.FromBase64String(levelId));
+                            logger.LogInformation($"topicId: {topidGuid.ToString()}");
+                            logger.LogInformation($"levelId: {levelGuid.ToString()}");
+                            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == topidGuid);
                             var levelDto = quizService.GetLevels(topicDto.Id)
-                                .FirstOrDefault(x => x.Id == Guid.Parse(levelId));
+                                .FirstOrDefault(x => x.Id == levelGuid);
                             return new ReportTransition(topicDto, levelDto);
                         default:
                             return new CorrectTransition(callbackData);

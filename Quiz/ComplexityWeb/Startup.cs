@@ -8,18 +8,16 @@ using Application.Repositories;
 using Application.Selectors;
 using Application.TaskService;
 using AutoMapper;
-using ComplexityWebApi.DTO;
 using DataBase;
-using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using QuizWebApp.QuizService.DTO;
+using QuizWebApp.TaskService.DTO;
 using Swashbuckle.AspNetCore.Swagger;
 using static System.Environment;
 
@@ -78,6 +76,16 @@ namespace ComplexityWebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.Use((context, next) =>
+            {
+                if (context.Request.Headers.Any(k => k.Key.Contains("Origin")) && context.Request.Method == "OPTIONS")
+                {
+                    context.Response.StatusCode = 200;
+                    return context.Response.WriteAsync("handled");
+                }
+
+                return next.Invoke();
+            });
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else
@@ -88,12 +96,9 @@ namespace ComplexityWebApi
                 cfg.CreateMap<TaskInfo, TaskInfoDTO>();
                 cfg.CreateMap<LevelInfo, LevelInfoDTO>();
                 cfg.CreateMap<TopicInfo, TopicInfoDTO>();
-                cfg.CreateMap<TemplateTaskGenerator, AdminTaskGeneratorDTO>();
-                cfg.CreateMap<Level, AdminLevelDTO>()
-                    .ForMember(x => x.Generators, x => x.MapFrom(t => t.Generators.Select(s => (TemplateTaskGenerator) s)));
-                cfg.CreateMap<Topic, AdminLevelDTO>();
                 cfg.CreateMap<HintInfo, HintInfoDTO>();
                 cfg.CreateMap<LevelProgressInfo, LevelProgressInfoDTO>();
+                cfg.CreateMap<TemplateTaskGenerator, AdminTemplateGeneratorDTO>();
             });
 
             app.UseSwagger();

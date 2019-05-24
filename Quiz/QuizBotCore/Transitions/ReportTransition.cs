@@ -6,9 +6,11 @@ namespace QuizBotCore.Transitions
     {
         public readonly TopicDTO TopicDto;
         public readonly LevelDTO LevelDto;
+        public int MessageId;
 
-        public ReportTransition(TopicDTO topicDto, LevelDTO levelDto)
+        public ReportTransition(int messageId, TopicDTO topicDto, LevelDTO levelDto)
         {
+            MessageId = messageId;
             TopicDto = topicDto;
             LevelDto = levelDto;
         }

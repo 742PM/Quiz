@@ -34,7 +34,6 @@ namespace QuizBotCore.Commands
             var task = await GetTask(user, chat, client, serviceManager);
             if (task != null)
             {
-                //todo: id message должно в репорт колбеке надо привязать на кнопку, а не последнее сообщение
                 var message = await SendTask(task, chat, user, client, serviceManager.quizService, serviceManager.logger);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
                 serviceManager.userRepository.Update(newUser);
@@ -72,10 +71,18 @@ namespace QuizBotCore.Commands
             var message = FormatMessage(task, progress, answerBlock, isSolvedLevel);
             logger.LogInformation($"messageToSend : {message}");
 
-            var keyboard = PrepareButtons(task, logger, answers);
+            var keyboard = PrepareButtons(user, task, logger, answers);
 
-            return await client.SendTextMessageAsync(chat.Id, message, replyMarkup: keyboard,
-                parseMode: ParseMode.Markdown);
+            var taskMessage = await client.SendTextMessageAsync(chat.Id, message,
+                ParseMode.Markdown);
+            var topicId = Convert.ToBase64String(topicDto.Id.ToByteArray());
+            var levelId = Convert.ToBase64String(levelDto.Id.ToByteArray());
+            var reportCallback = $"{StringCallbacks.Report}\n{taskMessage.MessageId}\n{topicId}\n{levelId}";
+            var reportButton = InlineKeyboardButton
+                .WithCallbackData(ButtonNames.Report, reportCallback);
+            keyboard.InlineKeyboard.ElementAt(1).Append(reportButton);
+            await client.EditMessageReplyMarkupAsync(chat.Id, taskMessage.MessageId, keyboard);
+            return taskMessage;
         }
 
         private static string PrepareProgress(ILogger logger, ProgressDTO userProgress)
@@ -93,12 +100,12 @@ namespace QuizBotCore.Commands
             return answerBlock;
         }
 
-        private InlineKeyboardMarkup PrepareButtons(TaskDTO task, ILogger logger,
+        private InlineKeyboardMarkup PrepareButtons(UserEntity user, TaskDTO task, ILogger logger,
             IEnumerable<(char letter, string answer)> answers)
         {
             var topicId = Convert.ToBase64String(topicDto.Id.ToByteArray());
             var levelId = Convert.ToBase64String(levelDto.Id.ToByteArray());
-            var reportCallback = $"{StringCallbacks.Report}\n{topicId}\n{levelId}";
+            var reportCallback = $"{StringCallbacks.Report}\n{user.MessageId}\n{topicId}\n{levelId}";
             logger.LogInformation(reportCallback);
             var controlButtons = new[]
             {

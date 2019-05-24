@@ -6,14 +6,18 @@ namespace QuizBotCore.States
     public class ReportState : State
     {
         [BsonElement]
+        public readonly int MessageId;
+        
+        [BsonElement]
         public readonly TopicDTO TopicDto;
         
         [BsonElement]
         public readonly LevelDTO LevelDto;
         
         [BsonConstructor]
-        public ReportState(TopicDTO topicDto, LevelDTO levelDto)
+        public ReportState(int messageId, TopicDTO topicDto, LevelDTO levelDto)
         {
+            MessageId = messageId;
             TopicDto = topicDto;
             LevelDto = levelDto;
         }

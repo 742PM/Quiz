@@ -41,7 +41,7 @@ namespace QuizBotCore.Commands
         {
             var topicId = Convert.ToBase64String(topicDto.Id.ToByteArray());
             var levelId = Convert.ToBase64String(levelDto.Id.ToByteArray());
-            var reportCallback = $"{StringCallbacks.Report}\n{topicId}\n{levelId}";
+            var reportCallback = $"{StringCallbacks.Report}\n{user.MessageId}\n{topicId}\n{levelId}";
             var reportButton = new[]
             {
                 InlineKeyboardButton

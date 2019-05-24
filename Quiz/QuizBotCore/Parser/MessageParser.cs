@@ -74,8 +74,9 @@ namespace QuizBotCore.Parser
                         case var t when t.Contains(StringCallbacks.Report):
                             logger.LogInformation($"Parsed callback {callbackData}");
                             var callbackQuery = t.Split('\n');
-                            var topicId = callbackQuery[1];
-                            var levelId = callbackQuery[2];
+                            var messageId = int.Parse(callbackQuery[1]);
+                            var topicId = callbackQuery[2];
+                            var levelId = callbackQuery[3];
                             logger.LogInformation($"topicId: {topicId}");
                             logger.LogInformation($"levelId: {levelId}");
                             var topidGuid = new Guid(Convert.FromBase64String(topicId));
@@ -85,7 +86,7 @@ namespace QuizBotCore.Parser
                             var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == topidGuid);
                             var levelDto = quizService.GetLevels(topicDto.Id)
                                 .FirstOrDefault(x => x.Id == levelGuid);
-                            return new ReportTransition(topicDto, levelDto);
+                            return new ReportTransition(messageId, topicDto, levelDto);
                         default:
                             return new CorrectTransition(callbackData);
                     }

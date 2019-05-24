@@ -72,21 +72,7 @@ namespace QuizBotCore.Parser
                         case StringCallbacks.Hint:
                             return new ShowHintTransition();
                         case var t when t.Contains(StringCallbacks.Report):
-                            logger.LogInformation($"Parsed callback {callbackData}");
-                            var callbackQuery = t.Split('\n');
-                            var messageId = int.Parse(callbackQuery[1]);
-                            var topicId = callbackQuery[2];
-                            var levelId = callbackQuery[3];
-                            logger.LogInformation($"topicId: {topicId}");
-                            logger.LogInformation($"levelId: {levelId}");
-                            var topidGuid = new Guid(Convert.FromBase64String(topicId));
-                            var levelGuid = new Guid(Convert.FromBase64String(levelId));
-                            logger.LogInformation($"topicId: {topidGuid.ToString()}");
-                            logger.LogInformation($"levelId: {levelGuid.ToString()}");
-                            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == topidGuid);
-                            var levelDto = quizService.GetLevels(topicDto.Id)
-                                .FirstOrDefault(x => x.Id == levelGuid);
-                            return new ReportTransition(messageId, topicDto, levelDto);
+                            return HandleReportCallback(t, quizService, logger);
                         default:
                             return new CorrectTransition(callbackData);
                     }
@@ -95,6 +81,24 @@ namespace QuizBotCore.Parser
             }
 
             return new InvalidTransition();
+        }
+
+        private ReportTransition HandleReportCallback(string callback, IQuizService quizService, ILogger logger)
+        {
+            var callbackQuery = callback.Split('\n');
+            var messageId = int.Parse(callbackQuery[1]);
+            var topicId = callbackQuery[2];
+            var levelId = callbackQuery[3];
+            logger.LogInformation($"topicId: {topicId}");
+            logger.LogInformation($"levelId: {levelId}");
+            var topidGuid = new Guid(Convert.FromBase64String(topicId));
+            var levelGuid = new Guid(Convert.FromBase64String(levelId));
+            logger.LogInformation($"topicId: {topidGuid.ToString()}");
+            logger.LogInformation($"levelId: {levelGuid.ToString()}");
+            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == topidGuid);
+            var levelDto = quizService.GetLevels(topicDto.Id)
+                .FirstOrDefault(x => x.Id == levelGuid);
+            return new ReportTransition(messageId, topicDto, levelDto);
         }
 
         private Transition LevelSelectionStateParser(LevelSelectionState state, Update update, 

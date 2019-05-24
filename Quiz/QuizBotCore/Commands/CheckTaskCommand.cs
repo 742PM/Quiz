@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using QuizBotCore.Database;
 using QuizRequestService.DTO;
@@ -38,11 +39,13 @@ namespace QuizBotCore.Commands
 
         private async Task RemoveButtonsForPreviousTask(UserEntity user, Chat chat, TelegramBotClient client)
         {
-            var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id.ToString()}\n{levelDto.Id.ToString()}";
+            var topicId = Convert.ToBase64String(topicDto.Id.ToByteArray());
+            var levelId = Convert.ToBase64String(levelDto.Id.ToByteArray());
+            var reportCallback = $"{StringCallbacks.Report}\n{topicId}\n{levelId}";
             var reportButton = new[]
             {
                 InlineKeyboardButton
-                    .WithCallbackData(ButtonNames.Report, StringCallbacks.Report)
+                    .WithCallbackData(ButtonNames.Report, reportCallback)
             };
             await client.EditMessageReplyMarkupAsync(chat.Id, user.MessageId, reportButton);
         }

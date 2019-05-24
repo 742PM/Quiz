@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using QuizBotCore.Database;
@@ -94,8 +96,9 @@ namespace QuizBotCore.Commands
         private InlineKeyboardMarkup PrepareButtons(TaskDTO task, ILogger logger,
             IEnumerable<(char letter, string answer)> answers)
         {
-            
-            var reportCallback = $"{StringCallbacks.Report}\n{topicDto.Id.ToString()}\n{levelDto.Id.ToString()}";
+            var topicId = Convert.ToBase64String(topicDto.Id.ToByteArray());
+            var levelId = Convert.ToBase64String(levelDto.Id.ToByteArray());
+            var reportCallback = $"{StringCallbacks.Report}\n{topicId}\n{levelId}";
             logger.LogInformation(reportCallback);
             var controlButtons = new[]
             {

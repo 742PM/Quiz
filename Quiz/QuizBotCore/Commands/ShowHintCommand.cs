@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using QuizBotCore.Database;
@@ -24,7 +25,9 @@ namespace QuizBotCore.Commands
             var messageId = user.MessageId;
             var state = user.CurrentState as TaskState;
             var task = serviceManager.quizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
-            var reportCallback = $"{StringCallbacks.Report}\n{state.TopicDto.Id.ToString()}\n{state.LevelDto.Id.ToString()}";
+            var topicId = Convert.ToBase64String(state.TopicDto.Id.ToByteArray());
+            var levelId = Convert.ToBase64String(state.LevelDto.Id.ToByteArray());
+            var reportCallback = $"{StringCallbacks.Report}\n{topicId}\n{levelId}";
             var controlButtons = new[]
             {
                 InlineKeyboardButton

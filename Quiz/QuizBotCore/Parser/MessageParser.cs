@@ -78,6 +78,10 @@ namespace QuizBotCore.Parser
                             var levelId = callbackQuery[2];
                             logger.LogInformation($"topicId: {topicId}");
                             logger.LogInformation($"levelId: {levelId}");
+                            topicId = Convert.FromBase64String(topicId).ToString();
+                            levelId = Convert.FromBase64String(levelId).ToString();
+                            logger.LogInformation($"topicId: {topicId}");
+                            logger.LogInformation($"levelId: {levelId}");
                             var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == Guid.Parse(topicId));
                             var levelDto = quizService.GetLevels(topicDto.Id)
                                 .FirstOrDefault(x => x.Id == Guid.Parse(levelId));

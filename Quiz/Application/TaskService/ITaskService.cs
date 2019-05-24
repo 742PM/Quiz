@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using Infrastructure.Result;
 
@@ -9,9 +9,9 @@ namespace Application.TaskService
     public interface ITaskService
     {
         /// <summary>
-        ///     Получить все темы из базы данных
+        ///     Получить генераторы из базы данных
         /// </summary>
-        IEnumerable<Topic> GetAllTopics();
+        Result<IEnumerable<TemplateTaskGenerator>, Exception> GetTemplateGenerators(Guid topicId, Guid levelId);
 
         /// <summary>
         ///     Добавить пустую тему в базу данных
@@ -71,7 +71,8 @@ namespace Application.TaskService
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
             IEnumerable<string> hints,
-            int streak, string question);
+            int streak,
+            string question);
 
         /// <summary>
         ///     Удалить генератор из базы данных
@@ -95,6 +96,7 @@ namespace Application.TaskService
             string template,
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
-            IEnumerable<string> hints, string question);
+            IEnumerable<string> hints,
+            string question);
     }
 }

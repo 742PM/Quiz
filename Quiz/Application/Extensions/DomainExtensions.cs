@@ -21,9 +21,9 @@ namespace Application.Extensions
             new TaskInfoEntity(
                 task.Text,
                 task.Answer,
-                task.Hints, 
+                task.Hints,
                 0,
-                task.ParentGeneratorId, 
+                task.ParentGeneratorId,
                 false,
                 Guid.NewGuid());
 

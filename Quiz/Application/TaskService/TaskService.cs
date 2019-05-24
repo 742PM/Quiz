@@ -24,7 +24,19 @@ namespace Application.TaskService
         }
 
         /// <inheritdoc />
-        public IEnumerable<Topic> GetAllTopics() => taskRepository.GetTopics();
+        public Result<IEnumerable<TemplateTaskGenerator>, Exception> GetTemplateGenerators(Guid topicId, Guid levelId)
+        {
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+            if (!taskRepository.LevelExists(topicId, levelId))
+                return new ArgumentException(nameof(levelId));
+
+            return taskRepository
+                .FindLevel(topicId, levelId)
+                .Generators
+                .Cast<TemplateTaskGenerator>()
+                .Ok();
+        }
 
         /// <inheritdoc />
         public Guid AddEmptyTopic(string name, string description)
@@ -81,7 +93,8 @@ namespace Application.TaskService
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
             IEnumerable<string> hints,
-            int streak, string question)
+            int streak,
+            string question)
         {
             if (!taskRepository.TopicExists(topicId))
                 return new ArgumentException(nameof(topicId));
@@ -124,12 +137,14 @@ namespace Application.TaskService
             string template,
             IEnumerable<string> possibleAnswers,
             string rightAnswer,
-            IEnumerable<string> hints, string question)
+            IEnumerable<string> hints,
+            string question)
         {
             var possibleAnswerArray = possibleAnswers as string[] ?? possibleAnswers.ToArray();
             var hintsArray = hints as string[] ?? hints.ToArray();
 
-            return new TemplateTaskGenerator(Guid.Empty, possibleAnswerArray, template, hintsArray, rightAnswer, 1, question)
+            return new TemplateTaskGenerator(Guid.Empty, possibleAnswerArray, template, hintsArray, rightAnswer, 1,
+                    question)
                 .GetTask(random);
         }
     }

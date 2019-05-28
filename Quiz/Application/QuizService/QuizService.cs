@@ -226,18 +226,15 @@ namespace Application.QuizService
             if (progress.TasksSolved < progress.TasksCount)
                 return user;
 
-            //TODO: использовать NextLevels когда будет заполнена бд
-            var level = taskRepository
-                .GetLevelsFromTopic(topicId)
-                .SkipWhile(l => l.Id != levelId)
-                .Skip(1)
-                .FirstOrDefault();
-            if (level is null)
-                return user;
+            var nextLevelIds = taskRepository.FindLevel(topicId, levelId).NextLevels;
+            foreach (var id in nextLevelIds)
+            {
+                var level = taskRepository.FindLevel(topicId, id);
+                user.UserProgressEntity
+                    .TopicsProgress[topicId]
+                    .LevelProgressEntities[id] = level.ToProgressEntity();
+            }
 
-            user.UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities[level.Id] = level.ToProgressEntity();
             return user;
         }
 

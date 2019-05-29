@@ -161,7 +161,7 @@ namespace Application.QuizService
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 
-            if (!user.CurrentTaskExists())
+            if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} hadn't started any task");
             if (!user.UserProgressEntity.CurrentTask.IsSolved)
                 return new AccessDeniedException($"User {userId} should solve current task first");
@@ -174,7 +174,7 @@ namespace Application.QuizService
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             Logger.LogInformation($"Checking answer for User {user}: his answer is {answer}");
-            if (!user.CurrentTaskExists())
+            if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} hadn't started any task");
 
             var userUserProgress = user.UserProgressEntity;
@@ -202,7 +202,7 @@ namespace Application.QuizService
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 
-            if (!user.CurrentTaskExists())
+            if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} had not started any task");
 
             var userProgress = user.UserProgressEntity;
@@ -226,14 +226,16 @@ namespace Application.QuizService
             if (progress.TasksSolved < progress.TasksCount)
                 return user;
 
-            var nextLevelIds = taskRepository.FindLevel(topicId, levelId).NextLevels;
-            foreach (var id in nextLevelIds)
-            {
-                var level = taskRepository.FindLevel(topicId, id);
-                user.UserProgressEntity
+            taskRepository
+                .FindLevel(topicId, levelId)
+                .NextLevels
+                .Select(id => taskRepository.FindLevel(topicId, id))
+                .ToList()
+                .ForEach(level => user
+                    .UserProgressEntity
                     .TopicsProgress[topicId]
-                    .LevelProgressEntities[id] = level.ToProgressEntity();
-            }
+                    .LevelProgressEntities
+                    .TryAdd(level.Id, level.ToProgressEntity()));
 
             return user;
         }

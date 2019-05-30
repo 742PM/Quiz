@@ -58,23 +58,24 @@ export class DeleteGeneratorForm extends React.Component {
             fetch(`/proxy/${value}/levels/`)
                 .then(response2 => response2.json())
                 .then(resp2 => {
-                    if (resp2.length > 0)
+                    if (resp2.length > 0) {
                         this.setState({
                             levels: resp2,
                             levelId: resp2[0].id,
                             level: resp2[0].name
                         });
-                    fetch(`/proxy/${value}/${resp2[0].id}/templateGenerators/`)
-                        .then(response3 => response3.json())
-                        .then(resp3 => {
-                            if (resp3.length > 0)
-                                this.setState({
-                                    templateGenerators: resp3,
-                                    templateGeneratorId: resp3[0].id,
-                                    templateGenerator: resp3[0].name
-                                });
-                        })
-                        .catch(error => console.error(error))
+                        fetch(`/proxy/${value}/${resp2[0].id}/templateGenerators/`)
+                            .then(response3 => response3.json())
+                            .then(resp3 => {
+                                if (resp3.length > 0)
+                                    this.setState({
+                                        templateGenerators: resp3,
+                                        generatorId: resp3[0].id,
+                                        generator: resp3[0].name
+                                    });
+                            })
+                            .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error));
             this.setState({
@@ -86,8 +87,8 @@ export class DeleteGeneratorForm extends React.Component {
                 .then(response3 => response3.json())
                 .then(resp3 => {
                     this.setState({
-                        templateGenerators: resp3,
-                        templateGeneratorId: resp3[0].id,
+                        generator: resp3,
+                        generatorId: resp3[0].id,
                         templateGenerator: resp3[0].name
                     });
                 })

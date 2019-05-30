@@ -9,12 +9,15 @@ export class CreateLevelForm extends React.Component {
             topicValue: '',
             level: '',
             topics: [],
+            nextLevels: [],
+            previousLevels: []
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleChange1 = this.handleChange1.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
     componentWillMount() {
         fetch("/proxy/topics")
             .then(response => response.json())
@@ -51,8 +54,8 @@ export class CreateLevelForm extends React.Component {
             body: JSON.stringify(
                 {
                     "description": this.state.level,
-                    "nextLevels": [],
-                    "previousLevels": []
+                    "nextLevels": JSON.parse(this.state.nextLevels),
+                    "previousLevels": JSON.parse(this.state.previousLevels)
                 }
             )
         }).catch(resp => {
@@ -79,10 +82,18 @@ export class CreateLevelForm extends React.Component {
                 <br/>
                 <label>
                     <p>Имя Level, который хотите добавить:</p>
-                    <textarea className="smallTextarea" name="level" value={this.state.level} onChange={this.handleInputChange} />
+                    <textarea className="smallTextarea" name="level" value={this.state.level} onChange={this.handleInputChange}/>
+                </label>
+                <label>
+                    <p>NextLevelsIds:</p>
+                    <textarea className="smallTextarea" name="nextLevels" value={this.state.nextLevels} onChange={this.handleInputChange}/>
+                </label>
+                <label>
+                    <p>PreviousLevelsIds:</p>
+                    <textarea className="smallTextarea" name="previousLevels" value={this.state.previousLevels} onChange={this.handleInputChange}/>
                 </label>
                 <br/><br/>
-                <input className="button2" type="submit" value="Create Level" />
+                <input className="button2" type="submit" value="Create Level"/>
             </form>
         );
     }

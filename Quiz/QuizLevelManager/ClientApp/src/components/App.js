@@ -5,6 +5,7 @@ import {Editor} from "./Editor";
 import {RightsViewer} from "./login/RightsViewer";
 
 import '../styles/App.css';
+import {Route, Router} from "react-router-dom";
 
 export class App extends React.Component {
 
@@ -48,21 +49,21 @@ export class App extends React.Component {
             <div>
                 <h1>Quibble level manager</h1>
                 <div className="main">
-                {
-                    (this.state.user) ?
-                        <div>
-                            {/*<Welcome*/}
-                            {/*    onSignOut={this.signOut.bind(this)}*/}
-                            {/*    rights={this.state.rights}*/}
-                            {/*    user={this.state.user}*/}
-                            {/*    onRights={*/}
-                            {/*        (this.state.rights) ?*/}
-                            {/*            this.hideRights.bind(this) :*/}
-                            {/*            this.showRights.bind(this)}/>*/}
-                            <Editor user={this.state.user}/>
-                        </div>
-                        : <LoginForm onSignIn={this.signIn.bind(this)}/>
-                }
+                    {
+                        (this.state.user) ?
+                            <div>
+                                {/*<Welcome*/}
+                                {/*    onSignOut={this.signOut.bind(this)}*/}
+                                {/*    rights={this.state.rights}*/}
+                                {/*    user={this.state.user}*/}
+                                {/*    onRights={*/}
+                                {/*        (this.state.rights) ?*/}
+                                {/*            this.hideRights.bind(this) :*/}
+                                {/*            this.showRights.bind(this)}/>*/}
+                                <Editor user={this.state.user}/>
+                            </div>
+                            : <LoginForm onSignIn={this.signIn.bind(this)}/>
+                    }
                 </div>
                 {(this.state.rights) ?
                     <RightsViewer user={this.state.user}/> :

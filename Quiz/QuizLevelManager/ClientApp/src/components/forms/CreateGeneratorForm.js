@@ -41,7 +41,12 @@ export class CreateGeneratorForm extends React.Component {
             fetch(`/proxy/${value}/levels/`)
                 .then(response2 => response2.json())
                 .then(resp2 => {
-                    this.setState({levels: resp2});
+                    if (resp2.length > 0)
+                        this.setState({
+                            levels: resp2,
+                            levelId: resp2[0].id,
+                            level: resp2[0].name
+                        });
                 })
                 .catch(error => console.error(error));
             this.setState({
@@ -60,14 +65,16 @@ export class CreateGeneratorForm extends React.Component {
         fetch("/proxy/topics")
             .then(response => response.json())
             .then(resp => {
-                this.setState({topics: resp, topicId: resp[0].id});
-                console.log(resp);
-                fetch(`/proxy/${resp[0].id}/levels/`)
-                    .then(response2 => response2.json())
-                    .then(resp2 => {
-                        this.setState({levels: resp2, levelId: resp2[0].id});
-                    })
-                    .catch(error => console.error(error))
+                if (resp.length > 0) {
+                    this.setState({topics: resp, topicId: resp[0].id});
+                    fetch(`/proxy/${resp[0].id}/levels/`)
+                        .then(response2 => response2.json())
+                        .then(resp2 => {
+                            if (resp2.length > 0)
+                                this.setState({levels: resp2, levelId: resp2[0].id});
+                        })
+                        .catch(error => console.error(error))
+                }
             })
             .catch(error => console.error(error));
     }
@@ -115,8 +122,7 @@ export class CreateGeneratorForm extends React.Component {
                     <p>Выберите Topic, в который вы хотите добавить Generator:</p>
                     <select name="level" value={this.state.level} onChange={this.handleInputChange1}>
                         {this.state.levels.map(level =>
-                            <option label={level.description} value={level.id} name={level.description}>{level.description}</option>
-                        )};
+                            <option label={level.description} value={level.id} name={level.description}>{level.description}</option>)};
                     </select>
                 </label>
                 <h3>Параметры с которыми хотите создать Generator:</h3>

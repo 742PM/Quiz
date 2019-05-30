@@ -26,7 +26,7 @@ export class DeleteLevelForm extends React.Component {
                 fetch(`/proxy/${resp[0].id}/levels/`)
                     .then(response2 => response2.json())
                     .then(resp2 => {
-                        this.setState({levels: resp2, levelId:resp2[0].id});
+                        this.setState({levels: resp2, levelId: resp2[0].id});
                     })
                     .catch(error => console.error(error))
             })
@@ -41,7 +41,12 @@ export class DeleteLevelForm extends React.Component {
             fetch(`/proxy/${value}/levels/`)
                 .then(response2 => response2.json())
                 .then(resp2 => {
-                    this.setState({levels: resp2});
+                    if (resp2.length > 0)
+                        this.setState({
+                            levels: resp2,
+                            levelId: resp2[0].id,
+                            level: resp2[0].name
+                        });
                 })
                 .catch(error => console.error(error));
             this.setState({

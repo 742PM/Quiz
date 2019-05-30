@@ -63,14 +63,29 @@ namespace Application.TaskService
             IEnumerable<Guid> previousLevels,
             IEnumerable<Guid> nextLevels)
         {
-            return !taskRepository.TopicExists(topicId)
-                ? new ArgumentException(nameof(topicId))
-                : taskRepository
-                    .InsertLevel(
-                        topicId,
-                        new Level(Guid.NewGuid(), description, new TaskGenerator[0], new Guid[0]))
-                    .Id
-                    .Ok();
+            if (!taskRepository.TopicExists(topicId))
+                return new ArgumentException(nameof(topicId));
+
+            var nextLevelIds = nextLevels.ToArray();
+            var levelId = Guid.NewGuid();
+
+            foreach (var id in nextLevelIds)
+            {
+                if (!taskRepository.LevelExists(topicId, levelId))
+                    return new ArgumentException($"previous level with {id} doesn't exists");
+
+                var level = taskRepository.FindLevel(topicId, levelId);
+                var newNextLevels = level.NextLevels.Concat(new[] { id }).ToArray();
+
+                taskRepository.UpdateLevel(topicId, level.With(nextLevels: newNextLevels));
+            }
+
+            return taskRepository
+                .InsertLevel(
+                    topicId,
+                    new Level(levelId, description, new TaskGenerator[0], nextLevelIds))
+                .Id
+                .Ok();
         }
 
         /// <inheritdoc />

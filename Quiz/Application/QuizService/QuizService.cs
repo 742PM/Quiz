@@ -161,7 +161,7 @@ namespace Application.QuizService
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 
-            if (!CurrentTaskExists(user))
+            if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} hadn't started any task");
             if (!user.UserProgressEntity.CurrentTask.IsSolved)
                 return new AccessDeniedException($"User {userId} should solve current task first");
@@ -174,7 +174,7 @@ namespace Application.QuizService
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
             Logger.LogInformation($"Checking answer for User {user}: his answer is {answer}");
-            if (!CurrentTaskExists(user))
+            if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} hadn't started any task");
 
             var userUserProgress = user.UserProgressEntity;
@@ -202,7 +202,7 @@ namespace Application.QuizService
         {
             var user = userRepository.FindOrInsertUser(userId, taskRepository);
 
-            if (!CurrentTaskExists(user))
+            if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} had not started any task");
 
             var userProgress = user.UserProgressEntity;
@@ -226,18 +226,17 @@ namespace Application.QuizService
             if (progress.TasksSolved < progress.TasksCount)
                 return user;
 
-            //TODO: использовать NextLevels когда будет заполнена бд
-            var level = taskRepository
-                .GetLevelsFromTopic(topicId)
-                .SkipWhile(l => l.Id != levelId)
-                .Skip(1)
-                .FirstOrDefault();
-            if (level is null)
-                return user;
+            taskRepository
+                .FindLevel(topicId, levelId)
+                .NextLevels
+                .Select(id => taskRepository.FindLevel(topicId, id))
+                .ToList()
+                .ForEach(level => user
+                    .UserProgressEntity
+                    .TopicsProgress[topicId]
+                    .LevelProgressEntities
+                    .TryAdd(level.Id, level.ToProgressEntity()));
 
-            user.UserProgressEntity
-                .TopicsProgress[topicId]
-                .LevelProgressEntities[level.Id] = level.ToProgressEntity();
             return user;
         }
 
@@ -284,7 +283,5 @@ namespace Application.QuizService
             var total = streaks.Sum(pair => taskRepository.FindGenerator(topicId, levelId, pair.Key).Streak);
             return new LevelProgressInfo(total, solved);
         }
-
-        private static bool CurrentTaskExists(UserEntity user) => user.UserProgressEntity.CurrentTask != null;
     }
 }

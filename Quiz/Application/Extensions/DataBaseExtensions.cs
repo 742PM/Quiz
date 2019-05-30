@@ -166,5 +166,7 @@ namespace Application.Extensions
 
             userRepository.Update(user);
         }
+
+        public static bool HasCurrentTask(this UserEntity user) => user.UserProgressEntity.CurrentTask != null;
     }
 }

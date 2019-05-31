@@ -35,10 +35,10 @@ namespace QuizBotCore.Commands
             if (task != null)
             {
                 var progress = serviceManager.quizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
-                var isSolved = progress.TasksSolved == progress.TasksCount;
+                var isSolved = IsSolvedLevel(progress);
                 if (isSolved)
                     await client.SendTextMessageAsync(chat.Id, DialogMessages.LevelCompleted);
-                var message = await SendTask(task, chat, user, client, serviceManager.quizService,
+                var message = await SendTask(task, progress, chat, user, client, serviceManager.quizService,
                     serviceManager.logger);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
                 serviceManager.userRepository.Update(newUser);
@@ -61,12 +61,11 @@ namespace QuizBotCore.Commands
             return task;
         }
 
-        private async Task<Message> SendTask(TaskDTO task, Chat chat, UserEntity user, TelegramBotClient client,
+        private async Task<Message> SendTask(TaskDTO task, ProgressDTO userProgress, Chat chat, UserEntity user, TelegramBotClient client,
             IQuizService quizService, ILogger logger)
         {
-            var userProgress = quizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
             var progress = PrepareProgress(logger, userProgress);
-            var isSolvedLevel = userProgress.TasksSolved == userProgress.TasksCount;
+            var isSolvedLevel = IsSolvedLevel(userProgress);
 
             var answers = task.Answers.Select((e, index) => (letter: DialogMessages.Alphabet[index], answer: $"{e}"))
                 .ToList();
@@ -88,6 +87,11 @@ namespace QuizBotCore.Commands
             var keyboardWithReport = new InlineKeyboardMarkup(keyboard.InlineKeyboard.Append(reportButton));
             await client.EditMessageReplyMarkupAsync(chat.Id, taskMessage.MessageId, keyboardWithReport);
             return taskMessage;
+        }
+
+        private bool IsSolvedLevel(ProgressDTO progress)
+        {
+            return progress.TasksCount == progress.TasksSolved;
         }
 
         private static string PrepareProgress(ILogger logger, ProgressDTO userProgress)

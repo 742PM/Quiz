@@ -33,7 +33,11 @@ namespace QuizBotCore.Commands
                     await RemoveButtonsForPreviousTask(user, chat, client);
                     await new ShowTaskCommand(topicDto, levelDto, true).ExecuteAsync(chat, client, serviceManager);
                 }
-                else await client.SendTextMessageAsync(chat.Id, DialogMessages.WrongAnswer);
+                else
+                {
+                    await client.SendTextMessageAsync(chat.Id, DialogMessages.WrongAnswer);
+                    await new ShowTaskCommand(topicDto, levelDto).ExecuteAsync(chat, client, serviceManager);
+                }
             }
         }
 

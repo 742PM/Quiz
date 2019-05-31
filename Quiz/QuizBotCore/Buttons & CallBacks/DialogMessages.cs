@@ -35,7 +35,7 @@ namespace QuizBotCore
         public const string RequestForRotateDevice = "ВАЖНО: Из-за ограничения на максимальную ширину сообщения в Телеграм " +
                                                      "задачи могут отображать не самым комфортным образом. " +
                                                      "Советуем повернуть ваше устройство в горизонтальное положение.";
-        public const string RequestForRotateDeviceGif = "https://i.imgur.com/32MFaol.jpg";
+        public const string RequestForRotateDeviceGif = "https://i.imgur.com/KPxuZ8H.png";
 
         public const string ReportThanks = "Спасибо за обратную связь. " +
                                            "Мы обязательно рассмотрим ваше сообщение 🤙🏿";

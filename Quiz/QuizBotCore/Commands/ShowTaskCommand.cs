@@ -34,6 +34,10 @@ namespace QuizBotCore.Commands
             var task = await GetTask(user, chat, client, serviceManager);
             if (task != null)
             {
+                var progress = serviceManager.quizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
+                var isSolved = progress.TasksSolved == progress.TasksCount;
+                if (isSolved)
+                    await client.SendTextMessageAsync(chat.Id, DialogMessages.LevelCompleted);
                 var message = await SendTask(task, chat, user, client, serviceManager.quizService,
                     serviceManager.logger);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);

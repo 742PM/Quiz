@@ -41,7 +41,6 @@ namespace QuizBotCore
                 case var t when t.state is TaskState taskState:
                     return ProcessTaskState(taskState, t.transition);
             }
-
             return default;
         }
 

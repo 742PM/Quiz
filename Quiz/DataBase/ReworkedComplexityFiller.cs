@@ -39,7 +39,6 @@ namespace DataBase
 
         public void Fill(MongoTaskRepository repository)
         {
-            var singleLoops = CreateSingleLoops();
             //repository.Add(new Level(... singleLoops);
         }
 

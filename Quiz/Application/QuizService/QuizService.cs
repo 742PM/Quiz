@@ -7,6 +7,7 @@ using Application.Info;
 using Application.Repositories;
 using Application.Repositories.Entities;
 using Application.Selectors;
+using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Extensions;
 using Infrastructure.Result;

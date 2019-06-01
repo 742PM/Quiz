@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Application.Exceptions;
 using Application.Info;
+using Domain.Entities;
 using Infrastructure.Result;
 
 namespace Application.QuizService

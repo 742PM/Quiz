@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Application.DTO;
+using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
+using Infrastructure;
 using Infrastructure.Result;
 
 namespace Application.TaskService
@@ -98,5 +101,22 @@ namespace Application.TaskService
             string rightAnswer,
             IEnumerable<string> hints,
             string question);
+
+        /// <summary>
+        /// Получить всю тему по айди.
+        /// </summary>
+        /// <param name="topicId">айди темы</param>
+        /// <returns>Всю сущность темы целиком</returns>
+        [Unsafe]
+        Maybe<TopicDto> GetFullTopic(Guid topicId);
+
+        /// <summary>
+        /// Добавляет указанную тему c новым айди
+        /// </summary>
+        /// <param name="topic">тема для добавления</param>
+        /// <returns>в случае успеха айди добавленной темы</returns>
+        [Unsafe]
+        Result<Guid, Exception> AddTopic(TopicDto topic);
+
     }
 }

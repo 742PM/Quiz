@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Application.DTO;
 using Application.Extensions;
 using Application.Repositories;
 using Domain.Entities;
@@ -162,5 +163,12 @@ namespace Application.TaskService
                     question)
                 .GetTask(random);
         }
+
+        /// <inheritdoc />
+        public Maybe<TopicDto> GetFullTopic(Guid topicId) => taskRepository.FindTopic(topicId)?.ToDTO().Sure() ?? Maybe<TopicDto>.None;
+
+        /// <inheritdoc />
+        public Result<Guid, Exception> AddTopic(TopicDto topic) =>
+            taskRepository.InsertTopic((Topic)topic).Id;
     }
 }

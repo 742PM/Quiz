@@ -1,22 +1,31 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Application.DTO;
+using Application.QuizService;
 using Application.TaskService;
 using AutoMapper;
+using Domain.Entities;
+using Hjson;
+using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
-using QuizWebApp.TaskService.DTO;
+using QuizWebApp.Services.TaskService.DTO;
 
-namespace QuizWebApp.TaskService
+namespace QuizWebApp.Services.TaskService
 {
     [Route("service")]
     [ApiController]
-    public class TaskServiceController : ControllerBase
+    public partial class TaskServiceController : ControllerBase
     {
         private readonly ITaskService applicationApi;
+        private readonly IQuizService quizApi;
 
-        public TaskServiceController(ITaskService applicationApi)
+        public TaskServiceController(ITaskService applicationApi, IQuizService quizApi)
         {
             this.applicationApi = applicationApi;
+            this.quizApi = quizApi;
         }
 
         /// <summary>
@@ -101,10 +110,10 @@ namespace QuizWebApp.TaskService
         {
             var (_, isFailure, id, error) = applicationApi
                 .AddEmptyLevel(
-                    topicId,
-                    level.Description,
-                    level.PreviousLevels,
-                    level.NextLevels);
+                   topicId,
+                   level.Description,
+                   level.PreviousLevels,
+                   level.NextLevels);
             if (isFailure)
                 return NotFound(error.Message);
             return Ok(id);
@@ -157,12 +166,12 @@ namespace QuizWebApp.TaskService
         {
             var (_, isFailure, id, error) = applicationApi
                 .AddTemplateGenerator(
-                    topicId,
-                    levelId,
-                    templateGenerator.Text,
-                    templateGenerator.PossibleAnswers,
-                    templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
-                    templateGenerator.Question);
+                  topicId,
+                  levelId,
+                  templateGenerator.Text,
+                  templateGenerator.PossibleAnswers,
+                  templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
+                  templateGenerator.Question);
             if (isFailure)
                 return NotFound(error.Message);
             return Ok(id);
@@ -209,13 +218,15 @@ namespace QuizWebApp.TaskService
         public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
         {
             var task = applicationApi.RenderTask(
-                templateGenerator.Text,
-                templateGenerator.PossibleAnswers,
-                templateGenerator.Answer,
-                templateGenerator.Hints,
-                templateGenerator.Question);
+                 templateGenerator.Text,
+                 templateGenerator.PossibleAnswers,
+                 templateGenerator.Answer,
+                 templateGenerator.Hints,
+                 templateGenerator.Question);
 
             return Ok(task);
         }
     }
+
+    //2dab39a5-9dd2-43c2-9968-0846ff4a7fa4
 }

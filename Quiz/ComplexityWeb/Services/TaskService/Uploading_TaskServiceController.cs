@@ -36,8 +36,7 @@ namespace QuizWebApp.Services.TaskService
                 .ToString()
                 .AndThen(j => j.Deserialize<TopicDto>())
                 .AndThen(t => applicationApi.AddTopic(t))
-                .Map(i => Ok(i))
-                .Value;
+                .AndThen(i => Ok(i));
         }
 
         /// <summary>
@@ -84,8 +83,7 @@ namespace QuizWebApp.Services.TaskService
         public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic)
         {
             return topic.AndThen(t => applicationApi.AddTopic(t))
-                .Map(i => Ok(i))
-                .Value;
+                .AndThen(i => Ok(i));
         }
 
         /// <summary>

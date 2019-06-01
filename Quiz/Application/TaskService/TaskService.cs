@@ -174,7 +174,7 @@ namespace Application.TaskService
         }
 
         /// <inheritdoc />
-        public Result<Guid, Exception> AddTopic(TopicDto topic) =>
+        public Guid AddTopic(TopicDto topic) =>
             taskRepository.InsertTopic((Topic)topic).Id;
     }
 }

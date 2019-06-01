@@ -116,7 +116,7 @@ namespace Application.TaskService
         /// <param name="topic">тема для добавления</param>
         /// <returns>в случае успеха айди добавленной темы</returns>
         [Unsafe]
-        Result<Guid, Exception> AddTopic(TopicDto topic);
+        Guid AddTopic(TopicDto topic);
 
     }
 }

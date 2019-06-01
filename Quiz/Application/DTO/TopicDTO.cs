@@ -18,20 +18,48 @@ namespace Application.DTO
         {
             var ids = dto.Levels.ToDictionary(l => l.Number, _ => NewGuid());
             return new Topic(NewGuid(),
-                             dto.Name,
-                             dto.Description,
-                             dto.Levels
-                                .Select(levelDto =>
-                                            new Level(
-                                                 ids[levelDto.Number], 
-                                                 levelDto.Description,
-                                                 levelDto.Generators
-                                                         .Select(generatorDto =>
-                                                                (TaskGenerator) 
-                                                                (TemplateTaskGenerator) generatorDto)
-                                                         .ToArray(),
-                                                 levelDto.NextLevels.Select(i => ids[i]).ToArray()))
-                                .ToArray());
+                dto.Name,
+                dto.Description,
+                dto.Levels
+                    .Select(levelDto =>
+                        new Level(
+                            ids[levelDto.Number],
+                            levelDto.Description,
+                            levelDto.Generators
+                                .Select(generatorDto =>
+                                    (TaskGenerator)
+                                    (TemplateTaskGenerator) generatorDto)
+                                .ToArray(),
+                            levelDto.NextLevels.Select(i => ids[i]).ToArray()))
+                    .ToArray());
+        }
+
+        public static explicit operator TopicDto(Topic topic)
+        {
+            var ids = topic.Levels.Zip(Enumerable.Range(0, topic.Levels.Length), (l, i) => (level: l, i))
+                .ToDictionary(tup => tup.level.Id, tup => tup.i);
+
+            return new TopicDto
+            {
+                Description = topic.Description,
+                Name = topic.Name,
+                Levels = topic.Levels.Select(level =>
+                        new LevelDto
+                        {
+                            Description = level.Description,
+                            Generators = level
+                                .Generators
+                                .Select(g => (TemplateTaskGeneratorDto) g
+                                    .Cast<TemplateTaskGenerator>())
+                                .ToArray(),
+                            NextLevels = level
+                                .NextLevels.Select(id => ids[id])
+                                .ToArray(),
+                            Number = ids[level.Id]
+                        }
+                    )
+                    .ToArray()
+            };
         }
     }
 }

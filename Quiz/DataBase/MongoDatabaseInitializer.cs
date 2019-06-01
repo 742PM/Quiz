@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using Application.Repositories;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Infrastructure.DDD;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Options;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using static MongoDB.Bson.Serialization.BsonClassMap;
+using static DataBase.MongoHelpers;
 
 namespace DataBase
 {
@@ -89,30 +83,7 @@ namespace DataBase
             });
         }
 
-        private static BsonMemberMap MapDictionary<TClass, TKey, TValue>(
-            this BsonClassMap<TClass> cm,
-            Expression<Func<TClass, Dictionary<TKey, TValue>>> memberLambda) =>
-            cm.MapMember(memberLambda)
-                .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<TKey, TValue>
-                >(DictionaryRepresentation.ArrayOfDocuments));
+       
 
-        private static void AutoRegisterClassMap<TClass>(Expression<Func<TClass, TClass>> creatorLambda) =>
-            AutoRegisterClassMap<TClass>(cm => cm.MapCreator(creatorLambda));
-
-        private static void AutoRegisterClassMap<T>(Action<BsonClassMap<T>> additionalAction = null)
-        {
-            RegisterClassMap<T>(cm =>
-            {
-                var propertyInfos = typeof(T)
-                    .GetProperties(BindingFlags.DeclaredOnly |
-                                   BindingFlags.Public |
-                                   BindingFlags.Instance)
-                    .Cast<MemberInfo>()
-                    .ToList();
-                foreach (var propertyInfo in propertyInfos)
-                    cm.MapMember(propertyInfo);
-                additionalAction?.Invoke(cm);
-            });
-        }
     }
 }

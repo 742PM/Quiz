@@ -5,13 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using QuizRequestExtendedService;
+using QuizRequestExtendedService.Database;
 
 namespace QuizLevelManager
 {
     public class Startup
     {
         private const string ServerUrlEnvironmentVariable = "SERVER_URL";
+        public const string MongoUsernameEnvironmentVariable = "MONGO_USERNAME";
+        public const string MongoPasswordEnvironmentVariable = "MONGO_PASSWORD";
+        public const string MongoDatabaseNameEnvironmentVariable = "MONGO_DB_NAME";
 
         public Startup(IConfiguration configuration)
         {
@@ -24,10 +29,15 @@ namespace QuizLevelManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddScoped<IQuizServiceExtended>(x => new Requester(Environment.GetEnvironmentVariable(ServerUrlEnvironmentVariable)));
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            services.AddSingleton(ConnectToDatabase());
+
+            services.AddScoped<IQuizServiceExtended>(_ =>
+                new Requester(Environment.GetEnvironmentVariable(ServerUrlEnvironmentVariable)));
+            services.AddScoped<IUserRepository<Guid, Guid>>(provider =>
+                new UserRepository<Guid, Guid>(provider.GetService<IMongoDatabase>(), Guid.NewGuid));
+
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/build");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +71,22 @@ namespace QuizLevelManager
 
                 if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
             });
+        }
+
+        private static IMongoDatabase ConnectToDatabase(string databaseName = default, string username = default,
+            string password = default, string name = "QuizDatabase")
+        {
+            databaseName = databaseName ?? Environment.GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable);
+            username = username ?? Environment.GetEnvironmentVariable(MongoUsernameEnvironmentVariable);
+            password = password ?? Environment.GetEnvironmentVariable(MongoPasswordEnvironmentVariable);
+            var connectionString = username is null || password is null
+                ? "mongodb://localhost:27017"
+                : $"mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017," +
+                  "quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017," +
+                  "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
+                  $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
+            var client = new MongoClient(connectionString);
+            return client.GetDatabase(name);
         }
     }
 }

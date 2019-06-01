@@ -219,9 +219,6 @@ namespace Application.QuizService
             return new HintInfo(hints[currentHintIndex], currentHintIndex < hints.Length - 1);
         }
 
-      
-        
-
         private UserEntity GetUserWithNewProgressIfLevelSolved(UserEntity user)
         {
             var topicId = user.UserProgressEntity.CurrentTopicId;

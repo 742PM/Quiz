@@ -60,8 +60,5 @@ namespace Application.QuizService
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         /// <exception cref="OutOfHintsException">Подсказки отсутствуют или кончились</exception>
         Result<HintInfo, Exception> GetHint(Guid userId);
-
-       
-
     }
 }

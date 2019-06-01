@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 
-namespace QuizWebApp.Services.TaskService {
+namespace QuizWebApp {
     public class RawRequestBodyFormatter : InputFormatter
     {
         public RawRequestBodyFormatter()

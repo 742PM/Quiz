@@ -110,10 +110,10 @@ namespace QuizWebApp.Services.TaskService
         {
             var (_, isFailure, id, error) = applicationApi
                 .AddEmptyLevel(
-                               topicId,
-                               level.Description,
-                               level.PreviousLevels,
-                               level.NextLevels);
+                   topicId,
+                   level.Description,
+                   level.PreviousLevels,
+                   level.NextLevels);
             if (isFailure)
                 return NotFound(error.Message);
             return Ok(id);
@@ -166,12 +166,12 @@ namespace QuizWebApp.Services.TaskService
         {
             var (_, isFailure, id, error) = applicationApi
                 .AddTemplateGenerator(
-                                      topicId,
-                                      levelId,
-                                      templateGenerator.Text,
-                                      templateGenerator.PossibleAnswers,
-                                      templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
-                                      templateGenerator.Question);
+                  topicId,
+                  levelId,
+                  templateGenerator.Text,
+                  templateGenerator.PossibleAnswers,
+                  templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
+                  templateGenerator.Question);
             if (isFailure)
                 return NotFound(error.Message);
             return Ok(id);
@@ -217,11 +217,12 @@ namespace QuizWebApp.Services.TaskService
         [HttpPost("tasktorender")]
         public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
         {
-            var task = applicationApi.RenderTask(templateGenerator.Text,
-                                                 templateGenerator.PossibleAnswers,
-                                                 templateGenerator.Answer,
-                                                 templateGenerator.Hints,
-                                                 templateGenerator.Question);
+            var task = applicationApi.RenderTask(
+                 templateGenerator.Text,
+                 templateGenerator.PossibleAnswers,
+                 templateGenerator.Answer,
+                 templateGenerator.Hints,
+                 templateGenerator.Question);
 
             return Ok(task);
         }

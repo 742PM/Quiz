@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace QuizWebApp.Services.TaskService {
+namespace QuizWebApp.Extensions {
     public static class JsonExtensions
     {
         private static readonly JsonSerializerSettings ThetaSettings = new JsonSerializerSettings

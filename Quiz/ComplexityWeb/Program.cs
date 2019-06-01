@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace ComplexityWebApi
+namespace QuizWebApp
 {
 #pragma warning disable CS1591
     public static class Program

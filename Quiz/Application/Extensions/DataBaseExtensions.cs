@@ -7,6 +7,7 @@ using Infrastructure.Extensions;
 
 namespace Application.Extensions
 {
+   
     public static class DataBaseExtensions
     {
         public static UserEntity FindOrInsertUser(

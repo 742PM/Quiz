@@ -7,6 +7,7 @@ using Application.Info;
 using Application.Repositories;
 using Application.Repositories.Entities;
 using Application.Selectors;
+using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Extensions;
 using Infrastructure.Result;
@@ -217,6 +218,9 @@ namespace Application.QuizService
             userRepository.Update(user);
             return new HintInfo(hints[currentHintIndex], currentHintIndex < hints.Length - 1);
         }
+
+      
+        
 
         private UserEntity GetUserWithNewProgressIfLevelSolved(UserEntity user)
         {

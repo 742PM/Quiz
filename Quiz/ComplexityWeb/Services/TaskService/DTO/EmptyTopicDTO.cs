@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace QuizWebApp.TaskService.DTO
+namespace QuizWebApp.Services.TaskService.DTO
 {
     public class EmptyTopicDTO
     {

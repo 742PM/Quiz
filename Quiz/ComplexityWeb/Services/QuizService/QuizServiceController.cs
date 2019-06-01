@@ -6,9 +6,9 @@ using Application.QuizService;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuizWebApp.QuizService.DTO;
+using QuizWebApp.Services.QuizService.DTO;
 
-namespace QuizWebApp.QuizService
+namespace QuizWebApp.Services.QuizService
 {
     [Route("api")]
     [ApiController]

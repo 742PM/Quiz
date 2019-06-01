@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Application.Exceptions;
 using Application.Info;
+using Domain.Entities;
 using Infrastructure.Result;
 
 namespace Application.QuizService
@@ -59,5 +60,8 @@ namespace Application.QuizService
         /// <exception cref="AccessDeniedException">Метод недоступен для данного пользователя</exception>
         /// <exception cref="OutOfHintsException">Подсказки отсутствуют или кончились</exception>
         Result<HintInfo, Exception> GetHint(Guid userId);
+
+       
+
     }
 }

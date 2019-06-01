@@ -17,6 +17,7 @@
         <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+        <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +48,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QuizRequestExtendedService\QuizRequestExtendedService.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Database\" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

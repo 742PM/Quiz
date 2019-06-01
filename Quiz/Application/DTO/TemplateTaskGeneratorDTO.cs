@@ -29,6 +29,8 @@ namespace Application.DTO {
                 Streak = generator.Streak
             };
 
+        public static explicit operator TaskGenerator(TemplateTaskGeneratorDto dto) =>
+            (TemplateTaskGenerator) dto;
         public static explicit operator TemplateTaskGenerator(TemplateTaskGeneratorDto dto)
             => new TemplateTaskGenerator(Guid.NewGuid(), dto.PossibleAnswers, dto.Text, dto.Hints, dto.Answer, dto.Streak, dto.Question);
 

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.DTO;
-using Application.QuizService;
 using Application.TaskService;
 using AutoMapper;
 using Domain.Entities;
@@ -20,12 +19,10 @@ namespace QuizWebApp.Services.TaskService
     public partial class TaskServiceController : ControllerBase
     {
         private readonly ITaskService applicationApi;
-        private readonly IQuizService quizApi;
 
-        public TaskServiceController(ITaskService applicationApi, IQuizService quizApi)
+        public TaskServiceController(ITaskService applicationApi)
         {
             this.applicationApi = applicationApi;
-            this.quizApi = quizApi;
         }
 
         /// <summary>

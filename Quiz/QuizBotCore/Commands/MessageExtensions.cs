@@ -1,6 +1,7 @@
 using System;
 
-namespace QuizBotCore.Commands {
+namespace QuizBotCore.Commands
+{
     public static class MessageExtensions
     {
         public static string CreateMessageReportCallback(this int messageId, Guid topicId, Guid levelId)
@@ -9,6 +10,5 @@ namespace QuizBotCore.Commands {
             var levelGuidString = Convert.ToBase64String(levelId.ToByteArray());
             return $"{StringCallbacks.Report}\n{messageId}\n{topicGuidString}\n{levelGuidString}";
         }
-
     }
 }

@@ -30,13 +30,14 @@ namespace QuizWebApp.Services.TaskService
         /// </remarks>
         /// <response code="200"> Возвращает айди топика, добавленного в БД</response>
         [HttpPost("for/humans/topics/upload")] //TODO: add authentication
-        public ActionResult<Guid> UploadTopic([FromBody] string rawData) =>
-            Parse(rawData)
+        public ActionResult<Guid> UploadTopic([FromBody] string rawData)
+        {
+            return Parse(rawData)
                 .ToString()
                 .AndThen(j => j.Deserialize<TopicDto>())
                 .AndThen(t => applicationApi.AddTopic(t))
-                .Map(i => Ok(i))
-                .Value;
+                .AndThen(i => Ok(i));
+        }
 
         /// <summary>
         ///     Получить весь топик в формате HJSON без айди
@@ -52,14 +53,15 @@ namespace QuizWebApp.Services.TaskService
         [HttpGet("for/humans/topics/{topicId}")]
         public ActionResult<string> GetTopicHJson(Guid topicId)
         {
-            var topic = applicationApi.GetFullTopic(topicId)
-                                      .Select(t => t.Serialize())
-                                      .Select(json => Load(new StringReader(json)))
-                                      .Select(h => h.ToString(Stringify.Hjson));
-            if (topic.HasNoValue)
-                return NotFound();
+            var (_, isFailure, value, error) =
+                applicationApi.GetFullTopic(topicId)
+                    .Map(t => t.Serialize())
+                    .Map(json => Load(new StringReader(json)))
+                    .Map(h => h.ToString(Stringify.Hjson));
+            if (isFailure)
+                return NotFound(error.Message);
 
-            return Ok(topic.Value);
+            return Ok(value);
         }
 
         /// <summary>
@@ -78,10 +80,11 @@ namespace QuizWebApp.Services.TaskService
         /// </remarks>
         /// <response code="200"> Возвращает айди топика, добавленного в БД</response>
         [HttpPost("topics/upload")]
-        public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic) =>
-            topic.AndThen(t => applicationApi.AddTopic(t))
-                 .Map(i => Ok(i))
-                 .Value;
+        public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic)
+        {
+            return topic.AndThen(t => applicationApi.AddTopic(t))
+                .AndThen(i => Ok(i));
+        }
 
         /// <summary>
         ///     Получить тему без айди в нем
@@ -97,12 +100,12 @@ namespace QuizWebApp.Services.TaskService
         [HttpGet("topics/{topicId}")]
         public ActionResult<TopicDto> GetTopic(Guid topicId)
         {
-            var topic = applicationApi.GetFullTopic(topicId);
+            var (_, isFailure, topic, error) = applicationApi.GetFullTopic(topicId);
 
-            if (topic.HasNoValue)
-                return NotFound();
+            if (isFailure)
+                return NotFound(error.Message);
 
-            return Ok(topic.Value);
+            return Ok(topic);
         }
     }
 }

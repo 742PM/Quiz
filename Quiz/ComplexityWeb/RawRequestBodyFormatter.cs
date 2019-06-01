@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 
-namespace QuizWebApp {
+namespace QuizWebApp
+{
     public class RawRequestBodyFormatter : InputFormatter
     {
         public RawRequestBodyFormatter()
@@ -19,11 +20,8 @@ namespace QuizWebApp {
                 throw new ArgumentNullException(nameof(context));
 
             var contentType = context.HttpContext.Request.ContentType;
-            if (string.IsNullOrEmpty(contentType) || contentType == "text/plain" ||
-                contentType == "application/octet-stream")
-                return true;
-
-            return false;
+            return string.IsNullOrEmpty(contentType) || contentType == "text/plain" ||
+                   contentType == "application/octet-stream";
         }
 
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context)
@@ -37,15 +35,15 @@ namespace QuizWebApp {
                     var content = await reader.ReadToEndAsync();
                     return await InputFormatterResult.SuccessAsync(content);
                 }
-            if (contentType == "application/octet-stream")
-                using (var ms = new MemoryStream(2048))
-                {
-                    await request.Body.CopyToAsync(ms);
-                    var content = ms.ToArray();
-                    return await InputFormatterResult.SuccessAsync(content);
-                }
 
-            return await InputFormatterResult.FailureAsync();
+            if (contentType != "application/octet-stream")
+                return await InputFormatterResult.FailureAsync();
+            using (var ms = new MemoryStream(2048))
+            {
+                await request.Body.CopyToAsync(ms);
+                var content = ms.ToArray();
+                return await InputFormatterResult.SuccessAsync(content);
+            }
         }
     }
 }

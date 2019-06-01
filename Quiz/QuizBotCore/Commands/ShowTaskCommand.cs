@@ -35,8 +35,8 @@ namespace QuizBotCore.Commands
             if (task != null)
             {
                 var progress = serviceManager.quizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
-                var isSolved = IsSolvedLevel(progress);
-                if (isSolved)
+                var isLevelSolved = IsLevelSolved(progress);
+                if (isLevelSolved)
                     await client.SendTextMessageAsync(chat.Id, DialogMessages.LevelCompleted);
                 var message = await SendTask(task, progress, chat, user, client, serviceManager.quizService,
                     serviceManager.logger);
@@ -65,13 +65,13 @@ namespace QuizBotCore.Commands
             IQuizService quizService, ILogger logger)
         {
             var progress = PrepareProgress(logger, userProgress);
-            var isSolvedLevel = IsSolvedLevel(userProgress);
+            var isLevelSolved = IsLevelSolved(userProgress);
 
             var answers = task.Answers.Select((e, index) => (letter: DialogMessages.Alphabet[index], answer: $"{e}"))
                 .ToList();
             var answerBlock = PrepareAnswers(answers, logger);
 
-            var message = FormatMessage(task, progress, answerBlock, isSolvedLevel);
+            var message = FormatMessage(task, progress, answerBlock, isLevelSolved);
             logger.LogInformation($"messageToSend : {message}");
 
             var keyboard = PrepareButtons(user, task, logger, answers);
@@ -89,7 +89,7 @@ namespace QuizBotCore.Commands
             return taskMessage;
         }
 
-        private bool IsSolvedLevel(ProgressDTO progress)
+        private bool IsLevelSolved(ProgressDTO progress)
         {
             return progress.TasksCount == progress.TasksSolved;
         }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Application.DTO;
 using Application.Extensions;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
@@ -11,7 +13,7 @@ namespace Tests {
     public class ToDTO_Should
     {
         [Test]
-        public void ReorderNextLevelsToInts()
+        public void CastNextLevels_ToInt()
         {
             var ids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
             var levels = new[]
@@ -32,6 +34,12 @@ namespace Tests {
                                     (n:2,new int[0]),
                                     (n:3,new int[0]),
                                 });
+        }
+
+        [Test]
+        public void CastEmptyLevels()
+        {
+            new Topic(Guid.NewGuid(), "t", "opic", new Level[0]).ToDTO().Should().BeEquivalentTo(new TopicDto(){Name="t",Description = "opic",Levels = new LevelDto[0]});
         }
     }
 }

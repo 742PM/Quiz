@@ -29,7 +29,7 @@ namespace Application.Extensions
                                                             Description = level.Description,
                                                             Generators = level
                                                                          .Generators
-                                                                         .Select(g => (TemplateTaskGeneratorDTO) g
+                                                                         .Select(g => (TemplateTaskGeneratorDto) g
                                                                                      .Cast<TemplateTaskGenerator>())
                                                                          .ToArray(),
                                                             NextLevels = level
@@ -49,33 +49,31 @@ namespace Application.Extensions
 
         public static TaskInfoEntity AsInfoEntity(this Task task) =>
             new TaskInfoEntity(
-                               task.Text,
-                               task.Answer,
-                               task.Hints,
-                               0,
-                               task.ParentGeneratorId,
-                               false,
-                               Guid.NewGuid());
+               task.Text,
+               task.Answer,
+               task.Hints,
+               0,
+               task.ParentGeneratorId,
+               false,
+               Guid.NewGuid());
 
         public static LevelProgressEntity ToProgressEntity(this Level level)
         {
             return new LevelProgressEntity(
-                                           level.Id,
-                                           level
-                                               .Generators
-                                               .SafeToDictionary(generator => generator.Id, generator => 0),
-                                           Guid.NewGuid());
+                       level.Id,
+                       level.Generators
+                            .SafeToDictionary(generator => generator.Id, generator => 0),
+                       Guid.NewGuid());
         }
 
         public static TopicProgressEntity ToProgressEntity(this Topic topic)
         {
             return new TopicProgressEntity(
-                                           topic
-                                               .Levels
-                                               .Take(1)
-                                               .SafeToDictionary(level => level.Id, level => level.ToProgressEntity()),
-                                           topic.Id,
-                                           Guid.NewGuid());
+                       topic.Levels
+                            .Take(1)
+                            .SafeToDictionary(level => level.Id, level => level.ToProgressEntity()),
+                       topic.Id,
+                       Guid.NewGuid());
         }
     }
 }

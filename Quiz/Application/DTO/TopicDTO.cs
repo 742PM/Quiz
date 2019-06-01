@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
+using Infrastructure.Extensions;
 using static System.Guid;
 
 namespace Application.DTO
@@ -16,15 +17,20 @@ namespace Application.DTO
         public static explicit operator Topic(TopicDto dto)
         {
             var ids = dto.Levels.ToDictionary(l => l.Number, _ => NewGuid());
-            return new Topic(NewGuid(), dto.Name, dto.Description,
-                             dto.Levels.Select(levelDto => new Level(ids[levelDto.Number], levelDto.Description,
-                                                                     levelDto.Generators
-                                                                             .Select(generatorDto =>
-                                                                                         (TaskGenerator)
-                                                                                         (TemplateTaskGenerator)
-                                                                                         generatorDto)
-                                                                             .ToArray(),
-                                                                     levelDto.NextLevels.Select(i => ids[i]).ToArray()))
+            return new Topic(NewGuid(),
+                             dto.Name,
+                             dto.Description,
+                             dto.Levels
+                                .Select(levelDto =>
+                                            new Level(
+                                                 ids[levelDto.Number], 
+                                                 levelDto.Description,
+                                                 levelDto.Generators
+                                                         .Select(generatorDto =>
+                                                                (TaskGenerator) 
+                                                                (TemplateTaskGenerator) generatorDto)
+                                                         .ToArray(),
+                                                 levelDto.NextLevels.Select(i => ids[i]).ToArray()))
                                 .ToArray());
         }
     }

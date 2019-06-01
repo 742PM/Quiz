@@ -165,7 +165,13 @@ namespace Application.TaskService
         }
 
         /// <inheritdoc />
-        public Maybe<TopicDto> GetFullTopic(Guid topicId) => (TopicDto)taskRepository.FindTopic(topicId) ?? Maybe<TopicDto>.None;
+        public Result<TopicDto,Exception> GetFullTopic(Guid topicId)
+        {
+            var topic = taskRepository.FindTopic(topicId);
+            if (topic is null)
+                return new ArgumentException($"Topic {topicId} does not exist");
+            return (TopicDto) topic;
+        }
 
         /// <inheritdoc />
         public Result<Guid, Exception> AddTopic(TopicDto topic) =>

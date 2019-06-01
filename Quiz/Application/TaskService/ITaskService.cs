@@ -108,7 +108,7 @@ namespace Application.TaskService
         /// <param name="topicId">айди темы</param>
         /// <returns>Всю сущность темы целиком</returns>
         [Unsafe]
-        Maybe<TopicDto> GetFullTopic(Guid topicId);
+        Result<TopicDto, Exception> GetFullTopic(Guid topicId);
 
         /// <summary>
         /// Добавляет указанную тему c новым айди

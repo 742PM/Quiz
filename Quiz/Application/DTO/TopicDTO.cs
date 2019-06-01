@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Infrastructure.Extensions;
@@ -16,7 +17,7 @@ namespace Application.DTO
 
         public static explicit operator Topic(TopicDto dto)
         {
-            var ids = dto.Levels.ToDictionary(l => l.Number, _ => NewGuid());
+            var ids = dto.Levels.Select(_ => NewGuid()).ToArray();
             return new Topic(NewGuid(),
                 dto.Name,
                 dto.Description,
@@ -26,9 +27,7 @@ namespace Application.DTO
                             ids[levelDto.Number],
                             levelDto.Description,
                             levelDto.Generators
-                                .Select(generatorDto =>
-                                    (TaskGenerator)
-                                    (TemplateTaskGenerator) generatorDto)
+                                .Select(generatorDto => (TaskGenerator)generatorDto)
                                 .ToArray(),
                             levelDto.NextLevels.Select(i => ids[i]).ToArray()))
                     .ToArray());
@@ -36,7 +35,8 @@ namespace Application.DTO
 
         public static explicit operator TopicDto(Topic topic)
         {
-            var ids = topic.Levels.Zip(Enumerable.Range(0, topic.Levels.Length), (l, i) => (level: l, i))
+            var ids = topic.Levels
+                .Select((l, i) => (level: l, i))
                 .ToDictionary(tup => tup.level.Id, tup => tup.i);
 
             return new TopicDto
@@ -49,7 +49,7 @@ namespace Application.DTO
                             Description = level.Description,
                             Generators = level
                                 .Generators
-                                .Select(g => (TemplateTaskGeneratorDto) g
+                                .Select(g => (TemplateTaskGeneratorDto)g
                                     .Cast<TemplateTaskGenerator>())
                                 .ToArray(),
                             NextLevels = level

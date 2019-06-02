@@ -89,6 +89,16 @@ namespace Tests
         [TestCase("{{const5}}", @"^-?\d{0,2}[^0]$", TestName = nameof(TemplateLanguage.Const))]
         public void Render_WhenBuiltInFieldsAreUsed(string actual, string regex) => TestFieldWithRegex((actual, regex));
 
+        [TestCase("{{theta}}", TemplateLanguage.Theta)]
+        [TestCase("{{sqrt}}", TemplateLanguage.Sqrt)]
+        [TestCase("{{pow2}}", TemplateLanguage.Pow2)]
+        [TestCase("{{pow3}}", TemplateLanguage.Pow3)]
+        [TestCase("{{multiply}}", TemplateLanguage.Multiply)]
+        [TestCase("{{theta_nlog_n}}", "Θ(n ∙ log(n))")]
+        //and so on;
+        public void Render_Sugar(string actual, string expected) => TestField((actual, expected));
+        
+
         [Test]
         public void CreateTemplatelessTasks() => TestField();
 

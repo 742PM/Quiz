@@ -22,7 +22,7 @@ namespace Domain.Entities.TaskGenerators
 
         [ScriptMemberIgnore] public const int LoopAmount = 8;
 
-        public const int MaxRandomConstantValue = 50;
+        public const int MaxRandom = 50;
 
         [ScriptMemberIgnore] public const int BaseTemplateKeywordsAmount = 5;
 
@@ -31,10 +31,10 @@ namespace Domain.Entities.TaskGenerators
             {
                 [Const] = r =>
                     AnyOf(r,
-                          new ScriptArray(Range(-MaxRandomConstantValue, MaxRandomConstantValue)
+                          new ScriptArray(Range(-MaxRandom, MaxRandom)
                                               .Where(x => x != 0)))
                         .ToString(),
-                [From] = r => r.Next(-MaxRandomConstantValue, MaxRandomConstantValue).ToString(),
+                [From] = r => r.Next(-MaxRandom, MaxRandom).ToString(),
                 [IterateConstant] = r => r.Next(LoopAmount >> 2, LoopAmount).ToString()
             };
 

@@ -1,20 +1,15 @@
+
 # Quiz
 
-Quiz Service:
-
-[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/quiz-service%20-%201%20-%20CI?branchName=master)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=16&branchName=master)
-
-Quiz Telegram Bot:
-
-[![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/quiz-bot%20-%20CI?branchName=bot_develop)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=15&branchName=bot_develop)
-
-
+| Quiz Service  | Quiz Telegram Develop Bot  |
+|---|---|
+| [![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/quiz-service%20-%201%20-%20CI?branchName=master)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=16&branchName=master) | [![Build Status](https://dev.azure.com/AntonVoitsishevsky/Quiz/_apis/build/status/quiz-bot%20-%20CI?branchName=bot_develop)](https://dev.azure.com/AntonVoitsishevsky/Quiz/_build/latest?definitionId=15&branchName=bot_develop)  |
 
 <!-- TABLE OF CONTENTS -->
-## Fast Navigation
+## Навигация
 
 * [Описание проектной работы для курса ООП](#OOP)
-* [Main Idea of ComplexityBot](#about-the-project)
+* [Задумка Quiz сервиса](#about-the-project)
 * [Wiki](https://github.com/complexitybot/Quiz/wiki/)
 * [Contributing](#contributing)
 * [Contributors](#contributors)
@@ -27,31 +22,34 @@ Quiz Telegram Bot:
 > Более того, никому не нравится решать однотипные скучные задачи.
 > И всем хочется решать задачки без сложностей с регистрацией, новыми сервисами и прочими неприятностями.
 ### Предметная область
-> [Классы предметной области](Complexity/Domain/)
+> * [Представление](Quiz/ComplexityWeb)
+> * [Приложение](Quiz/Application) 
+> * [Предметная область](Quiz/Domain) 
+> * [Инфраструктура](Quiz/Infrastructure)
 ### Точки расширения
-> На данный момент весь сервис состоит из двух проектов:
-> * [Веб-сервис](https://github.com/complexitybot/Quiz)
-> * [Телеграм-бот](https://github.com/complexitybot/QuizBot)
+> Приложение представляет из себя Веб-сервис:
+> * [Веб-сервис](Quiz/ComplexityWeb/)
 
 > Коммуникация между ними происходит по HTTP, что позволяет как добавлять неограниченное количество клиентов к сервису,
 > так и создавать реплики сервисов для одного клиента.
 
-> * [Генерация задач](Complexity/Domain/Entities/TaskGenerators/) может расширяться с помощью разных методик рандомизации и создания.
+> * [Генерация задач](Quiz/Domain/Entities/TaskGenerators/) может расширяться с помощью разных методик рандомизации и создания.
 
-> * [Стратегия выбора порядка задач для пользователя](Complexity/Application/ITaskGeneratorSelector.cs) может быть любой.
+> * [Стратегия выбора порядка задач для пользователя](Quiz/Application/Selectors/ITaskGeneratorSelector.cs) может быть любой.
 
 > * Возможно создание клиента-администратора для настройки и управления сервисом.
 ### DI-контейнер
-> Точкой сборки является [Web-сервис](Complexity/ComplexityWeb/) на ASP.Net Core.
-> Пока используется [встроенный в ASP.Net Core контейнер](Complexity/ComplexityWeb/Startup.cs),
+> Точкой сборки является [Web-сервис](Quiz/ComplexityWeb/) на ASP.Net Core.
+> Пока используется [встроенный в ASP.Net Core контейнер](Quiz/ComplexityWeb/Startup.cs),
 > в будущем может измениться.
 ### Попробовать в действии
-> * [Веб-сервис](https://complexitybot.azurewebsites.net/index.html)
-> * [Телеграм-бот](t.me/quiblebot)
+> * [Веб-сервис (Swagger)](https://quiz-service.azurewebsites.net/swagger/index.html)
+> * [Редактор уровней](https://quiz-editor.azurewebsites.net/index.html)
+> * [Телеграм-бот](https://telegram.me/quiblebot)
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## О проекте
 Чтобы освоить оценку сложности алгоритмов разным людям требуется разное количество практики. Некоторые схватывают уже после 2-3 примеров. Некоторым нужно прорешать штук 10.
 
 Идея: создать сервис, в котором каждый сможет упражняться столько, сколько ему нужно. Сервис генерирует каждый раз новые задания, постепенно увеличивая уровень сложности.

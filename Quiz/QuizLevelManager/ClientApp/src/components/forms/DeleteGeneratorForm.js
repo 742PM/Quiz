@@ -24,23 +24,28 @@ export class DeleteGeneratorForm extends React.Component {
         fetch("/proxy/topics")
             .then(response => response.json())
             .then(resp => {
-                this.setState({topics: resp, topicId: resp[0].id});
-                fetch(`/proxy/${resp[0].id}/levels/`)
-                    .then(response2 => response2.json())
-                    .then(resp2 => {
-                        this.setState({levels: resp2, levelId: resp2[0].id});
-                        fetch(`/proxy/${resp[0].id}/${resp2[0].id}/templateGenerators/`)
-                            .then(response3 => response3.json())
-                            .then(resp3 => {
-                                this.setState({
-                                    templateGenerators: resp3,
-                                    generatorId: resp3[0].id,
-                                    generator: resp3[0].text,
-                                });
-                            })
-                            .catch(error => console.error(error))
-                    })
-                    .catch(error => console.error(error))
+                if (resp.length > 0) {
+                    this.setState({topics: resp, topicId: resp[0].id});
+                    fetch(`/proxy/${resp[0].id}/levels/`)
+                        .then(response2 => response2.json())
+                        .then(resp2 => {
+                            if (resp2.length > 0) {
+                                this.setState({levels: resp2, levelId: resp2[0].id});
+                                fetch(`/proxy/${resp[0].id}/${resp2[0].id}/templateGenerators/`)
+                                    .then(response3 => response3.json())
+                                    .then(resp3 => {
+                                        if (resp3.length > 0)
+                                            this.setState({
+                                                templateGenerators: resp3,
+                                                generatorId: resp3[0].id,
+                                                generator: resp3[0].text,
+                                            });
+                                    })
+                                    .catch(error => console.error(error))
+                            }
+                        })
+                        .catch(error => console.error(error))
+                }
             })
             .catch(error => console.error(error));
     }
@@ -53,24 +58,39 @@ export class DeleteGeneratorForm extends React.Component {
             fetch(`/proxy/${value}/levels/`)
                 .then(response2 => response2.json())
                 .then(resp2 => {
-                    this.setState({levels: resp2});
-                    fetch(`/proxy/${value}/${resp2[0].id}/templateGenerators/`)
-                        .then(response3 => response3.json())
-                        .then(resp3 => {
-                            this.setState({templateGenerators: resp3});
-                        })
-                        .catch(error => console.error(error))
+                    if (resp2.length > 0) {
+                        this.setState({
+                            levels: resp2,
+                            levelId: resp2[0].id,
+                            level: resp2[0].name
+                        });
+                        fetch(`/proxy/${value}/${resp2[0].id}/templateGenerators/`)
+                            .then(response3 => response3.json())
+                            .then(resp3 => {
+                                if (resp3.length > 0)
+                                    this.setState({
+                                        templateGenerators: resp3,
+                                        generatorId: resp3[0].id,
+                                        generator: resp3[0].name
+                                    });
+                            })
+                            .catch(error => console.error(error))
+                    }
                 })
                 .catch(error => console.error(error));
             this.setState({
                 topicId: value,
                 topic: event.target.label
             });
-        } else if (name == 'level') {
+        } else if (name === 'level') {
             fetch(`/proxy/${this.state.topicId}/${value}/templateGenerators/`)
                 .then(response3 => response3.json())
                 .then(resp3 => {
-                    this.setState({templateGenerators: resp3});
+                    this.setState({
+                        generator: resp3,
+                        generatorId: resp3[0].id,
+                        templateGenerator: resp3[0].name
+                    });
                 })
                 .catch(error => console.error(error));
             this.setState({

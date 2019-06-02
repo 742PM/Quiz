@@ -1,29 +1,26 @@
 using Newtonsoft.Json;
 
-namespace QuizWebApp.TaskService.DTO
+namespace QuizWebApp.Services.TaskService.DTO
 {
-    public class TemplateGeneratorDTO
+    public class TemplateGeneratorForRenderDTO
     {
-        [JsonProperty("question")] public string Question { get; }
         [JsonProperty("text")] public string Text { get; }
+        [JsonProperty("question")] public string Question { get; }
         [JsonProperty("possibleAnswers")] public string[] PossibleAnswers { get; }
         [JsonProperty("answer")] public string Answer { get; }
         [JsonProperty("hints")] public string[] Hints { get; }
-        [JsonProperty("streak")] public int Streak { get; }
 
-        public TemplateGeneratorDTO(
-            string question,
+        public TemplateGeneratorForRenderDTO(
             string text,
             string[] possibleAnswers,
             string answer,
             string[] hints,
-            int streak)
+            string question)
         {
             Text = text;
             PossibleAnswers = possibleAnswers;
             Answer = answer;
             Hints = hints;
-            Streak = streak;
             Question = question;
         }
     }

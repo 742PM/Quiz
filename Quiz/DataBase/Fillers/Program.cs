@@ -8,7 +8,7 @@ namespace DataBase
     {
         public static void Main(string[] args)
         {
-            var fillers = new List<IDatabaseFiller> { new ComplexityDatabaseFiller(), new HistoryDatabaseFiller() };
+            var fillers = new List<IDatabaseFiller> { new ReworkedComplexityFiller(), new HistoryDatabaseFiller() };
             var username = Environment.GetEnvironmentVariable("MONGO_USERNAME");
             if (username == null)
             {

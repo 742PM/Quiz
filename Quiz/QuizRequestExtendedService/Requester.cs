@@ -96,7 +96,7 @@ namespace QuizRequestExtendedService
 
         public TemplateGeneratorDTO RenderTask(TemplateGeneratorForRenderDTO templateGenerator)
         {
-            var client = new RestClient(serverUri + $"/service/tasktorender");
+            var client = new RestClient(serverUri + $"/service/renderTask");
             var request = new RestRequest(Method.POST);
             request.AddJsonBody(templateGenerator);
             var content = client.Execute(request);

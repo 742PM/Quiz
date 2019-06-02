@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace QuizWebApp.QuizService.DTO
+namespace QuizWebApp.Services.QuizService.DTO
 {
     public class TaskInfoDTO
     {

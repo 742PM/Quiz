@@ -1,16 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Application.DTO;
 using Application.TaskService;
 using AutoMapper;
+using Domain.Entities;
+using Hjson;
+using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
-using QuizWebApp.TaskService.DTO;
+using QuizWebApp.Services.TaskService.DTO;
 
-namespace QuizWebApp.TaskService
+namespace QuizWebApp.Services.TaskService
 {
     [Route("service")]
     [ApiController]
-    public class TaskServiceController : ControllerBase
+    public partial class TaskServiceController : ControllerBase
     {
         private readonly ITaskService applicationApi;
 
@@ -101,10 +107,10 @@ namespace QuizWebApp.TaskService
         {
             var (_, isFailure, id, error) = applicationApi
                 .AddEmptyLevel(
-                    topicId,
-                    level.Description,
-                    level.PreviousLevels,
-                    level.NextLevels);
+                   topicId,
+                   level.Description,
+                   level.PreviousLevels,
+                   level.NextLevels);
             if (isFailure)
                 return NotFound(error.Message);
             return Ok(id);
@@ -157,12 +163,12 @@ namespace QuizWebApp.TaskService
         {
             var (_, isFailure, id, error) = applicationApi
                 .AddTemplateGenerator(
-                    topicId,
-                    levelId,
-                    templateGenerator.Text,
-                    templateGenerator.PossibleAnswers,
-                    templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
-                    templateGenerator.Question);
+                  topicId,
+                  levelId,
+                  templateGenerator.Text,
+                  templateGenerator.PossibleAnswers,
+                  templateGenerator.Answer, templateGenerator.Hints, templateGenerator.Streak,
+                  templateGenerator.Question);
             if (isFailure)
                 return NotFound(error.Message);
             return Ok(id);
@@ -188,34 +194,7 @@ namespace QuizWebApp.TaskService
             return Ok();
         }
 
-        /// <summary>
-        ///     Рендерит и возвращает задачу по шаблону из запроса
-        /// </summary>
-        /// <remarks>
-        ///     Sample request:
-        ///     <code>
-        ///     POST service/taskToRender
-        ///     {
-        ///        "question": "Оцените временную сложность алгоритма",
-        ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
-        ///        "possibleAnswers": ["Θ(1)", "Θ(log({{to1}}))", "Θ({{to1}})"],
-        ///        "answer": "Θ({{to1}})",
-        ///        "hints": []
-        ///     }
-        ///     </code>
-        /// </remarks>
-        /// <response code="200"> Возвращает отрендеренную задачу</response>
-        [HttpPost("tasktorender")]
-        public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
-        {
-            var task = applicationApi.RenderTask(
-                templateGenerator.Text,
-                templateGenerator.PossibleAnswers,
-                templateGenerator.Answer,
-                templateGenerator.Hints,
-                templateGenerator.Question);
-
-            return Ok(task);
-        }
     }
+
+   
 }

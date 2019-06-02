@@ -1,6 +1,4 @@
-using QuizBotCore.Transitions;
-
-namespace QuizBotCore.Parser
+namespace QuizBotCore.Transitions
 {
     public class CancelTransition : Transition
     {

@@ -64,15 +64,18 @@ namespace Domain.Entities.TaskGenerators
             var hintsStorage = Concat(Hints ?? new string[0]);
             var answersStorage = Concat(PossibleAnswers ?? new string[0]);
 
-            var fields = new[] { simpleFieldsStorage, hintsStorage, answersStorage };
+            var fields = new[] {simpleFieldsStorage, hintsStorage, answersStorage};
 
             var ((code, answer, question), hints, answers)
                 = fields.MapMany(vs => Concat(vs).Map(s => Template.Parse(s).Render(so)).Split())
-                        .Select(r => r.Split().ToArray())
-                        .ToArray();
+                    .Select(r => r.Split().ToArray())
+                    .ToArray();
             return new Task(code, hints, answer, Id, answers, question);
         }
 
-        private static ScriptObject CreateScriptObject(Random random) => TemplateLanguage.Create(random);
+        private static ScriptObject CreateScriptObject(Random random)
+        {
+            return TemplateLanguage.Create(random);
+        }
     }
 }

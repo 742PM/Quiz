@@ -10,15 +10,25 @@ namespace Application.Extensions
 {
     public static class DomainExtensions
     {
-        public static TopicInfo ToInfo(this Topic topic) => new TopicInfo(topic.Name, topic.Id);
+        public static TopicInfo ToInfo(this Topic topic)
+        {
+            return new TopicInfo(topic.Name, topic.Id);
+        }
 
-        public static LevelInfo ToInfo(this Level level) => new LevelInfo(level.Id, level.Description);
 
-        public static TaskInfo ToInfo(this Task task) =>
-            new TaskInfo(task.Question, task.PossibleAnswers, task.Hints.Length > 0, task.Text);
+        public static LevelInfo ToInfo(this Level level)
+        {
+            return new LevelInfo(level.Id, level.Description);
+        }
 
-        public static TaskInfoEntity AsInfoEntity(this Task task) =>
-            new TaskInfoEntity(
+        public static TaskInfo ToInfo(this Task task)
+        {
+            return new TaskInfo(task.Question, task.PossibleAnswers, task.Hints.Length > 0, task.Text);
+        }
+
+        public static TaskInfoEntity AsInfoEntity(this Task task)
+        {
+            return new TaskInfoEntity(
                 task.Text,
                 task.Answer,
                 task.Hints,
@@ -26,13 +36,13 @@ namespace Application.Extensions
                 task.ParentGeneratorId,
                 false,
                 Guid.NewGuid());
+        }
 
         public static LevelProgressEntity ToProgressEntity(this Level level)
         {
             return new LevelProgressEntity(
                 level.Id,
-                level
-                    .Generators
+                level.Generators
                     .SafeToDictionary(generator => generator.Id, generator => 0),
                 Guid.NewGuid());
         }
@@ -40,8 +50,7 @@ namespace Application.Extensions
         public static TopicProgressEntity ToProgressEntity(this Topic topic)
         {
             return new TopicProgressEntity(
-                topic
-                    .Levels
+                topic.Levels
                     .Take(1)
                     .SafeToDictionary(level => level.Id, level => level.ToProgressEntity()),
                 topic.Id,

@@ -16,12 +16,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QuizWebApp.QuizService.DTO;
-using QuizWebApp.TaskService.DTO;
+using QuizWebApp.Services.QuizService.DTO;
+using QuizWebApp.Services.TaskService;
+using QuizWebApp.Services.TaskService.DTO;
 using Swashbuckle.AspNetCore.Swagger;
-using static System.Environment;
 
-namespace ComplexityWebApi
+namespace QuizWebApp
 {
     public class Startup
     {
@@ -41,7 +41,7 @@ namespace ComplexityWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(o => o.InputFormatters.Insert(0, new RawRequestBodyFormatter())).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddTransient(_ => new Random(Guid.NewGuid().GetHashCode()));
 
@@ -51,9 +51,9 @@ namespace ComplexityWebApi
             services.AddScoped<IUserRepository, MongoUserRepository>();
             services.AddScoped<ITaskRepository, MongoTaskRepository>();
 
-            var databaseName = GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable);
-            var username = GetEnvironmentVariable(MongoUsernameEnvironmentVariable);
-            var password = GetEnvironmentVariable(MongoPasswordEnvironmentVariable);
+            var databaseName = Environment.GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable);
+            var username = Environment.GetEnvironmentVariable(MongoUsernameEnvironmentVariable);
+            var password = Environment.GetEnvironmentVariable(MongoPasswordEnvironmentVariable);
             services.AddSingleton(MongoDatabaseInitializer.CreateMongoDatabase(databaseName, username, password));
 
             services.AddTransient<RandomTaskGeneratorSelector>();

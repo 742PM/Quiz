@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using FluentAssertions;
 using NUnit.Framework;
+using static System.Guid;
 
 namespace Tests
 {
@@ -17,7 +19,7 @@ namespace Tests
         private const string AnswerDummy = "answer";
         private const int StreakDummy = 3;
         private const string RegexDummy = ".*";
-        private static readonly Guid IdDummy = Guid.Empty;
+        private static readonly Guid IdDummy = Empty;
         private static readonly string[] ArrayDummy = new string[0];
 
         private static void TestField(
@@ -84,11 +86,18 @@ namespace Tests
         [TestCase("{{iter1}}", @"[2,3,4,5,6,7,8]$", TestName = nameof(TemplateLanguage.IterateConstant))]
         [TestCase("{{loop_var2}}", @"(i)|(j)|(k)|(x)|(y)|(step)", TestName = nameof(TemplateLanguage.LoopVariable))]
         [TestCase("{{to3}}", @"^(n)|(m)|(length)|(size)|(amount)$", TestName = nameof(TemplateLanguage.To))]
-        [TestCase("{{simple_operation4}}",
-            @"^(c\+\+)|(k1--)|(service\.Update\(\))|(queue\.Pop\(\))|(k3\+\+)$", TestName =
-                nameof(TemplateLanguage.SimpleOperation))]
         [TestCase("{{const5}}", @"^-?\d{0,2}[^0]$", TestName = nameof(TemplateLanguage.Const))]
         public void Render_WhenBuiltInFieldsAreUsed(string actual, string regex) => TestFieldWithRegex((actual, regex));
+
+        [TestCase("{{theta}}", TemplateLanguage.Theta)]
+        [TestCase("{{sqrt}}", TemplateLanguage.Sqrt)]
+        [TestCase("{{pow2}}", TemplateLanguage.Pow2)]
+        [TestCase("{{pow3}}", TemplateLanguage.Pow3)]
+        [TestCase("{{multiply}}", TemplateLanguage.Multiply)]
+        [TestCase("{{theta_nlog_n}}", "Θ(n ∙ log(n))")]
+        //and so on;
+        public void Render_Sugar(string actual, string expected) => TestField((actual, expected));
+        
 
         [Test]
         public void CreateTemplatelessTasks() => TestField();

@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using Application.Repositories;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using Infrastructure.DDD;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Options;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using static MongoDB.Bson.Serialization.BsonClassMap;
+using static DataBase.MongoHelpers;
 
 namespace DataBase
 {
@@ -27,10 +21,10 @@ namespace DataBase
             string password = default)
         {
             SetupDatabase();
-            return Connect(databaseName, username, password);
+            return Connect(databaseName, username, password/*,name: "Testing"*/);
         }
 
-        private static IMongoDatabase Connect(string databaseName, string username = default, string password = default)
+        private static IMongoDatabase Connect(string databaseName, string username = default, string password = default,string name = "QuizDatabase")
         {
             username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
             password = password ?? Environment.GetEnvironmentVariable(MongoPassword);
@@ -41,7 +35,7 @@ namespace DataBase
                   "quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/" +
                   $"{databaseName}?ssl=true&replicaSet=QuizCluster-shard-0&authSource=admin&retryWrites=true";
             var client = new MongoClient(connectionString);
-            return client.GetDatabase("QuizDatabase");
+            return client.GetDatabase(name);
         }
 
         internal static void SetupDatabase()
@@ -89,30 +83,7 @@ namespace DataBase
             });
         }
 
-        private static BsonMemberMap MapDictionary<TClass, TKey, TValue>(
-            this BsonClassMap<TClass> cm,
-            Expression<Func<TClass, Dictionary<TKey, TValue>>> memberLambda) =>
-            cm.MapMember(memberLambda)
-                .SetSerializer(new DictionaryInterfaceImplementerSerializer<Dictionary<TKey, TValue>
-                >(DictionaryRepresentation.ArrayOfDocuments));
+       
 
-        private static void AutoRegisterClassMap<TClass>(Expression<Func<TClass, TClass>> creatorLambda) =>
-            AutoRegisterClassMap<TClass>(cm => cm.MapCreator(creatorLambda));
-
-        private static void AutoRegisterClassMap<T>(Action<BsonClassMap<T>> additionalAction = null)
-        {
-            RegisterClassMap<T>(cm =>
-            {
-                var propertyInfos = typeof(T)
-                    .GetProperties(BindingFlags.DeclaredOnly |
-                                   BindingFlags.Public |
-                                   BindingFlags.Instance)
-                    .Cast<MemberInfo>()
-                    .ToList();
-                foreach (var propertyInfo in propertyInfos)
-                    cm.MapMember(propertyInfo);
-                additionalAction?.Invoke(cm);
-            });
-        }
     }
 }

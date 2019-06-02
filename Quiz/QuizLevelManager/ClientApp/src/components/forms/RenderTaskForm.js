@@ -27,7 +27,7 @@ export class RenderTaskForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        fetch("proxy/tasktorender", {
+        fetch("proxy/renderTask", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",

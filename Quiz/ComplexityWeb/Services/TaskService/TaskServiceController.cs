@@ -211,7 +211,7 @@ namespace QuizWebApp.Services.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает отрендеренную задачу</response>
-        [HttpPost("tasktorender")]
+        [HttpPost("renderTask")]
         public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
         {
             var task = applicationApi.RenderTask(
@@ -224,6 +224,4 @@ namespace QuizWebApp.Services.TaskService
             return Ok(task);
         }
     }
-
-    //2dab39a5-9dd2-43c2-9968-0846ff4a7fa4
 }

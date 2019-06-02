@@ -22,37 +22,36 @@ namespace Domain.Entities.TaskGenerators
 
         [ScriptMemberIgnore] public const int LoopAmount = 8;
 
-        public const int MaxRandomConstantValue = 50;
+        public const int MaxRandom = 50;
 
         [ScriptMemberIgnore] public const int BaseTemplateKeywordsAmount = 5;
 
         private static readonly Dictionary<string, Func<Random, string>> NumericalSubstitutions =
             new Dictionary<string, Func<Random, string>>
             {
-                [Const] = r =>
-                    AnyOf(r,
-                          new ScriptArray(Range(-MaxRandomConstantValue, MaxRandomConstantValue)
-                                              .Where(x => x != 0)))
-                        .ToString(),
-                [From] = r => r.Next(-MaxRandomConstantValue, MaxRandomConstantValue).ToString(),
-                [IterateConstant] = r => r.Next(LoopAmount >> 2, LoopAmount).ToString()
+                [Const] = random => AnyOf(random,
+                    new ScriptArray(Range(-MaxRandom, MaxRandom).Where(x => x != 0))).ToString(),
+                [From] = random => random.Next(-MaxRandom, MaxRandom).ToString(),
+                [IterateConstant] = random => random.Next(LoopAmount >> 2, LoopAmount).ToString()
             };
 
         private static readonly Dictionary<string, string[]> PossibleLiteralSubstitutions =
             new Dictionary<string, string[]>
             {
                 [LoopVariable] = new[]
-                                 { "i", "j", "k", "x", "y", "step" },
-                [To] = new[] { "n", "m", "length", "amount", "size" },
+                    {"i", "j", "k", "x", "y", "step"},
+                [To] = new[] {"n", "m", "length", "amount", "size"},
                 [SimpleOperation] = new[]
-                                    {
-                                        "c++", "k1--", "service.Update()", "queue.Pop()",
-                                        "k3++"
-                                    }.Select(s=>s+";")
-                                     .ToArray()
+                    {
+                        "c++", "k1--", "service.Update()", "queue.Pop()",
+                        "k3++"
+                    }.Select(s => s + ";")
+                    .ToArray()
             };
 
-        private TemplateLanguage() { }
+        private TemplateLanguage()
+        {
+        }
 
         public static ScriptObject Create(Random random)
         {
@@ -63,12 +62,17 @@ namespace Domain.Entities.TaskGenerators
 
             var substitutionValues = GenerateLiteralSubstitutions(random)
                 .Concat(NumericalSubstitutions.SelectMany(kv => Range(1, 5)
-                                                              .Select(i => ($"{kv.Key}{i}", kv.Value(random)))));
+                    .Select(i => ($"{kv.Key}{i}", kv.Value(random)))));
 
             foreach (var (substitution, value) in substitutionValues)
                 so.Add(substitution, value);
 
             return so;
+        }
+
+        public static List<SubstitutionData> GetValuesExample()
+        {
+            return Create(new Random()).Select(kv => new SubstitutionData(kv)).ToList();
         }
 
         private static void AddMethod<TOut, TIn>(Func<Random, TIn, TOut> method, Random random, ScriptObject so)
@@ -82,7 +86,7 @@ namespace Domain.Entities.TaskGenerators
             IScriptObject so)
         {
             so.Import(method.Method.Name.ToSnakeCase(),
-                      new Func<TIn1, TIn2, TOut>((first, second) => method(random, first, second)));
+                new Func<TIn1, TIn2, TOut>((first, second) => method(random, first, second)));
         }
 
         private static IEnumerable<(string, string)> GenerateLiteralSubstitutions(Random random)
@@ -98,6 +102,24 @@ namespace Domain.Entities.TaskGenerators
                     takenValues.Add(value);
                     yield return ($"{substitution}{i}", value);
                 }
+            }
+        }
+
+        public struct SubstitutionData
+        {
+            public string Substitution { get; }
+            public string Value { get; }
+
+            public SubstitutionData(string substitution, object value)
+            {
+                Substitution = substitution;
+                Value = value.ToString().Contains("GenericFunctionWrapper")
+                    ? $"Function {substitution}"
+                    : value.ToString();
+            }
+
+            public SubstitutionData(KeyValuePair<string, object> pair) : this(pair.Key, pair.Value)
+            {
             }
         }
     }

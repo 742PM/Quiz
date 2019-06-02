@@ -11,6 +11,9 @@ namespace Application.Selectors
         private readonly Random random;
         private readonly ITaskGeneratorSelector alternativeSelector;
 
+        ///<summary>
+        /// Умный селектор на стриках
+        /// </summary>
         /// <param name="random" />
         /// <param name="alternativeSelector">
         ///     Альтернативный селектор,

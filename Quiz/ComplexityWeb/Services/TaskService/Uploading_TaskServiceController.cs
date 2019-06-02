@@ -22,7 +22,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/for/humans/topics/upload
+        ///     POST service/hjsonTopic
         ///     "{
         ///      name: Пустая тема
         ///      description: Очень пустая
@@ -31,7 +31,7 @@ namespace QuizWebApp.Services.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает айди топика, добавленного в БД</response>
-        [HttpPost("for/humans/topics/upload")] //TODO: add authentication
+        [HttpPost("hjsonTopic")] //TODO: add authentication
         public ActionResult<Guid> UploadTopic([FromBody] string rawData)
         {
              var id =  rawData.ConvertToJson()
@@ -46,12 +46,12 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     GET service/for/humans/topics/4fab29a7-d536-4bad-aae1-d22a5255558c
+        ///     GET service/4fab29a7-d536-4bad-aae1-d22a5255558c/hjsonTopic
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает топик в формате HJSON</response>
         /// <response code="404"> Id темы не найдены</response>
-        [HttpGet("for/humans/topics/{topicId}")]
+        [HttpGet("{topicId}/hjsonTopic")]
         public ActionResult<string> GetTopicHJson(Guid topicId)
         {
             var (_, isFailure, value, error) =
@@ -71,7 +71,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/topics/upload
+        ///     POST service/jsonTopic
         ///     {
         ///        name: Пустая тема
         ///        description: Очень пустая
@@ -80,9 +80,10 @@ namespace QuizWebApp.Services.TaskService
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает айди топика, добавленного в БД</response>
-        [HttpPost("topics/upload")]
-        public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic) =>
-            topic.AndThen(t => applicationApi.AddTopic(t))
+        [HttpPost("jsonTopic")]
+        public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic)
+        {
+            return topic.AndThen(t => applicationApi.AddTopic(t))
                 .AndThen(i => Ok(i));
 
         /// <summary>
@@ -91,12 +92,12 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     GET service/topics/4fab29a7-d536-4bad-aae1-d22a5255558c
+        ///     GET service/4fab29a7/jsonTopic-d536-4bad-aae1-d22a5255558c
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает тему в формате JSON</response>
         /// <response code="404"> Id темы не найдены</response>
-        [HttpGet("topics/{topicId}")]
+        [HttpGet("{topicId}/jsonTopic")]
         public ActionResult<TopicDto> GetTopic(Guid topicId)
         {
             var (_, isFailure, topic, error) = applicationApi.GetFullTopic(topicId);

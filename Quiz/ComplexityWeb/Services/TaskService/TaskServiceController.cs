@@ -194,34 +194,7 @@ namespace QuizWebApp.Services.TaskService
             return Ok();
         }
 
-        /// <summary>
-        ///     Рендерит и возвращает задачу по шаблону из запроса
-        /// </summary>
-        /// <remarks>
-        ///     Sample request:
-        ///     <code>
-        ///     POST service/taskToRender
-        ///     {
-        ///        "question": "Оцените временную сложность алгоритма",
-        ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
-        ///        "possibleAnswers": ["Θ(1)", "Θ(log({{to1}}))", "Θ({{to1}})"],
-        ///        "answer": "Θ({{to1}})",
-        ///        "hints": []
-        ///     }
-        ///     </code>
-        /// </remarks>
-        /// <response code="200"> Возвращает отрендеренную задачу</response>
-        [HttpPost("tasktorender")]
-        public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
-        {
-            var task = applicationApi.RenderTask(
-                 templateGenerator.Text,
-                 templateGenerator.PossibleAnswers,
-                 templateGenerator.Answer,
-                 templateGenerator.Hints,
-                 templateGenerator.Question);
-
-            return Ok(task);
-        }
     }
+
+   
 }

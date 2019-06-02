@@ -9,7 +9,7 @@ namespace QuizBotCore.Commands
     {
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
-            var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
+            var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
             var cancelKey = new InlineKeyboardMarkup(
                 InlineKeyboardButton
                     .WithCallbackData(ButtonNames.Cancel, StringCallbacks.Cancel)

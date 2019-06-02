@@ -44,6 +44,7 @@ namespace QuizWebHookBot
                 .GetDatabase("QuizDatabase"));
 
             services.AddSingleton<IUserRepository, MongoUserRepository>();
+            services.AddSingleton<MessageTextRepository>();
             services.AddScoped<IStateMachine<ICommand>, TelegramStateMachine>();
             services.AddScoped<IMessageParser, MessageParser>();
 

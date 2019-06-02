@@ -11,7 +11,7 @@ namespace QuizBotCore.Commands
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
             var chatId = chat.Id;
-            var topics = serviceManager.quizService.GetTopics();
+            var topics = serviceManager.QuizService.GetTopics();
             var keyboard = new InlineKeyboardMarkup(
                 topics
                     .Select(x =>

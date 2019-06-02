@@ -30,18 +30,18 @@ namespace QuizBotCore.Commands
 
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
-            var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
+            var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
             var task = await GetTask(user, chat, client, serviceManager);
             if (task != null)
             {
-                var progress = serviceManager.quizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
+                var progress = serviceManager.QuizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
                 var isLevelSolved = IsLevelSolved(progress);
                 if (isLevelSolved)
-                    await client.SendTextMessageAsync(chat.Id, DialogMessages.LevelCompleted);
-                var message = await SendTask(task, progress, chat, user, client, serviceManager.quizService,
-                    serviceManager.logger);
+                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
+                var message = await SendTask(task, progress, chat, user, client, serviceManager.QuizService,
+                    serviceManager.Logger);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
-                serviceManager.userRepository.Update(newUser);
+                serviceManager.UserRepository.Update(newUser);
             }
         }
 
@@ -51,12 +51,12 @@ namespace QuizBotCore.Commands
             TaskDTO task = null;
             if (isNext)
             {
-                task = serviceManager.quizService.GetNextTaskInfo(user.Id);
+                task = serviceManager.QuizService.GetNextTaskInfo(user.Id);
                 if (task == null)
-                    await client.SendTextMessageAsync(chat.Id, DialogMessages.NextTaskNotAvailable);
+                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.NextTaskNotAvailable);
             }
             else
-                task = serviceManager.quizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
+                task = serviceManager.QuizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
 
             return task;
         }

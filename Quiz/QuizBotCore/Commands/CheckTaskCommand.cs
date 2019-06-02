@@ -14,28 +14,30 @@ namespace QuizBotCore.Commands
         private readonly LevelDTO levelDto;
         private readonly string answer;
 
+
         public CheckTaskCommand(TopicDTO topicDto, LevelDTO levelDto, string answer)
         {
             this.topicDto = topicDto;
             this.levelDto = levelDto;
             this.answer = answer;
+            
         }
 
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
-            var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
-            var isCorrect = serviceManager.quizService.SendAnswer(user.Id, answer);
+            var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
+            var isCorrect = serviceManager.QuizService.SendAnswer(user.Id, answer);
             if (isCorrect.HasValue)
             {
                 if (isCorrect.Value)
                 {
-                    await client.SendTextMessageAsync(chat.Id, DialogMessages.CorrectAnswer);
+                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.CorrectAnswer);
                     await RemoveButtonsForPreviousTask(user, chat, client);
                     await new ShowTaskCommand(topicDto, levelDto, true).ExecuteAsync(chat, client, serviceManager);
                 }
                 else
                 {
-                    await client.SendTextMessageAsync(chat.Id, DialogMessages.WrongAnswer);
+                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.WrongAnswer);
                     await new ShowTaskCommand(topicDto, levelDto).ExecuteAsync(chat, client, serviceManager);
                 }
             }

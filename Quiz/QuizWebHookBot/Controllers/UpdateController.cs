@@ -18,15 +18,17 @@ namespace QuizWebHookBot.Controllers
         private readonly IQuizService quizService;
         private readonly ILogger<UpdateController> logger;
         private readonly IUserRepository userRepository;
+        private readonly MessageTextRepository dialogRepo;
 
         public UpdateController(IUpdateService updateService, IBotService botService, IQuizService quizService,
-            ILogger<UpdateController> logger, IUserRepository userRepository)
+            ILogger<UpdateController> logger, IUserRepository userRepository, MessageTextRepository dialogRepo)
         {
             this.updateService = updateService;
             this.botService = botService;
             this.quizService = quizService;
             this.logger = logger;
             this.userRepository = userRepository;
+            this.dialogRepo = dialogRepo;
         }
 
         // POST api/update
@@ -56,7 +58,7 @@ namespace QuizWebHookBot.Controllers
 //            await botService.Client.SendTextMessageAsync(chat.Id, update.Type.ToString());
 
             var userCommand = updateService.ProcessMessage(update);
-            var serviceManager = new ServiceManager(quizService, userRepository, logger);
+            var serviceManager = new ServiceManager(quizService, userRepository, logger, dialogRepo);
             await userCommand.ExecuteAsync(chat, botService.Client, serviceManager);
             
             return Ok();

@@ -200,7 +200,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/taskToRender
+        ///     POST service/renderTask
         ///     {
         ///        "question": "Оцените временную сложность алгоритма",
         ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",

@@ -7,6 +7,7 @@ using Application.DTO;
 using Application.TaskService;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Entities.TaskGenerators;
 using Hjson;
 using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
@@ -223,7 +224,20 @@ namespace QuizWebApp.Services.TaskService
 
             return Ok(task);
         }
+
+        /// <summary>
+        ///     Показывает набор существующих по умолчанию подстановок и их значений
+        /// </summary>
+        /// <remarks>
+        ///     Sample request:
+        ///     <code>
+        ///     GET service/substitutions/examples
+        ///     </code>
+        /// </remarks>
+        /// <response code="200"> Возвращает список пар ключ-значение</response>
+        [HttpGet("substitutions/examples")]
+        public ActionResult<List<TemplateLanguage.SubstitutionData>> GetSubstitutions() => Ok(TemplateLanguage.GetValuesExample());
     }
 
-    //2dab39a5-9dd2-43c2-9968-0846ff4a7fa4
+   
 }

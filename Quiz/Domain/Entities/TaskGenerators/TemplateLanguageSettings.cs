@@ -71,6 +71,25 @@ namespace Domain.Entities.TaskGenerators
             return so;
         }
 
+        public struct SubstitutionData
+        {
+            public string Substitution { get; }
+            public string Value { get; }
+
+            public SubstitutionData(string substitution, object value)
+            {
+                Substitution = substitution;
+                Value = value.ToString().Contains("GenericFunctionWrapper") ? $"Function {substitution}" : value.ToString();
+            }
+
+            public SubstitutionData(KeyValuePair<string, object> pair) : this(pair.Key, pair.Value)
+            {
+            }
+
+        }
+
+        public static List<SubstitutionData> GetValuesExample() => Create(new Random(42)).Select(kv=>new SubstitutionData(kv)).ToList();
+
         private static void AddMethod<TOut, TIn>(Func<Random, TIn, TOut> method, Random random, ScriptObject so)
         {
             so.Import(method.Method.Name.ToSnakeCase(), new Func<TIn, TOut>(item => method(random, item)));

@@ -22,8 +22,8 @@ namespace QuizBotCore.Commands
                         })
             );
 
-            await client.SendTextMessageAsync(chatId, DialogMessages.Welcome, replyMarkup: keyboard);
-            await client.SendPhotoAsync(chat.Id, DialogMessages.RequestForRotateDeviceGif, DialogMessages.RequestForRotateDevice);
+            await client.SendTextMessageAsync(chatId, serviceManager.Dialog.Messages.Welcome, replyMarkup: keyboard);
+            await client.SendPhotoAsync(chat.Id, serviceManager.Dialog.Messages.RequestForRotateDeviceGif, serviceManager.Dialog.Messages.RequestForRotateDevice);
         }
     }
 }

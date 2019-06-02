@@ -14,7 +14,7 @@ namespace QuizBotCore.Commands
                 InlineKeyboardButton
                     .WithCallbackData(ButtonNames.Cancel, StringCallbacks.Cancel)
             );
-            await client.SendTextMessageAsync(chat.Id, DialogMessages.ReportRequesting, replyMarkup: cancelKey);
+            await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.ReportRequesting, replyMarkup: cancelKey);
         }
     }
 }

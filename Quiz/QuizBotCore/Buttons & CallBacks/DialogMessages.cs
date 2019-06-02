@@ -20,8 +20,6 @@ namespace QuizBotCore
         public string ClosedLevel { get; private set; } = "[Заблокирован]";
         public string TopicName { get; private set; } = "Тема:";
         public string LevelName { get; private set; } = "Уровень:";
-        public char ProgressFilled { get; private set; } = '⬤';
-        public char ProgressEmpty { get; private set; } = '◯';
 
         public string Welcome { get; private set; } = "Привет! Я Quibble бот, представляю из себя бесконечную викторину. \n" +
                                               "Решай задачки, открывай новые уровни, становись лучше. \n" +

@@ -32,7 +32,7 @@ namespace QuizBotCore.Commands
             await client.SendTextMessageAsync(ReportContact, reportUserInfo);
             await client.ForwardMessageAsync(ReportContact, chat.Id, reportMessageId);
             await client.ForwardMessageAsync(ReportContact, chat.Id, messageToReportId);
-            await client.SendTextMessageAsync(chat.Id, DialogMessages.ReportThanks);
+            await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.ReportThanks);
             await new ShowTaskCommand(reportState.TopicDto, reportState.LevelDto).ExecuteAsync(chat, client, serviceManager);
         }
     }

@@ -38,8 +38,7 @@ namespace QuizBotCore.Commands
                 var isLevelSolved = IsLevelSolved(progress);
                 if (isLevelSolved)
                     await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
-                var message = await SendTask(task, progress, chat, user, client, serviceManager.QuizService,
-                    serviceManager.Logger);
+                var message = await SendTask(task, progress, chat, user, client, serviceManager);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
                 serviceManager.UserRepository.Update(newUser);
             }
@@ -48,33 +47,35 @@ namespace QuizBotCore.Commands
         private async Task<TaskDTO> GetTask(UserEntity user, Chat chat, TelegramBotClient client,
             ServiceManager serviceManager)
         {
-            TaskDTO task = null;
-            if (isNext)
+            TaskDTO task;
+            if (!isNext)
+            {
+                task = serviceManager.QuizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
+            }
+            else
             {
                 task = serviceManager.QuizService.GetNextTaskInfo(user.Id);
                 if (task == null)
                     await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.NextTaskNotAvailable);
             }
-            else
-                task = serviceManager.QuizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
 
             return task;
         }
 
         private async Task<Message> SendTask(TaskDTO task, ProgressDTO userProgress, Chat chat, UserEntity user, TelegramBotClient client,
-            IQuizService quizService, ILogger logger)
+            ServiceManager serviceManager)
         {
-            var progress = PrepareProgress(logger, userProgress);
+            var progress = PrepareProgress(serviceManager.Logger, userProgress);
             var isLevelSolved = IsLevelSolved(userProgress);
 
             var answers = task.Answers.Select((e, index) => (letter: DialogMessages.Alphabet[index], answer: $"{e}"))
                 .ToList();
-            var answerBlock = PrepareAnswers(answers, logger);
+            var answerBlock = PrepareAnswers(answers, serviceManager.Logger);
 
-            var message = FormatMessage(task, progress, answerBlock, isLevelSolved);
-            logger.LogInformation($"messageToSend : {message}");
+            var message = FormatMessage(task, progress, answerBlock, isLevelSolved, serviceManager);
+            serviceManager.Logger.LogInformation($"messageToSend : {message}");
 
-            var keyboard = PrepareButtons(user, task, logger, answers);
+            var keyboard = PrepareButtons(user, task, serviceManager.Logger, answers);
 
             var taskMessage = await client.SendTextMessageAsync(chat.Id, message,
                 ParseMode.Markdown);
@@ -136,15 +137,15 @@ namespace QuizBotCore.Commands
             return keyboard;
         }
 
-        private string FormatMessage(TaskDTO task, string progressBar, string answers, bool isSolved)
+        private string FormatMessage(TaskDTO task, string progressBar, string answers, bool isSolved, ServiceManager serviceManager)
         {
-            var topicName = $"{DialogMessages.TopicName} {topicDto.Name} \n";
-            var levelName = $"{DialogMessages.LevelName} {levelDto.Description} \n";
-            var progress = $"{DialogMessages.Progress} {progressBar}\n";
+            var topicName = $"{serviceManager.Dialog.Messages.TopicName} {topicDto.Name} \n";
+            var levelName = $"{serviceManager.Dialog.Messages.LevelName} {levelDto.Description} \n";
+            var progress = $"{serviceManager.Dialog.Messages.Progress} {progressBar}\n";
             var question = $"{task.Question}\n";
 
             if (isSolved)
-                progress = $"{progress}\n{DialogMessages.LevelSolved}\n";
+                progress = $"{progress}\n{serviceManager.Dialog.Messages.LevelSolved}\n";
 
             var questionFormatted = "```csharp\n" +
                                     $"{task.Text}\n" +

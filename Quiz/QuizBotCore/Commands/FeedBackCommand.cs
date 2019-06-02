@@ -11,10 +11,10 @@ namespace QuizBotCore.Commands
         {
             var keyboard = new InlineKeyboardMarkup(
                 InlineKeyboardButton.WithUrl(
-                    DialogMessages.FeedbackContact.Item1, 
-                    DialogMessages.FeedbackContact.Item2)
+                    serviceManager.Dialog.Messages.FeedbackWelcomeMessage,
+                    serviceManager.Dialog.Messages.FeedbackContact)
                 );
-            await client.SendTextMessageAsync(chat.Id, DialogMessages.FeedbackMessage, replyMarkup: keyboard);
+            await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.FeedbackMessage, replyMarkup: keyboard);
         }
     }
 }

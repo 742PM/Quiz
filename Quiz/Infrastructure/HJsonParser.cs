@@ -1,7 +1,7 @@
 ﻿using Hjson;
 using Infrastructure.Result;
 
-namespace QuizWebApp.Services.TaskService
+namespace Infrastructure
 {
     public static class HJsonParser
     {

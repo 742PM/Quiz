@@ -6,15 +6,17 @@ namespace QuizBotCore.Commands
 {
     public class ServiceManager
     {
-        public ILogger logger;
-        public IUserRepository userRepository;
-        public IQuizService quizService;
+        public ILogger Logger { get; }
+        public  MessageTextRepository Dialog { get; }
+        public  IUserRepository UserRepository { get; }
+        public IQuizService QuizService { get; }
 
-        public ServiceManager(IQuizService quizService, IUserRepository userRepository, ILogger logger)
+        public ServiceManager(IQuizService quizService, IUserRepository userRepository, ILogger logger, MessageTextRepository dialog)
         {
-            this.quizService = quizService;
-            this.userRepository = userRepository;
-            this.logger = logger;
+            this.QuizService = quizService;
+            this.UserRepository = userRepository;
+            this.Logger = logger;
+            this.Dialog = dialog;
         }
     }
 }

@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.8.0" />
-    <PackageReference Include="Telegram.Bot" Version="14.10.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
+    <PackageReference Include="Telegram.Bot" Version="14.11.0" />
   </ItemGroup>
 
   <ItemGroup>

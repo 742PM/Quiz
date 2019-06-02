@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace QuizWebApp.Extensions
+namespace Infrastructure.Extensions
 {
     public static class JsonExtensions
     {

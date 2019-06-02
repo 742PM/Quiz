@@ -13,8 +13,8 @@ namespace QuizBotCore.Commands
     {
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
-            var user = serviceManager.userRepository.FindByTelegramId(chat.Id);
-            var hint = serviceManager.quizService.GetHint(user.Id);
+            var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
+            var hint = serviceManager.QuizService.GetHint(user.Id);
             await client.SendTextMessageAsync(chat.Id, hint.HintText);
             if (!hint.HasNext)
                 await EditReplyButtons(user, chat, client, serviceManager);
@@ -24,7 +24,7 @@ namespace QuizBotCore.Commands
         {
             var messageId = user.MessageId;
             var state = user.CurrentState as TaskState;
-            var task = serviceManager.quizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
+            var task = serviceManager.QuizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
             var reportCallback = user.MessageId.CreateMessageReportCallback(state.TopicDto.Id, state.LevelDto.Id);
             var controlButtons = new[]
             {

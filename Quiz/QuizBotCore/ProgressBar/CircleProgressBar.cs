@@ -4,8 +4,8 @@ namespace QuizBotCore.ProgressBar
     {
         public string GenerateProgressBar(int solved, int total)
         {
-            return new string(DialogMessages.ProgressFilled, solved)
-                .PadRight(total, DialogMessages.ProgressEmpty);
+            return new string(ButtonNames.ProgressFilled, solved)
+                .PadRight(total, ButtonNames.ProgressEmpty);
         }
     }
 }

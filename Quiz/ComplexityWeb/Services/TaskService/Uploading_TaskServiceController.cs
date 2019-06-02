@@ -20,7 +20,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/for/humans/topics/upload
+        ///     POST service/hjsonTopic
         ///     "{
         ///      name: Пустая тема
         ///      description: Очень пустая
@@ -45,7 +45,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     GET service/for/humans/topics/4fab29a7-d536-4bad-aae1-d22a5255558c
+        ///     GET service/4fab29a7-d536-4bad-aae1-d22a5255558c/hjsonTopic
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает топик в формате HJSON</response>
@@ -70,7 +70,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     POST service/topics/upload
+        ///     POST service/jsonTopic
         ///     {
         ///        name: Пустая тема
         ///        description: Очень пустая
@@ -92,7 +92,7 @@ namespace QuizWebApp.Services.TaskService
         /// <remarks>
         ///     Sample request:
         ///     <code>
-        ///     GET service/topics/4fab29a7-d536-4bad-aae1-d22a5255558c
+        ///     GET service/4fab29a7/jsonTopic-d536-4bad-aae1-d22a5255558c
         ///     </code>
         /// </remarks>
         /// <response code="200"> Возвращает тему в формате JSON</response>

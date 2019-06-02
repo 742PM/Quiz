@@ -5,6 +5,8 @@ using Hjson;
 using Infrastructure.Extensions;
 using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
+using MongoDB.Bson;
 using QuizWebApp.Extensions;
 using static Hjson.HjsonValue;
 
@@ -32,11 +34,10 @@ namespace QuizWebApp.Services.TaskService
         [HttpPost("hjsonTopic")] //TODO: add authentication
         public ActionResult<Guid> UploadTopic([FromBody] string rawData)
         {
-            return Parse(rawData)
-                .ToString()
-                .AndThen(j => j.Deserialize<TopicDto>())
-                .AndThen(t => applicationApi.AddTopic(t))
-                .AndThen(i => Ok(i));
+             var id =  rawData.ConvertToJson()
+                .Select(j => j.Deserialize<TopicDto>())
+                .Select(UploadTopic);
+             return id.HasNoValue ? BadRequest("Can not parse HJson") : id.Value;
         }
 
         /// <summary>

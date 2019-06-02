@@ -44,6 +44,8 @@
         <Content Include="ClientApp\src\styles\LoginForm.css" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        <None Remove="Database\**" />
+        <Content Remove="Database\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -51,7 +53,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Database\" />
+      <Compile Remove="Database\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Database\**" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

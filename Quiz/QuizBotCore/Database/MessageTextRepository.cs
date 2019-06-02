@@ -27,7 +27,7 @@ namespace QuizBotCore.Database
 
         }
 
-        public bool TrySetMessages(Guid id)
+        public bool SetMessages(Guid id)
         {
             var result =  textCollection.Find(m => m.Id == id);
             if (result.Any())
@@ -40,6 +40,6 @@ namespace QuizBotCore.Database
         }
 
         public bool UpdateMessages()
-            => TrySetMessages(Messages.Id);
+            => SetMessages(Messages.Id);
     }
 }

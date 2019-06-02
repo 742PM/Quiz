@@ -7,7 +7,6 @@ using Application.Info;
 using Application.Repositories;
 using Application.Repositories.Entities;
 using Application.Selectors;
-using Domain.Entities;
 using Domain.Values;
 using Infrastructure.Extensions;
 using Infrastructure.Result;
@@ -164,8 +163,6 @@ namespace Application.QuizService
 
             if (!user.HasCurrentTask())
                 return new AccessDeniedException($"User {userId} hadn't started any task");
-            if (!user.UserProgressEntity.CurrentTask.IsSolved)
-                return new AccessDeniedException($"User {userId} should solve current task first");
 
             return GetTask(userId, user.UserProgressEntity.CurrentTopicId, user.UserProgressEntity.CurrentLevelId);
         }
@@ -181,6 +178,9 @@ namespace Application.QuizService
             var userUserProgress = user.UserProgressEntity;
             var currentTask = userUserProgress.CurrentTask;
             Logger.LogInformation($"User's current task is {currentTask}");
+
+            if (currentTask.IsSolved)
+                return new AccessDeniedException("User's current task is solved already");
 
             if (currentTask.Answer != answer)
             {

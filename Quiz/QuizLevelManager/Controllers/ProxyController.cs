@@ -58,8 +58,7 @@ namespace QuizLevelManager.Controllers
             return Ok();
         }
 
-
-        [HttpPost("tasktorender")]
+        [HttpPost("renderTask")]
         public ActionResult<TaskDTO> RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator) => Ok(service.RenderTask(templateGenerator));
     }
 }

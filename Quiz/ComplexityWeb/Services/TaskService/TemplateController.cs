@@ -16,6 +16,7 @@ namespace QuizWebApp.Services.TaskService
         {
             this.applicationApi = applicationApi;
         }
+
         /// <summary>
         ///     Рендерит и возвращает задачу по шаблону из запроса
         /// </summary>
@@ -57,6 +58,9 @@ namespace QuizWebApp.Services.TaskService
         /// </remarks>
         /// <response code="200"> Возвращает список пар ключ-значение</response>
         [HttpGet("substitutions/examples")]
-        public ActionResult<List<TemplateLanguage.SubstitutionData>> GetSubstitutions() => Ok(TemplateLanguage.GetValuesExample());
+        public ActionResult<List<TemplateLanguage.SubstitutionData>> GetSubstitutions()
+        {
+            return Ok(TemplateLanguage.GetValuesExample());
+        }
     }
 }

@@ -85,6 +85,7 @@ namespace QuizWebApp.Services.TaskService
         {
             return topic.AndThen(t => applicationApi.AddTopic(t))
                 .AndThen(i => Ok(i));
+        }
 
         /// <summary>
         ///     Получить тему без айди в нем

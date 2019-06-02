@@ -10,7 +10,8 @@ namespace QuizBotCore
         public string CorrectAnswer { get; private set; } = "Верно ✅";
         public string WrongAnswer { get; private set; } = "Подумай еще ❌";
         public string FeedbackMessage { get; private set; } = "Есть вопрос? Пиши нам!";
-        public (string, string) FeedbackContact { get; private set; } = ("Антон", "telegram.me/funfine");
+        public string FeedbackWelcomeMessage { get; private set; } = "Отправляй вопрос прямо сюда :)";
+        public  string FeedbackContact { get; private set; } =  "telegram.me/funfine";
         public string NextTaskNotAvailable { get; private set; } = "Реши эту, а потом подумаем о следующей";
 
         public string LevelSelection { get; private set; } = "Вижу с темой ты определился. " +

@@ -29,12 +29,10 @@ namespace Domain.Entities.TaskGenerators
         private static readonly Dictionary<string, Func<Random, string>> NumericalSubstitutions =
             new Dictionary<string, Func<Random, string>>
             {
-                [Const] = r =>
-                    AnyOf(r, new ScriptArray(Range(-MaxRandom, MaxRandom)
-                            .Where(x => x != 0)))
-                        .ToString(),
-                [From] = r => r.Next(-MaxRandom, MaxRandom).ToString(),
-                [IterateConstant] = r => r.Next(LoopAmount >> 2, LoopAmount).ToString()
+                [Const] = random => AnyOf(random,
+                    new ScriptArray(Range(-MaxRandom, MaxRandom).Where(x => x != 0))).ToString(),
+                [From] = random => random.Next(-MaxRandom, MaxRandom).ToString(),
+                [IterateConstant] = random => random.Next(LoopAmount >> 2, LoopAmount).ToString()
             };
 
         private static readonly Dictionary<string, string[]> PossibleLiteralSubstitutions =

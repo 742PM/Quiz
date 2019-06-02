@@ -7,7 +7,6 @@ using Application.DTO;
 using Application.TaskService;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Entities.TaskGenerators;
 using Hjson;
 using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
@@ -195,48 +194,6 @@ namespace QuizWebApp.Services.TaskService
             return Ok();
         }
 
-        /// <summary>
-        ///     Рендерит и возвращает задачу по шаблону из запроса
-        /// </summary>
-        /// <remarks>
-        ///     Sample request:
-        ///     <code>
-        ///     POST service/taskToRender
-        ///     {
-        ///        "question": "Оцените временную сложность алгоритма",
-        ///        "text": "for (int i = {{from1}}; i &lt; {{to1}}; i += {{iter1}})\r\nc++\r\n",
-        ///        "possibleAnswers": ["Θ(1)", "Θ(log({{to1}}))", "Θ({{to1}})"],
-        ///        "answer": "Θ({{to1}})",
-        ///        "hints": []
-        ///     }
-        ///     </code>
-        /// </remarks>
-        /// <response code="200"> Возвращает отрендеренную задачу</response>
-        [HttpPost("tasktorender")]
-        public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
-        {
-            var task = applicationApi.RenderTask(
-                 templateGenerator.Text,
-                 templateGenerator.PossibleAnswers,
-                 templateGenerator.Answer,
-                 templateGenerator.Hints,
-                 templateGenerator.Question);
-
-            return Ok(task);
-        }
-
-        /// <summary>
-        ///     Показывает набор существующих по умолчанию подстановок и их значений
-        /// </summary>
-        /// <remarks>
-        ///     Sample request:
-        ///     <code>
-        ///     GET service/substitutions/examples
-        ///     </code>
-        /// </remarks>
-        /// <response code="200"> Возвращает список пар ключ-значение</response>
-        [HttpGet("substitutions/examples")]
-        public ActionResult<List<TemplateLanguage.SubstitutionData>> GetSubstitutions() => Ok(TemplateLanguage.GetValuesExample());
     }
 
    

@@ -12,11 +12,6 @@ using static Hjson.HjsonValue;
 
 namespace QuizWebApp.Services.TaskService
 {
-    public static class HJsonParser
-    {
-        public static Maybe<string> ConvertToJson(this string hjson) => hjson.Try(hj => Parse(hj).ToString());
-
-    }
     public partial class TaskServiceController
     {
         //TODO: add authentication

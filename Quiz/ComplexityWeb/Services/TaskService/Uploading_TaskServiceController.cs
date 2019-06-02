@@ -5,6 +5,8 @@ using Hjson;
 using Infrastructure.Extensions;
 using Infrastructure.Result;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
+using MongoDB.Bson;
 using QuizWebApp.Extensions;
 using static Hjson.HjsonValue;
 
@@ -12,17 +14,8 @@ namespace QuizWebApp.Services.TaskService
 {
     public static class HJsonParser
     {
-        public static Maybe<string> ToJson(string hjson)
-        {
-            try
-            {
-                return Parse(hjson).ToString().Sure();
-            }
-            catch ()
-            {
-                return Maybe<string>.None;
-            }
-        }
+        public static Maybe<string> ConvertToJson(this string hjson) => hjson.Try(hj => Parse(hj).ToString());
+
     }
     public partial class TaskServiceController
     {
@@ -46,11 +39,10 @@ namespace QuizWebApp.Services.TaskService
         [HttpPost("for/humans/topics/upload")] //TODO: add authentication
         public ActionResult<Guid> UploadTopic([FromBody] string rawData)
         {
-            return Parse(rawData)
-                .ToString()
-                .AndThen(j => j.Deserialize<TopicDto>())
-                .AndThen(t => applicationApi.AddTopic(t))
-                .AndThen(i => Ok(i));
+             var id =  rawData.ConvertToJson()
+                .Select(j => j.Deserialize<TopicDto>())
+                .Select(UploadTopic);
+             return id.HasNoValue ? BadRequest("Can not parse HJson") : id.Value;
         }
 
         /// <summary>
@@ -94,11 +86,9 @@ namespace QuizWebApp.Services.TaskService
         /// </remarks>
         /// <response code="200"> Возвращает айди топика, добавленного в БД</response>
         [HttpPost("topics/upload")]
-        public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic)
-        {
-            return topic.AndThen(t => applicationApi.AddTopic(t))
+        public ActionResult<Guid> UploadTopic([FromBody] TopicDto topic) =>
+            topic.AndThen(t => applicationApi.AddTopic(t))
                 .AndThen(i => Ok(i));
-        }
 
         /// <summary>
         ///     Получить тему без айди в нем

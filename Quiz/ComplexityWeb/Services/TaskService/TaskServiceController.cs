@@ -224,6 +224,4 @@ namespace QuizWebApp.Services.TaskService
             return Ok(task);
         }
     }
-
-    //2dab39a5-9dd2-43c2-9968-0846ff4a7fa4
 }

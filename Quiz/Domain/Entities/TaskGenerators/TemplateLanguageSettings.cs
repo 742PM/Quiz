@@ -88,7 +88,7 @@ namespace Domain.Entities.TaskGenerators
 
         }
 
-        public static List<SubstitutionData> GetValuesExample() => Create(new Random(42)).Select(kv=>new SubstitutionData(kv)).ToList();
+        public static List<SubstitutionData> GetValuesExample() => Create(new Random()).Select(kv=>new SubstitutionData(kv)).ToList();
 
         private static void AddMethod<TOut, TIn>(Func<Random, TIn, TOut> method, Random random, ScriptObject so)
         {

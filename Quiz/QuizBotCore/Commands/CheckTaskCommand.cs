@@ -29,10 +29,10 @@ namespace QuizBotCore.Commands
             var isCorrect = serviceManager.QuizService.SendAnswer(user.Id, answer);
             if (isCorrect.HasValue)
             {
+                await RemoveButtonsForPreviousTask(user, chat, client);
                 if (isCorrect.Value)
                 {
                     await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.CorrectAnswer);
-                    await RemoveButtonsForPreviousTask(user, chat, client);
                     await new ShowTaskCommand(topicDto, levelDto, true).ExecuteAsync(chat, client, serviceManager);
                 }
                 else

@@ -6,10 +6,15 @@ namespace Domain.Entities.TaskGenerators
     public partial class TemplateLanguage
     {
         public const string Theta = "Θ";
-        public const string Sqrt = "√";
+        
+        
         public const string Pow2 = "²";
         public const string Pow3 = "³";
+        public const string Pow4 = "⁴";
+        
+        public const string Sqrt = "√";
         public const string Multiply = "∙";
+        
         public static readonly string Theta1 = $"{Theta}(1)";
         public static readonly string ThetaN = $"{Theta}(n)";
         public static readonly string ThetaN2 = $"{Theta}(n{Pow2})";

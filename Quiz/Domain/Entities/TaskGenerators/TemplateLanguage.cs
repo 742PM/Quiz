@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Infrastructure.Extensions;
 using Scriban.Runtime;
 
 namespace Domain.Entities.TaskGenerators
@@ -6,6 +8,10 @@ namespace Domain.Entities.TaskGenerators
     public partial class TemplateLanguage
     {
         public const string Theta = "Θ";
+        public const string Func = "func f " +
+                                   "ret 'hallelyuah '+ $0 " +
+                                   " end";
+
         public const string Sqrt = "√";
         public const string Pow2 = "²";
         public const string Pow3 = "³";
@@ -32,8 +38,43 @@ namespace Domain.Entities.TaskGenerators
         private static void AddMethods(Random random, ScriptObject so)
         {
             AddMethod<object, ScriptArray>(AnyOf, random, so);
+            AddInstanceMethod<object, string>(GetLoopBody, random, so);
             AddMethod<int, int, int>(Random, random, so);
         }
+
+        /// <summary>
+        ///     EXAMPLE USAGE:
+        ///         {{get_loop_body from1}}
+        /// </summary>
+        [ScriptMemberIgnore]
+        public static object GetLoopBody(Random random,ScriptObject so, string value) =>
+            AnyOf(random, new ScriptArray(values: new[]
+            {
+                $@"if ({value} % {so["iter1"]} == 0)
+                        Console.WriteLine({value});",
+                $@"if ({value} > {so["const5"]})
+                        Console.WriteLine({value});",
+                $@"if ({value} < {so["const5"]}) 
+                        Console.WriteLine({value});",
+                $@"if ({value} >= {so["const5"]}) 
+                        Console.WriteLine({value});",
+                $@"if ({value} <= {so["const5"]}) 
+                        Console.WriteLine({value});",
+                $@"if ({value} % {so["iter1"]} == 0) Console.WriteLine(""DEBUG!!!"");",
+                $@"if ({value} > {so["const5"]}) 
+                        Console.WriteLine({value}.ToString() + "" is more than {so["const5"]}"");",
+                $@"if ({value} < {so["const5"]})
+                        Console.WriteLine({value}.ToString() + "" is less than {so["const5"]}"");",
+                $@"Console.WriteLine({value})",
+                "Console.WriteLine(\"Hello User!\")",
+                "Console.WriteLine(\"Hello!\")",
+                "Console.WriteLine(\"Hi there!\")",
+                "Console.WriteLine(\"Hello there!\")",
+                $@"count += {so["from1"]};",
+                "count++;",
+                $@"c += {so["from1"]};",
+                "c++;"
+            }.Select(x=>x+ "\t\t// ←  Θ(1)")));
 
         /// <summary>
         ///     You can define properties and fields that will be able to be used in templates;

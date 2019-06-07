@@ -6,6 +6,7 @@ using Domain.Entities.TaskGenerators;
 using Domain.Values;
 using FluentAssertions;
 using NUnit.Framework;
+using Scriban;
 using static System.Guid;
 
 namespace Tests
@@ -21,6 +22,18 @@ namespace Tests
         private const string RegexDummy = ".*";
         private static readonly Guid IdDummy = Empty;
         private static readonly string[] ArrayDummy = new string[0];
+
+
+        [Test]
+        public void UseBodyFunction()
+        {
+            var actual = new TemplateTaskGenerator(IdDummy, ArrayDummy, "{{get_loop_body iter1}}",ArrayDummy, AnswerDummy,
+                    StreakDummy,
+                    QuestionDummy)
+                .GetTask(new Random());
+            actual.Text.Should().NotBeEmpty();
+            actual.Text.Length.Should().BeGreaterOrEqualTo(3);
+        }
 
         private static void TestField(
             (string actual, string expected)? code = default,

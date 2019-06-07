@@ -31,7 +31,7 @@ namespace Domain.Entities.TaskGenerators
             {
                 [Const] = random => AnyOf(random,
                     new ScriptArray(Range(-MaxRandom, MaxRandom).Where(x => x != 0))).ToString(),
-                [From] = random => random.Next(-MaxRandom, MaxRandom).ToString(),
+                [From] = random => random.Next(2, MaxRandom).ToString(),
                 [IterateConstant] = random => random.Next(LoopAmount >> 2, LoopAmount).ToString()
             };
 
@@ -83,10 +83,18 @@ namespace Domain.Entities.TaskGenerators
         private static void AddMethod<TOut, TIn1, TIn2>(
             Func<Random, TIn1, TIn2, TOut> method,
             Random random,
-            IScriptObject so)
+            ScriptObject so)
         {
             so.Import(method.Method.Name.ToSnakeCase(),
                 new Func<TIn1, TIn2, TOut>((first, second) => method(random, first, second)));
+        }
+        private static void AddInstanceMethod<TOut, TIn1>(
+            Func<Random, ScriptObject, TIn1, TOut> method,
+            Random random,
+            ScriptObject so)
+        {
+            so.Import(method.Method.Name.ToSnakeCase(),
+                new Func<TIn1, TOut>(first => method(random,so ,first )));
         }
 
         private static IEnumerable<(string, string)> GenerateLiteralSubstitutions(Random random)

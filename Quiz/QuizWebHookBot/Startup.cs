@@ -47,6 +47,7 @@ namespace QuizWebHookBot
             services.AddSingleton<MessageTextRepository>();
             services.AddScoped<IStateMachine<ICommand>, TelegramStateMachine>();
             services.AddScoped<IMessageParser, MessageParser>();
+            services.AddScoped<ServiceManager>();
 
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
         }

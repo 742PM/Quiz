@@ -16,7 +16,7 @@ namespace QuizWebHookBot
     public class Startup
     {
         private const string DatabaseName = "telegramUsers";
-        const string ServiceUri = "https://quiz-service.azurewebsites.net";
+        private const string ServiceUri = "https://quiz-service.azurewebsites.net";
 
         public Startup(IConfiguration configuration)
         {
@@ -47,6 +47,7 @@ namespace QuizWebHookBot
             services.AddSingleton<MessageTextRepository>();
             services.AddScoped<IStateMachine<ICommand>, TelegramStateMachine>();
             services.AddScoped<IMessageParser, MessageParser>();
+            services.AddScoped<ServiceManager>();
 
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
         }

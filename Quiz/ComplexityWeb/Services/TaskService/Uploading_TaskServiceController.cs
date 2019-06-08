@@ -106,10 +106,7 @@ namespace QuizWebApp.Services.TaskService
         {
             var (_, isFailure, topic, error) = applicationApi.GetFullTopic(topicId);
 
-            if (isFailure)
-                return NotFound(error.Message);
-
-            return Ok(topic);
+            return isFailure ? (ActionResult<TopicDto>) NotFound(error.Message) : Ok(topic);
         }
     }
 }

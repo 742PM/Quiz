@@ -11,7 +11,7 @@ namespace QuizBotCore.Commands
         public  IUserRepository UserRepository { get; }
         public IQuizService QuizService { get; }
 
-        public ServiceManager(IQuizService quizService, IUserRepository userRepository, ILogger logger, MessageTextRepository dialog)
+        public ServiceManager(IQuizService quizService, IUserRepository userRepository, ILogger<ServiceManager> logger, MessageTextRepository dialog)
         {
             this.QuizService = quizService;
             this.UserRepository = userRepository;

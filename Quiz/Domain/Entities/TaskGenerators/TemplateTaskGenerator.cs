@@ -73,7 +73,7 @@ namespace Domain.Entities.TaskGenerators
             return new Task(code, hints, answer, Id, answers, question);
         }
 
-        private static ScriptObject CreateScriptObject(Random random)
+        public static ScriptObject CreateScriptObject(Random random)
         {
             return TemplateLanguage.Create(random);
         }

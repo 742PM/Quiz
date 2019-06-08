@@ -14,28 +14,21 @@ namespace QuizWebHookBot.Controllers
     public class UpdateController : Controller
     {
         private readonly IBotService botService;
+        private readonly ServiceManager manager;
         private readonly IUpdateService updateService;
-        private readonly IQuizService quizService;
-        private readonly ILogger<UpdateController> logger;
-        private readonly IUserRepository userRepository;
-        private readonly MessageTextRepository dialogRepo;
 
-        public UpdateController(IUpdateService updateService, IBotService botService, IQuizService quizService,
-            ILogger<UpdateController> logger, IUserRepository userRepository, MessageTextRepository dialogRepo)
+        public UpdateController(IUpdateService updateService, IBotService botService, ServiceManager manager)
         {
             this.updateService = updateService;
             this.botService = botService;
-            this.quizService = quizService;
-            this.logger = logger;
-            this.userRepository = userRepository;
-            this.dialogRepo = dialogRepo;
+            this.manager = manager;
         }
 
         // POST api/update
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Update update)
         {
-            Chat chat = null;
+            Chat chat;
             switch (update.Type)
             {
                 case UpdateType.Message:
@@ -58,8 +51,8 @@ namespace QuizWebHookBot.Controllers
 //            await botService.Client.SendTextMessageAsync(chat.Id, update.Type.ToString());
 
             var userCommand = updateService.ProcessMessage(update);
-            var serviceManager = new ServiceManager(quizService, userRepository, logger, dialogRepo);
-            await userCommand.ExecuteAsync(chat, botService.Client, serviceManager);
+            
+            await userCommand.ExecuteAsync(chat, botService.Client, manager);
             
             return Ok();
         }

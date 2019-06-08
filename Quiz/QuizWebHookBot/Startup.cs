@@ -16,7 +16,7 @@ namespace QuizWebHookBot
     public class Startup
     {
         private const string DatabaseName = "telegramUsers";
-        const string ServiceUri = "https://quiz-service.azurewebsites.net";
+        private const string ServiceUri = "https://quiz-service.azurewebsites.net";
 
         public Startup(IConfiguration configuration)
         {

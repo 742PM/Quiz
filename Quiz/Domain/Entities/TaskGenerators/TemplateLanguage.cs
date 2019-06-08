@@ -54,15 +54,15 @@ namespace Domain.Entities.TaskGenerators
             return AnyOf(random, new ScriptArray(values: new[]
             {
 $@"if ({first} % {so["iter1"]} == 0) 
-    {second}++;",
+        {second}++;",
 $@"if ({first} % {so["iter1"]} == 0) 
-    {second} += {first};",
+        {second} += {first};",
 $@"if ({first} > {so["iter1"]})
-    {second} = {first};",
+        {second} = {first};",
 $@"if ({first} >= {so["iter1"]}) 
-    {second} = {first};",
+        {second} = {first};",
 $@"if ({first} == {so["iter1"]}) 
-    {second}++;",
+        {second}++;",
             }.Select(x => x + "\t\t// ←  Θ(1)")));
         }
         /// <summary>
@@ -74,20 +74,21 @@ $@"if ({first} == {so["iter1"]})
             AnyOf(random, new ScriptArray(values: new[]
         {
 $@"if ({value} % {so["iter1"]} == 0)
-    Console.WriteLine({value});",
+        Console.WriteLine({value});",
 $@"if ({value} > {so["const5"]})
-    Console.WriteLine({value});",
+        Console.WriteLine({value});",
 $@"if ({value} < {so["const5"]}) 
-    Console.WriteLine({value});",
+        Console.WriteLine({value});",
 $@"if ({value} >= {so["const5"]}) 
-    Console.WriteLine({value});",
+        Console.WriteLine({value});",
 $@"if ({value} <= {so["const5"]}) 
-    Console.WriteLine({value});",
-$@"if ({value} % {so["iter1"]} == 0) Console.WriteLine(""DEBUG!!!"");",
+        Console.WriteLine({value});",
+$@"if ({value} % {so["iter1"]} == 0) 
+        Console.WriteLine(""DEBUG!!!"");",
 $@"if ({value} > {so["const5"]}) 
-    Console.WriteLine({value}.ToString() + "" is more than {so["const5"]}"");",
+        Console.WriteLine({value}.ToString() + "" is more than {so["const5"]}"");",
 $@"if ({value} < {so["const5"]})
-    Console.WriteLine({value}.ToString() + "" is less than {so["const5"]}"");",
+        Console.WriteLine({value}.ToString() + "" is less than {so["const5"]}"");",
 $@"Console.WriteLine({value})",
 "Console.WriteLine(\"Hello User!\")",
 "Console.WriteLine(\"Hello!\")",

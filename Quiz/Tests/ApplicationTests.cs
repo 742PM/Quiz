@@ -213,7 +213,7 @@ namespace Tests
 [Test]
 public void GetTopicsInfo_ReturnsAllTopics()
 {
-    var ids = Enumerable.Range(1,5).Select(_=>AddEmptyTopic());
+    var ids = Enumerable.Range(1,5).Select(_=>AddEmptyTopic()).ToArray();
     application
         .GetTopicsInfo()
         .Value

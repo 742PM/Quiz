@@ -89,7 +89,6 @@ namespace QuizWebApp
 
                 return next.Invoke();
             });
-            new Batchin
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else

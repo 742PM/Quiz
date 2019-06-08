@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using Infrastructure.Logger;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace QuizWebHookBot
@@ -11,6 +12,6 @@ namespace QuizWebHookBot
         }
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().ConfigureLogging(b=>b.AddTelegram());
     }
 }

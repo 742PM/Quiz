@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\database\mongodatabaseinitializer.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Application.Repositories;
+using Application.Repositories.Entities;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
+using Infrastructure.DDD;
+using MongoDB.Driver;
+using static MongoDB.Bson.Serialization.BsonClassMap;
+using static DataBase.MongoHelpers;
+
+namespace DataBase
+{
+    public static class MongoDatabaseInitializer
+    {
+        private const string MongoUserName = &quot;COMPLEXITY_MONGO_USERNAME&quot;;
+        private const string MongoPassword = &quot;COMPLEXITY_MONGO_PASSWORD&quot;;
+
+        public static IMongoDatabase CreateMongoDatabase(
+            string databaseName,
+            string username = default,
+            string password = default)
+        {
+            SetupDatabase();
+            return Connect(databaseName, username, password/*,name: &quot;Testing&quot;*/);
+        }
+
+        private static IMongoDatabase Connect(string databaseName, string username = default, string password = default,string name = &quot;QuizDatabase&quot;)
+        {
+            username = username ?? Environment.GetEnvironmentVariable(MongoUserName);
+            password = password ?? Environment.GetEnvironmentVariable(MongoPassword);
+            var connectionString = username is null || password is null
+                ? &quot;mongodb://localhost:27017&quot;
+                : $&quot;mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017,&quot; +
+                  &quot;quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017,&quot; +
+                  &quot;quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/&quot; +
+                  $&quot;{databaseName}?ssl=true&amp;replicaSet=QuizCluster-shard-0&amp;authSource=admin&amp;retryWrites=true&quot;;
+            var client = new MongoClient(connectionString);
+            return client.GetDatabase(name);
+        }
+
+        internal static void SetupDatabase()
+        {
+            RegisterClassMap&lt;Entity&lt;Guid&gt;&gt;(cm =&gt;
+            {
+                cm.AutoMap();
+                cm.MapIdMember(c =&gt; c.Id);
+                cm.AddKnownType(typeof(Entity));
+            });
+
+            RegisterClassMap&lt;Entity&gt;(cm =&gt;
+            {
+                cm.AutoMap();
+                cm.SetIsRootClass(true);
+            });
+
+            AutoRegisterClassMap&lt;Level&gt;(c =&gt; new Level(c.Id, c.Description, c.Generators, c.NextLevels));
+            AutoRegisterClassMap&lt;Topic&gt;(c =&gt; new Topic(c.Id, c.Name, c.Description, c.Levels));
+
+            AutoRegisterClassMap&lt;TemplateTaskGenerator&gt;(c =&gt; new TemplateTaskGenerator(c.Id, c.PossibleAnswers,
+                c.Text, c.Hints,
+                c.Answer, c.Streak, c.Question));
+            AutoRegisterClassMap&lt;TaskGenerator&gt;(cm =&gt; cm.SetIsRootClass(true));
+            AutoRegisterClassMap&lt;TaskInfoEntity&gt;(c =&gt; new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
+                c.ParentGeneratorId, c.IsSolved, c.Id));
+
+            AutoRegisterClassMap&lt;UserEntity&gt;(c =&gt; new UserEntity(c.Id, c.UserProgressEntity));
+
+            AutoRegisterClassMap&lt;LevelProgressEntity&gt;(cm =&gt;
+            {
+                cm.MapDictionary(c =&gt; c.CurrentLevelStreaks);
+                cm.MapCreator(c =&gt; new LevelProgressEntity(c.LevelId, c.CurrentLevelStreaks, c.Id));
+            });
+            AutoRegisterClassMap&lt;TopicProgressEntity&gt;(cm =&gt;
+            {
+                cm.MapDictionary(c =&gt; c.LevelProgressEntities);
+                cm.MapCreator(c =&gt; new TopicProgressEntity(c.LevelProgressEntities, c.TopicId, c.Id));
+            });
+            AutoRegisterClassMap&lt;UserProgressEntity&gt;(cm =&gt;
+            {
+                cm.MapDictionary(c =&gt; c.TopicsProgress);
+                cm.MapCreator(c =&gt; new UserProgressEntity(c.CurrentTopicId, c.CurrentLevelId, c.UserId,
+                    c.TopicsProgress, c.CurrentTask, c.Id));
+            });
+        }
+
+       
+
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[22,9,22,10,0],[23,13,23,29,0],[24,13,24,82,0],[25,9,25,10,0],[28,9,28,10,0],[29,13,29,86,0],[30,13,30,86,0],[31,13,36,111,0],[37,13,37,60,0],[38,13,38,45,0],[39,9,39,10,0],[42,9,42,10,0],[43,13,44,13,0],[44,13,44,14,0],[44,14,45,17,0],[45,17,45,30,0],[45,30,46,17,0],[46,17,46,43,0],[46,43,47,17,0],[47,17,47,49,0],[47,49,48,13,0],[48,13,48,14,0],[48,14,48,16,0],[43,13,48,16,0],[50,13,51,13,0],[51,13,51,14,0],[51,14,52,17,0],[52,17,52,30,0],[52,30,53,17,0],[53,17,53,41,0],[53,41,54,13,0],[54,13,54,14,0],[54,14,54,16,0],[50,13,54,16,0],[56,13,56,106,0],[57,13,57,96,0],[59,13,61,50,0],[62,13,62,55,0],[62,55,62,78,0],[62,78,62,80,0],[62,13,62,80,0],[63,13,64,57,0],[66,13,66,95,0],[68,13,69,13,0],[69,13,69,14,0],[69,14,70,17,0],[70,17,70,62,0],[70,62,71,17,0],[71,17,71,101,0],[71,101,72,13,0],[72,13,72,14,0],[72,14,72,16,0],[68,13,72,16,0],[73,13,74,13,0],[74,13,74,14,0],[74,14,75,17,0],[75,17,75,64,0],[75,64,76,17,0],[76,17,76,103,0],[76,103,77,13,0],[77,13,77,14,0],[77,14,77,16,0],[73,13,77,16,0],[78,13,79,13,0],[79,13,79,14,0],[79,14,80,17,0],[80,17,80,57,0],[80,57,81,17,0],[81,17,82,61,0],[82,61,83,13,0],[83,13,83,14,0],[83,14,83,16,0],[78,13,83,16,0],[84,9,84,10,0]]);
+    </script>
+  </body>
+</html>

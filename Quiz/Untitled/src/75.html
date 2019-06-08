@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\application\selectors\progresstaskgeneratorselector.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Entities.TaskGenerators;
+using Infrastructure.Result;
+
+namespace Application.Selectors
+{
+    public class ProgressTaskGeneratorSelector : ITaskGeneratorSelector
+    {
+        private readonly Random random;
+        private readonly ITaskGeneratorSelector alternativeSelector;
+
+        ///&lt;summary&gt;
+        /// Умный селектор на стриках
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;random&quot; /&gt;
+        /// &lt;param name=&quot;alternativeSelector&quot;&gt;
+        ///     Альтернативный селектор,
+        ///     который будет использоваться,
+        ///     если у всех генераторов полный стрик
+        /// &lt;/param&gt;
+        public ProgressTaskGeneratorSelector(Random random, ITaskGeneratorSelector alternativeSelector)
+        {
+            this.random = random;
+            this.alternativeSelector = alternativeSelector;
+        }
+
+        public Result&lt;TaskGenerator, Exception&gt; SelectGenerator(
+            IEnumerable&lt;TaskGenerator&gt; generators,
+            Dictionary&lt;Guid, int&gt; streaks)
+        {
+            var generatorsArray = generators as TaskGenerator[] ?? generators.ToArray();
+
+            var variants = new List&lt;TaskGenerator&gt;();
+            foreach (var generator in generatorsArray)
+            {
+                var leftForStreak = generator.Streak - streaks[generator.Id];
+                for (var i = 0; i &lt; leftForStreak; i++)
+                    variants.Add(generator);
+            }
+
+            return variants.Count &gt; 0
+                ? variants[random.Next(variants.Count)]
+                : alternativeSelector.SelectGenerator(generatorsArray, streaks);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[23,9,23,104,0],[24,9,24,10,0],[25,13,25,34,0],[26,13,26,60,0],[27,9,27,10,0],[32,9,32,10,0],[33,13,33,89,0],[35,13,35,54,0],[36,13,36,20,0],[36,22,36,35,0],[36,36,36,38,0],[36,39,36,54,0],[37,13,37,14,0],[38,17,38,78,0],[39,22,39,31,0],[39,33,39,50,0],[39,52,39,55,0],[40,21,40,45,0],[41,13,41,14,0],[43,13,45,81,0],[46,9,46,10,0]]);
+    </script>
+  </body>
+</html>

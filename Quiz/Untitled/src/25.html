@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\states\taskstate.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using MongoDB.Bson.Serialization.Attributes;
+using QuizRequestService.DTO;
+
+namespace QuizBotCore.States
+{
+    public class TaskState : State
+    {
+        [BsonConstructor]
+        public TaskState(TopicDTO topicDto, LevelDTO levelDto)
+        {
+            TopicDto = topicDto;
+            LevelDto = levelDto;
+        }
+
+        [BsonElement] public TopicDTO TopicDto { get; }
+
+        [BsonElement] public LevelDTO LevelDto { get; }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,63,1],[10,9,10,10,1],[11,13,11,33,1],[12,13,12,33,1],[13,9,13,10,1],[15,50,15,54,1],[17,50,17,54,1]]);
+    </script>
+  </body>
+</html>

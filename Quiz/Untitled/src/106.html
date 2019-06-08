@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\database\fillers\complexitydatabasefiller.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Application.Repositories;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
+
+namespace DataBase
+{
+    public class ComplexityDatabaseFiller : IDatabaseFiller
+    {
+        private const string Theta = &quot;Θ&quot;;
+        private const string Sqrt = &quot;√&quot;;
+        private const string Pow2 = &quot;&#178;&quot;;
+        private const string Pow3 = &quot;&#179;&quot;;
+        private const string Multiply = &quot;∙&quot;;
+
+        internal const string Question = &quot;Оцените временную сложность данного алгоритма:&quot;;
+
+        private const string OuterIterable = &quot;{{loop_var1}}&quot;;
+        private const string InnerIterable = &quot;{{loop_var2}}&quot;;
+        private const string OuterFrom = &quot;{{from1}}&quot;;
+        private const string InnerFrom = &quot;{{from2}}&quot;;
+        private const string OuterTo = &quot;{{to1}}&quot;;
+        private const string InnerTo = &quot;{{to2}}&quot;;
+        private const string OuterIteration = &quot;{{iter1}}&quot;;
+        private const string InnerIteration = &quot;{{iter2}}&quot;;
+
+        internal const string SimpleOperation = &quot;\t{{simple_operation1}}&quot;;
+        private const string PlusEqual = &quot;+=&quot;;
+        private const string MultiplyEqual = &quot;*=&quot;;
+
+        private static readonly string Theta1 = $&quot;{Theta}(1)&quot;;
+        internal static readonly string ThetaN = $&quot;{Theta}(n)&quot;;
+        private static readonly string ThetaN2 = $&quot;{Theta}(n{Pow2})&quot;;
+        private static readonly string ThetaN3 = $&quot;{Theta}(n{Pow3})&quot;;
+        private static readonly string ThetaSqrtN = $&quot;{Theta}({Sqrt}n)&quot;;
+        internal static readonly string ThetaLogN = $&quot;{Theta}(log(n))&quot;;
+        private static readonly string ThetaLog2N = $&quot;{Theta}(log{Pow2}(n))&quot;;
+        private static readonly string ThetaNLogN = $&quot;{Theta}(n {Multiply} log(n))&quot;;
+        private static readonly string ThetaLogNLogLogN = $&quot;{Theta}(log(n) {Multiply} log(log(n)))&quot;;
+
+        internal static readonly string[] StandardLoopAnswers = { ThetaLogN, ThetaSqrtN, Theta1, ThetaN, ThetaN2 };
+        private static readonly string[] StandardDoubleAnswers = { ThetaN, ThetaNLogN, ThetaN2, ThetaN3 };
+        private static readonly string[] DifficultDoubleAnswers = { ThetaLog2N, ThetaN, ThetaNLogN, ThetaN2 };
+
+        public void Fill(MongoTaskRepository repository)
+        {
+            DeleteTopics(repository);
+
+            var singleLoops = new TaskGenerator[]
+            {
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardLoopAnswers,
+                    GetForLoop() +
+                    SimpleOperation,
+                    new string[0],
+                    ThetaN, 1, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardLoopAnswers,
+                    GetForLoop(increment: MultiplyEqual) +
+                    SimpleOperation,
+                    new[] { &quot;Цикл с удвоением&quot; },
+                    ThetaLogN, 2, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    new[] { ThetaLogN, Theta1, ThetaN, ThetaNLogN, ThetaN2 },
+                    GetForLoop(
+                        comparision: $&quot;{OuterIterable} &lt; {OuterTo} * {OuterTo}&quot;,
+                        increment: MultiplyEqual) +
+                    SimpleOperation,
+                    new[] { &quot;Свойства логарифма&quot; },
+                    ThetaLogN, 3, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardLoopAnswers,
+                    GetForLoop(comparision: $&quot;{OuterIterable} * {OuterIterable} &lt; {OuterTo}&quot;) +
+                    SimpleOperation,
+                    new string[0],
+                    ThetaSqrtN, 2, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardLoopAnswers,
+                    GetForLoop(comparision: $&quot;{OuterIterable} &lt; {OuterTo} * {OuterTo}&quot;) +
+                    SimpleOperation,
+                    new string[0],
+                    ThetaN2, 2, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardLoopAnswers,
+                    GetForLoop(comparision: $&quot;{OuterIterable} % {OuterFrom} != 0&quot;) +
+                    SimpleOperation,
+                    new string[0],
+                    Theta1, 2, Question)
+            };
+
+            var simpleDoubleLoops = new TaskGenerator[]
+            {
+                new TemplateTaskGenerator(Guid.NewGuid(),
+                    new[] { ThetaN, ThetaN2, ThetaN3 },
+                    GetForLoop() +
+                    GetInnerForLoop() +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Независимые циклы&quot; },
+                    ThetaN2, 1, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardDoubleAnswers,
+                    GetForLoop() +
+                    GetInnerForLoop(increment: MultiplyEqual) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Независимые циклы&quot; },
+                    ThetaNLogN, 2, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardDoubleAnswers,
+                    GetForLoop() +
+                    GetInnerForLoop(OuterIterable) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Арифметическая прогрессия&quot; },
+                    ThetaN2, 3, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    DifficultDoubleAnswers,
+                    GetForLoop(increment: MultiplyEqual) +
+                    GetInnerForLoop(OuterIterable) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Геометрическая прогрессия&quot; },
+                    ThetaN, 3, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardDoubleAnswers,
+                    GetForLoop(increment: MultiplyEqual) +
+                    GetInnerForLoop(OuterIterable) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Независимые циклы&quot; },
+                    ThetaNLogN, 2, Question)
+            };
+
+            var hardDoubleLoops = new TaskGenerator[]
+            {
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardDoubleAnswers,
+                    GetForLoop() +
+                    GetInnerForLoop(incrementValue: OuterIterable) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Частичная сумма гармонического ряда&quot; },
+                    ThetaNLogN, 2, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardDoubleAnswers,
+                    GetForLoop() +
+                    GetInnerForLoop(increment: MultiplyEqual, incrementValue: OuterIterable) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { $&quot;log(n) {Multiply} li(n) = log(n) {Multiply} n / log(n) = n&quot; },
+                    ThetaN, 3, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    StandardDoubleAnswers,
+                    GetForLoop() +
+                    GetInnerForLoop(OuterIterable, MultiplyEqual) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Логарифм факториала, Формула Стирлинга&quot; },
+                    ThetaNLogN, 3, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    DifficultDoubleAnswers,
+                    GetForLoop(increment: MultiplyEqual) +
+                    GetInnerForLoop(OuterIterable, MultiplyEqual) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Независимые циклы&quot; },
+                    ThetaLog2N, 2, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    new[] { ThetaLogNLogLogN, ThetaN, ThetaNLogN },
+                    GetForLoop(increment: MultiplyEqual) +
+                    GetInnerForLoop(OuterIterable, MultiplyEqual, OuterIterable) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Cмена основания логарифма и частичная сумма гармонического ряда&quot; },
+                    ThetaLogNLogLogN, 3, Question),
+
+                new TemplateTaskGenerator(
+                    Guid.NewGuid(),
+                    DifficultDoubleAnswers,
+                    GetForLoop(increment: MultiplyEqual) +
+                    GetInnerForLoop(OuterIterable, MultiplyEqual) +
+                    &quot;\t&quot; + SimpleOperation,
+                    new[] { &quot;Арифметическая прогрессия&quot; }, ThetaLog2N, 2, Question)
+            };
+
+            var hardDoubleLoopsLevel = new Level(
+                Guid.NewGuid(),
+                &quot;Двойные Циклы (Часть 2)&quot;,
+                hardDoubleLoops,
+                new Guid[0]);
+
+            var simpleDoubleLoopsLevel = new Level(
+                Guid.NewGuid(),
+                &quot;Двойные Циклы (Часть 1)&quot;,
+                simpleDoubleLoops,
+                new[] { hardDoubleLoopsLevel.Id });
+
+            var singleLoopsLevel = new Level(
+                Guid.NewGuid(),
+                &quot;Циклы&quot;,
+                singleLoops,
+                new[] { simpleDoubleLoopsLevel.Id });
+
+            var topic = new Topic(
+                Guid.NewGuid(),
+                &quot;Сложность алгоритмов&quot;,
+                &quot;Описание: Задачи на разные алгоритмы и разные сложности&quot;,
+                new[]
+                {
+                    singleLoopsLevel,
+                    simpleDoubleLoopsLevel,
+                    hardDoubleLoopsLevel
+                });
+
+            repository.InsertTopic(topic);
+        }
+
+        internal static string GetForLoop(
+            string iterable = OuterIterable,
+            string from = OuterFrom,
+            string comparision = OuterIterable + &quot; &lt; &quot; + OuterTo,
+            string increment = PlusEqual,
+            string incrementValue = OuterIteration) =&gt;
+            $&quot;for (var {iterable} = {from}; {comparision}; {iterable} {increment} {incrementValue})\n&quot;;
+
+        private static string GetInnerForLoop(
+            string upperBound = InnerTo,
+            string increment = PlusEqual,
+            string incrementValue = InnerIteration) =&gt;
+            $&quot;\t{GetForLoop(InnerIterable, InnerFrom, $&quot;{InnerIterable} &lt; {upperBound}&quot;, increment, incrementValue)}&quot;;
+
+        private static void DeleteTopics(ITaskRepository taskRepository)
+        {
+            var topics = taskRepository.GetTopics();
+            foreach (var topic in topics)
+                taskRepository.DeleteTopic(topic.Id);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[31,9,31,63,0],[32,9,32,64,0],[33,9,33,70,0],[34,9,34,70,0],[35,9,35,73,0],[36,9,36,72,0],[37,9,37,78,0],[38,9,38,85,0],[39,9,39,101,0],[41,9,41,116,0],[42,9,42,107,0],[43,9,43,111,0],[46,9,46,10,0],[47,13,47,38,0],[49,13,100,15,0],[102,13,147,15,0],[149,13,203,15,0],[205,13,209,30,0],[211,13,215,52,0],[217,13,221,54,0],[223,13,232,20,0],[234,13,234,43,0],[235,9,235,10,0],[243,13,243,103,0],[249,13,249,118,0],[252,9,252,10,0],[253,13,253,53,0],[254,13,254,20,0],[254,22,254,31,0],[254,32,254,34,0],[254,35,254,41,0],[255,17,255,54,0],[256,9,256,10,0]]);
+    </script>
+  </body>
+</html>

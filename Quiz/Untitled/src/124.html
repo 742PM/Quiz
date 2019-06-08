@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizrequestextendedservice\dto\taskdto.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace QuizRequestExtendedService.DTO
+{
+    public class TaskDTO
+    {
+        [JsonProperty(&quot;question&quot;)] public string Question { get; set; }
+        [JsonProperty(&quot;text&quot;)] public string Text { get; set; }
+        public IEnumerable&lt;string&gt; Answers { get; set; }
+        public bool HasHints { get; set; }
+
+        public TaskDTO(string question, string text, IEnumerable&lt;string&gt; answers, bool hasHints)
+        {
+            Question = question;
+            Text = text;
+            Answers = answers;
+            HasHints = hasHints;
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,61,8,65,0],[8,66,8,70,0],[9,53,9,57,0],[9,58,9,62,0],[10,46,10,50,0],[10,51,10,55,0],[11,32,11,36,0],[11,37,11,41,0],[13,9,13,97,0],[14,9,14,10,0],[15,13,15,33,0],[16,13,16,25,0],[17,13,17,31,0],[18,13,18,33,0],[19,9,19,10,0]]);
+    </script>
+  </body>
+</html>

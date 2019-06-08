@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\commands\selecttopiccommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Linq;
+using System.Threading.Tasks;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
+
+namespace QuizBotCore.Commands
+{
+    public class SelectTopicCommand : ICommand
+    {
+        public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
+        {
+            var chatId = chat.Id;
+            var topics = serviceManager.QuizService.GetTopics();
+            var keyboard = new InlineKeyboardMarkup(
+                topics
+                    .Select(x =&gt;
+                        new[]
+                        {
+                            InlineKeyboardButton
+                                .WithCallbackData(x.Name, x.Id.ToString())
+                        })
+            );
+            await client.SendPhotoAsync(chat.Id, serviceManager.Dialog.Messages.RequestForRotateDeviceGif, serviceManager.Dialog.Messages.RequestForRotateDevice);
+            await client.SendTextMessageAsync(chatId, serviceManager.Dialog.Messages.Welcome, replyMarkup: keyboard);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,10,0],[13,13,13,34,0],[14,13,14,65,0],[15,13,23,15,0],[18,25,22,26,0],[24,13,24,163,0],[25,13,25,118,0],[26,9,26,10,0]]);
+    </script>
+  </body>
+</html>

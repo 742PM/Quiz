@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizlevelmanager\controllers\proxycontroller.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using QuizRequestExtendedService;
+using QuizRequestExtendedService.DTO;
+
+namespace QuizLevelManager.Controllers
+{
+    [Route(&quot;proxy&quot;)]
+    [ApiController]
+    public class ProxyController : Controller
+    {
+        private readonly IQuizServiceExtended service;
+
+        public ProxyController(IQuizServiceExtended service)
+        {
+            this.service = service;
+        }
+
+        [HttpGet(&quot;topics&quot;)]
+        public ActionResult&lt;IEnumerable&lt;TopicDTO&gt;&gt; GetTopics() =&gt; Ok(service.GetTopics());
+
+        [HttpGet(&quot;{topicId}/levels&quot;)]
+        public ActionResult&lt;IEnumerable&lt;LevelDTO&gt;&gt; GetLevels(Guid topicId) =&gt; Ok(service.GetLevels(topicId));
+
+        [HttpGet(&quot;{topicId}/{levelId}/templateGenerators&quot;)]
+        public ActionResult&lt;IEnumerable&lt;AdminTemplateGeneratorDTO&gt;&gt; GetTemplateGenerators(Guid topicId, Guid levelId) =&gt;
+            Ok(service.GetTemplateGenerators(topicId, levelId));
+
+        [HttpPost(&quot;topic&quot;)]
+        public ActionResult&lt;Guid&gt; AddEmptyTopic([FromBody] EmptyTopicDTO topic) =&gt; Ok(service.AddEmptyTopic(topic));
+
+        [HttpDelete(&quot;topic/{topicId}&quot;)]
+        public ActionResult&lt;Guid&gt; DeleteTopic(Guid topicId)
+        {
+            service.DeleteTopic(topicId);
+            return Ok();
+        }
+
+        [HttpPost(&quot;{topicId}/level&quot;)]
+        public ActionResult&lt;Guid&gt; AddEmptyLevel(Guid topicId, [FromBody] EmptyLevelDTO level) =&gt; Ok(service.AddEmptyLevel(topicId, level));
+
+        [HttpDelete(&quot;{topicId}/level/{levelId}&quot;)]
+        public ActionResult&lt;Guid&gt; DeleteLevel(Guid topicId, Guid levelId)
+        {
+            service.DeleteLevel(topicId, levelId);
+            return Ok();
+        }
+
+        [HttpPost(&quot;{topicId}/{levelId}/templategenerator&quot;)]
+        public ActionResult&lt;Guid&gt; AddTemplateGenerator(Guid topicId, Guid levelId, [FromBody] TemplateGeneratorDTO generator) =&gt;
+            Ok(service.AddEmptyGenerator(topicId, levelId, generator));
+
+        [HttpDelete(&quot;{topicId}/{levelId}/generator/{generatorId}&quot;)]
+        public ActionResult&lt;Guid&gt; DeleteGenerator(Guid topicId, Guid levelId, Guid generatorId)
+        {
+            service.DeleteTemplateGenerator(topicId, levelId, generatorId);
+            return Ok();
+        }
+
+        [HttpPost(&quot;renderTask&quot;)]
+        public ActionResult&lt;TaskDTO&gt; RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator) =&gt; Ok(service.RenderTask(templateGenerator));
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,61,0],[16,9,16,10,0],[17,13,17,36,0],[18,9,18,10,0],[21,67,21,90,0],[24,79,24,109,0],[28,13,28,64,0],[31,84,31,116,0],[35,9,35,10,0],[36,13,36,42,0],[37,13,37,25,0],[38,9,38,10,0],[41,98,41,139,0],[45,9,45,10,0],[46,13,46,51,0],[47,13,47,25,0],[48,9,48,10,0],[52,13,52,71,0],[56,9,56,10,0],[57,13,57,76,0],[58,13,58,25,0],[59,9,59,10,0],[62,112,62,153,0]]);
+    </script>
+  </body>
+</html>

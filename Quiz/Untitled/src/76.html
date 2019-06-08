@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\application\selectors\randomtaskgeneratorselector.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Entities.TaskGenerators;
+using Infrastructure.Extensions;
+using Infrastructure.Result;
+
+namespace Application.Selectors
+{
+    public class RandomTaskGeneratorSelector : ITaskGeneratorSelector
+    {
+        private readonly Random random;
+
+        public RandomTaskGeneratorSelector(Random random)
+        {
+            this.random = random;
+        }
+
+        public Result&lt;TaskGenerator, Exception&gt; SelectGenerator(
+            IEnumerable&lt;TaskGenerator&gt; generators,
+            Dictionary&lt;Guid, int&gt; streaks)
+        {
+            var generatorsArray = generators as TaskGenerator[] ?? generators.ToArray();
+            return generatorsArray.Length == 0 
+                ? new ArgumentOutOfRangeException(nameof(generators), $&quot;{nameof(generators)} must be not empty&quot;) 
+                : generatorsArray[random.Next(generatorsArray.Length)].Ok();
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,58,0],[15,9,15,10,0],[16,13,16,34,0],[17,9,17,10,0],[22,9,22,10,0],[23,13,23,89,0],[24,13,26,77,0],[27,9,27,10,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\complexityweb\services\taskservice\uploading_taskservicecontroller.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.IO;
+using Application.DTO;
+using Hjson;
+using Infrastructure;
+using Infrastructure.Extensions;
+using Infrastructure.Result;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
+using MongoDB.Bson;
+using static Hjson.HjsonValue;
+
+namespace QuizWebApp.Services.TaskService
+{
+    public partial class TaskServiceController
+    {
+        //TODO: add authentication
+
+        /// &lt;summary&gt;
+        ///     Загружает тему в формате HJSON в БД, автоматически проставляя ей айди.
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        ///     Sample request:
+        ///     &lt;code&gt;
+        ///     POST service/hjsonTopic
+        ///     &quot;{
+        ///      name: Пустая тема
+        ///      description: Очень пустая
+        ///      levels: []
+        ///      }&quot;
+        ///     &lt;/code&gt;
+        /// &lt;/remarks&gt;
+        /// &lt;response code=&quot;200&quot;&gt; Возвращает айди топика, добавленного в БД&lt;/response&gt;
+        [HttpPost(&quot;hjsonTopic&quot;)] //TODO: add authentication
+        public ActionResult&lt;Guid&gt; UploadTopic([FromBody] string rawData)
+        {
+             var id =  rawData.ConvertToJson()
+                .Select(j =&gt; j.Deserialize&lt;TopicDto&gt;())
+                .Select(UploadTopic);
+             return id.HasNoValue ? BadRequest(&quot;Can not parse HJson&quot;) : id.Value;
+        }
+
+        /// &lt;summary&gt;
+        ///     Получить весь топик в формате HJSON без айди
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        ///     Sample request:
+        ///     &lt;code&gt;
+        ///     GET service/4fab29a7-d536-4bad-aae1-d22a5255558c/hjsonTopic
+        ///     &lt;/code&gt;
+        /// &lt;/remarks&gt;
+        /// &lt;response code=&quot;200&quot;&gt; Возвращает топик в формате HJSON&lt;/response&gt;
+        /// &lt;response code=&quot;404&quot;&gt; Id темы не найдены&lt;/response&gt;
+        [HttpGet(&quot;{topicId}/hjsonTopic&quot;)]
+        public ActionResult&lt;string&gt; GetTopicHJson(Guid topicId)
+        {
+            var (_, isFailure, value, error) =
+                applicationApi.GetFullTopic(topicId)
+                    .Map(t =&gt; t.Serialize())
+                    .Map(json =&gt; Load(new StringReader(json)))
+                    .Map(h =&gt; h.ToString(Stringify.Hjson));
+            if (isFailure)
+                return NotFound(error.Message);
+
+            return Ok(value);
+        }
+
+        /// &lt;summary&gt;
+        ///     Загружает тему в формате JSON в БД, автоматически проставляя ей айди.
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        ///     Sample request:
+        ///     &lt;code&gt;
+        ///     POST service/jsonTopic
+        ///     {
+        ///        name: Пустая тема
+        ///        description: Очень пустая
+        ///        levels: []
+        ///     }
+        ///     &lt;/code&gt;
+        /// &lt;/remarks&gt;
+        /// &lt;response code=&quot;200&quot;&gt; Возвращает айди топика, добавленного в БД&lt;/response&gt;
+        [HttpPost(&quot;jsonTopic&quot;)]
+        public ActionResult&lt;Guid&gt; UploadTopic([FromBody] TopicDto topic)
+        {
+            return topic.AndThen(t =&gt; applicationApi.AddTopic(t))
+                .AndThen(i =&gt; Ok(i));
+        }
+
+        /// &lt;summary&gt;
+        ///     Получить тему без айди в нем
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        ///     Sample request:
+        ///     &lt;code&gt;
+        ///     GET service/4fab29a7/jsonTopic-d536-4bad-aae1-d22a5255558c
+        ///     &lt;/code&gt;
+        /// &lt;/remarks&gt;
+        /// &lt;response code=&quot;200&quot;&gt; Возвращает тему в формате JSON&lt;/response&gt;
+        /// &lt;response code=&quot;404&quot;&gt; Id темы не найдены&lt;/response&gt;
+        [HttpGet(&quot;{topicId}/jsonTopic&quot;)]
+        public ActionResult&lt;TopicDto&gt; GetTopic(Guid topicId)
+        {
+            var (_, isFailure, topic, error) = applicationApi.GetFullTopic(topicId);
+
+            return isFailure ? (ActionResult&lt;TopicDto&gt;) NotFound(error.Message) : Ok(topic);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[36,9,36,10,0],[37,14,38,30,0],[38,30,38,55,0],[38,55,39,38,0],[37,14,39,38,0],[40,14,40,82,0],[41,9,41,10,0],[56,9,56,10,0],[57,13,59,31,0],[59,31,59,44,0],[59,44,60,34,0],[60,34,60,62,0],[60,62,61,31,0],[61,31,61,58,0],[61,58,61,60,0],[57,13,61,60,0],[62,13,62,27,0],[63,17,63,48,0],[65,13,65,30,0],[66,9,66,10,0],[85,9,85,10,0],[86,13,86,39,0],[86,39,86,65,0],[86,65,87,31,0],[87,31,87,36,0],[87,36,87,38,0],[86,13,87,38,0],[88,9,88,10,0],[103,9,103,10,0],[104,13,104,85,0],[106,13,106,27,0],[107,17,107,48,0],[109,13,109,30,0],[110,9,110,10,0]]);
+    </script>
+  </body>
+</html>

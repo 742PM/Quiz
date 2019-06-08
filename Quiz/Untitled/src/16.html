@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\complexityweb\services\quizservice\dto\taskinfodto.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Newtonsoft.Json;
+
+namespace QuizWebApp.Services.QuizService.DTO
+{
+    public class TaskInfoDTO
+    {
+        public TaskInfoDTO(string question, string[] answers, bool hasHints, string text)
+        {
+            Question = question;
+            Answers = answers;
+            HasHints = hasHints;
+            Text = text;
+        }
+
+        [JsonProperty(&quot;question&quot;)] public string Question { get; }
+        [JsonProperty(&quot;answers&quot;)] public string[] Answers { get; }
+        [JsonProperty(&quot;hasHints&quot;)] public bool HasHints { get; }
+        [JsonProperty(&quot;text&quot;)]  public string Text { get; }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,9,7,90,0],[8,9,8,10,0],[9,13,9,33,0],[10,13,10,31,0],[11,13,11,33,0],[12,13,12,25,0],[13,9,13,10,0],[15,61,15,65,0],[16,61,16,65,0],[17,59,17,63,0],[18,54,18,58,0]]);
+    </script>
+  </body>
+</html>

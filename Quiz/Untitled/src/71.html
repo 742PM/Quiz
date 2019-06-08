@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\ddd\value.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Infrastructure.DDD
+{
+    public abstract class Value
+    {
+        protected abstract IEnumerable&lt;object&gt; GetEqualityComponents();
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (GetType() != obj.GetType())
+                return false;
+
+            var valueObject = (Value) obj;
+
+            return GetEqualityComponents()
+                .SequenceEqual(valueObject.GetEqualityComponents());
+        }
+
+        public override int GetHashCode()
+        {
+            return GetEqualityComponents()
+                .Aggregate(1, (current, obj) =&gt;
+                {
+                    unchecked
+                    {
+                        return current * 23 + (obj?.GetHashCode() ?? 0);
+                    }
+                });
+        }
+
+        public static bool operator ==(Value a, Value b)
+        {
+            if (ReferenceEquals(a, null) &amp;&amp; ReferenceEquals(b, null))
+                return true;
+
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+                return false;
+
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Value a, Value b) =&gt; !(a == b);
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,10,0],[12,13,12,29,0],[13,17,13,30,0],[15,13,15,44,0],[16,17,16,30,0],[18,13,18,43,0],[20,13,21,69,0],[22,9,22,10,0],[25,9,25,10,0],[26,13,28,17,0],[28,17,28,18,0],[28,18,30,21,0],[30,21,30,22,0],[30,22,31,25,0],[31,25,31,73,0],[31,73,33,17,0],[33,17,33,18,0],[33,18,33,20,0],[26,13,33,20,0],[34,9,34,10,0],[37,9,37,10,0],[38,13,38,70,0],[39,17,39,29,0],[41,13,41,70,0],[42,17,42,30,0],[44,13,44,32,0],[45,9,45,10,0],[47,61,47,70,0]]);
+    </script>
+  </body>
+</html>

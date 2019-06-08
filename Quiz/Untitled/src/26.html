@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\progressbar\circleprogressbar.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace QuizBotCore.ProgressBar
+{
+    internal class CircleProgressBar : IProgressBar
+    {
+        public string GenerateProgressBar(int solved, int total)
+        {
+            return new string(ButtonNames.ProgressFilled, solved)
+                .PadRight(total, ButtonNames.ProgressEmpty);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[6,9,6,10,0],[7,13,8,61,0],[9,9,9,10,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\parser\messageparser.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using Infrastructure.Extensions;
+using Microsoft.Extensions.Logging;
+using QuizBotCore.States;
+using QuizBotCore.Transitions;
+using QuizRequestService;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+
+namespace QuizBotCore.Parser
+{
+    public class MessageParser : IMessageParser
+    {
+        public Transition Parse(State currentState, Update update, IQuizService quizService, ILogger logger)
+        {
+            if (update.Type == UpdateType.Message)
+                switch (update.Message.Text)
+                {
+                    case UserCommands.Help:
+                        return new HelpTransition();
+                    case UserCommands.Feedback:
+                        return new FeedbackTransition();
+                }
+            
+            switch (currentState)
+            {
+                case UnknownUserState _:
+                    return UnknownUserStateParser(update);
+                case TopicSelectionState _:
+                    return TopicSelectionStateParser(update);
+                case LevelSelectionState state:
+                    return LevelSelectionStateParser(state, update, quizService, logger);
+                case TaskState _:
+                    return TaskStateParser(update, quizService, logger);
+                case ReportState _:
+                    return ReportStateParser(update);
+            }
+            return new InvalidTransition();
+        }
+
+        private Transition ReportStateParser(Update update)
+        {
+            switch (update.Type)
+            {
+                case UpdateType.Message:
+                {
+                    return new ReplyReportTransition(update.Message.MessageId);
+                }
+                case UpdateType.CallbackQuery:
+                {
+                    var callbackData = update.CallbackQuery.Data;
+                    if (callbackData == StringCallbacks.Cancel)
+                        return new CancelTransition();
+                    break;
+                }
+            }
+            
+            return new InvalidTransition();
+        }
+
+        private Transition TaskStateParser(Update update, IQuizService quizService, ILogger logger)
+        {
+            switch (update.Type)
+            {
+                case UpdateType.CallbackQuery:
+                {
+                    var callbackData = update.CallbackQuery.Data;
+                    switch (callbackData)
+                    {
+                        case StringCallbacks.Back:
+                            return new BackTransition();
+                        case StringCallbacks.Hint:
+                            return new ShowHintTransition();
+                        case var t when t.StartsWith(StringCallbacks.Report):
+                            return HandleReportCallback(t, quizService, logger);
+                        default:
+                            return new CorrectTransition(callbackData);
+                    }
+                }
+
+            }
+
+            return new InvalidTransition();
+        }
+
+        private ReportTransition HandleReportCallback(string callback, IQuizService quizService, ILogger logger)
+        {
+            var (_, message, topicId, levelId) = callback.Split(&#39;\n&#39;).ToArray();
+            var messageId = int.Parse(message);
+            logger.LogInformation($&quot;topicId: {topicId}&quot;);
+            logger.LogInformation($&quot;levelId: {levelId}&quot;);
+            var topidGuid = new Guid(Convert.FromBase64String(topicId));
+            var levelGuid = new Guid(Convert.FromBase64String(levelId));
+            logger.LogInformation($&quot;topicId: {topidGuid.ToString()}&quot;);
+            logger.LogInformation($&quot;levelId: {levelGuid.ToString()}&quot;);
+            var topicDto = quizService.GetTopics().FirstOrDefault(x =&gt; x.Id == topidGuid);
+            var levelDto = quizService.GetLevels(topicDto.Id)
+                .FirstOrDefault(x =&gt; x.Id == levelGuid);
+            return new ReportTransition(messageId, topicDto, levelDto);
+        }
+
+        private Transition LevelSelectionStateParser(LevelSelectionState state, Update update, 
+            IQuizService quizService, ILogger logger)
+        {
+            logger.LogInformation($&quot;Update Type: {update.Type}&quot;);
+            switch (update.Type)
+            {
+                case UpdateType.Message:
+                {
+                    logger.LogInformation($&quot;Parsed message: {update.Message.Text}&quot;);
+                    return ParseLevel(state, update, quizService, logger);
+                }
+                case UpdateType.CallbackQuery:
+                {
+                    var callbackData = update.CallbackQuery.Data;
+                    logger.LogInformation($&quot;Parsed callback: {callbackData}&quot;);
+                    if (callbackData == StringCallbacks.Back)
+                        return new BackTransition();
+                    return new InvalidTransition();
+                }
+            }
+            return new InvalidTransition();
+        }
+
+        private Transition ParseLevel(LevelSelectionState state, Update update, 
+            IQuizService quizService, ILogger logger)
+        {
+            var message = update.Message.Text;
+            if (message.Contains(UserCommands.Level))
+            {
+                var levelId = message.Replace(UserCommands.Level, &quot;&quot;);
+                if (int.TryParse(levelId, out var index))
+                {
+                    logger.LogInformation($&quot;levelId: {index}&quot;);
+                    var level = quizService.GetLevels(state.TopicDto.Id).ElementAt(index);
+                    logger.LogInformation($&quot;level: {level.Id}&quot;);
+                    return new CorrectTransition(level.Id.ToString());
+                }
+                return new InvalidTransition();
+            }
+            return new InvalidTransition();
+        }
+
+        private Transition TopicSelectionStateParser(Update update)
+        {
+            if (update.Type == UpdateType.CallbackQuery)
+            {
+                var callbackData = update.CallbackQuery.Data;
+                if (callbackData == StringCallbacks.Back)
+                    return new BackTransition();
+                return new CorrectTransition(callbackData);
+            }
+            
+            return new InvalidTransition();
+        }
+
+        private Transition UnknownUserStateParser(Update update)
+        {
+            return new BackTransition();
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,10,0],[17,13,17,51,0],[18,17,18,45,0],[21,25,21,53,0],[23,25,23,57,0],[26,13,26,34,0],[29,21,29,59,0],[31,21,31,62,0],[33,21,33,90,0],[35,21,35,73,0],[37,21,37,54,0],[39,13,39,44,0],[40,9,40,10,0],[43,9,43,10,0],[44,13,44,33,0],[47,17,47,18,0],[48,21,48,80,0],[51,17,51,18,0],[52,21,52,66,0],[53,21,53,64,0],[54,25,54,55,0],[55,21,55,27,0],[59,13,59,44,0],[60,9,60,10,0],[63,9,63,10,0],[64,13,64,33,0],[67,17,67,18,0],[68,21,68,66,0],[69,21,69,42,0],[72,29,72,57,0],[74,29,74,61,0],[75,36,75,77,0],[76,29,76,81,0],[78,29,78,72,0],[84,13,84,44,0],[85,9,85,10,0],[88,9,88,10,0],[89,13,89,81,0],[90,13,90,48,0],[91,13,91,58,0],[92,13,92,58,0],[93,13,93,73,0],[94,13,94,73,0],[95,13,95,71,0],[96,13,96,71,0],[97,13,97,72,0],[97,72,97,89,0],[97,89,97,91,0],[97,13,97,91,0],[98,13,99,38,0],[99,38,99,55,0],[99,55,99,57,0],[98,13,99,57,0],[100,13,100,72,0],[101,9,101,10,0],[105,9,105,10,0],[106,13,106,66,0],[107,13,107,33,0],[110,17,110,18,0],[111,21,111,85,0],[112,21,112,75,0],[115,17,115,18,0],[116,21,116,66,0],[117,21,117,79,0],[118,21,118,62,0],[119,25,119,53,0],[120,21,120,52,0],[123,13,123,44,0],[124,9,124,10,0],[128,9,128,10,0],[129,13,129,47,0],[130,13,130,54,0],[131,13,131,14,0],[132,17,132,71,0],[133,17,133,58,0],[134,17,134,18,0],[135,21,135,64,0],[136,21,136,91,0],[137,21,137,65,0],[138,21,138,71,0],[140,17,140,48,0],[142,13,142,44,0],[143,9,143,10,0],[146,9,146,10,0],[147,13,147,57,0],[148,13,148,14,0],[149,17,149,62,0],[150,17,150,58,0],[151,21,151,49,0],[152,17,152,60,0],[155,13,155,44,0],[156,9,156,10,0],[159,9,159,10,0],[160,13,160,41,0],[161,9,161,10,0]]);
+    </script>
+  </body>
+</html>

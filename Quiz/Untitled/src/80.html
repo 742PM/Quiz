@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\application\repositories\entities\userentity.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Infrastructure.DDD;
+
+namespace Application.Repositories.Entities
+{
+    public class UserEntity : Entity
+    {
+        public UserEntity(Guid id) : base(id)
+        {
+        }
+
+        public UserEntity(Guid id, UserProgressEntity userProgressEntity) : base(id)
+        {
+            UserProgressEntity = userProgressEntity;
+        }
+
+        public UserProgressEntity UserProgressEntity { get; }
+
+        /// &lt;inheritdoc /&gt;
+        public override string ToString() =&gt; $&quot;{base.ToString()}, {nameof(UserProgressEntity)}: {UserProgressEntity}&quot;;
+
+        public UserEntity With(UserProgressEntity userProgress) =&gt; new UserEntity(Id, userProgress);
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,38,8,46,0],[9,9,9,10,0],[10,9,10,10,0],[12,77,12,85,1],[13,9,13,10,1],[14,13,14,53,1],[15,9,15,10,1],[17,56,17,60,1],[20,46,20,118,0],[22,68,22,100,1]]);
+    </script>
+  </body>
+</html>

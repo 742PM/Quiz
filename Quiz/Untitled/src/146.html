@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\domain\entities\taskgenerators\templatelanguage.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using Infrastructure.Extensions;
+using Scriban.Runtime;
+
+namespace Domain.Entities.TaskGenerators
+{
+    public partial class TemplateLanguage
+    {
+        public const string Theta = &quot;Θ&quot;;
+        
+        
+        public const string Pow2 = &quot;&#178;&quot;;
+        public const string Pow3 = &quot;&#179;&quot;;
+        public const string Pow4 = &quot;⁴&quot;;
+        
+        public const string Sqrt = &quot;√&quot;;
+        public const string Multiply = &quot;∙&quot;;
+        
+        public static readonly string Theta1 = $&quot;{Theta}(1)&quot;;
+        public static readonly string ThetaN = $&quot;{Theta}(n)&quot;;
+        public static readonly string ThetaN2 = $&quot;{Theta}(n{Pow2})&quot;;
+        public static readonly string ThetaN3 = $&quot;{Theta}(n{Pow3})&quot;;
+        public static readonly string ThetaSqrtN = $&quot;{Theta}({Sqrt}n)&quot;;
+        public static readonly string ThetaLogN = $&quot;{Theta}(log(n))&quot;;
+        public static readonly string ThetaLog2N = $&quot;{Theta}(log{Pow2}(n))&quot;;
+        public static readonly string ThetaNLogN = $&quot;{Theta}(n {Multiply} log(n))&quot;;
+        public static readonly string ThetaLogNLogLogN = $&quot;{Theta}(log(n) {Multiply} log(log(n)))&quot;;
+
+        /// &lt;summary&gt;
+        ///     This method is going to be called in another part of the type.
+        ///     Use &lt;see cref=&quot;TemplateLanguage.AddMethod&quot; /&gt; to add methods you want to be part of language if they have some
+        ///     randomness in it;
+        ///     All desired methods should take &lt;see cref=&quot;System.Random&quot; /&gt; as their first parameter;
+        ///     Mark them with &lt;see cref=&quot;ScriptMemberIgnoreAttribute&quot; /&gt;
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;random&quot;&gt;You should pass it to &lt;see cref=&quot;TemplateLanguage.AddMethod&quot; /&gt; &lt;/param&gt;
+        /// &lt;param name=&quot;so&quot;&gt;You should pass it to &lt;see cref=&quot;TemplateLanguage.AddMethod&quot; /&gt;&lt;/param&gt;
+        private static void AddMethods(Random random, ScriptObject so)
+        {
+            AddMethod&lt;object, ScriptArray&gt;(AnyOf, random, so);
+            AddInstanceMethod&lt;object, string&gt;(GetLoopBody, random, so);
+            AddMethod&lt;int, int, int&gt;(Random, random, so);
+        }
+
+        /// &lt;summary&gt;
+        ///     EXAMPLE USAGE:
+        ///         {{get_loop_body from1}}
+        /// &lt;/summary&gt;
+        [ScriptMemberIgnore]
+        public static object GetLoopBody(Random random,ScriptObject so, string value) =&gt;
+            AnyOf(random, new ScriptArray(values: new[]
+            {
+                $@&quot;if ({value} % {so[&quot;iter1&quot;]} == 0)
+                        Console.WriteLine({value});&quot;,
+                $@&quot;if ({value} &gt; {so[&quot;const5&quot;]})
+                        Console.WriteLine({value});&quot;,
+                $@&quot;if ({value} &lt; {so[&quot;const5&quot;]}) 
+                        Console.WriteLine({value});&quot;,
+                $@&quot;if ({value} &gt;= {so[&quot;const5&quot;]}) 
+                        Console.WriteLine({value});&quot;,
+                $@&quot;if ({value} &lt;= {so[&quot;const5&quot;]}) 
+                        Console.WriteLine({value});&quot;,
+                $@&quot;if ({value} % {so[&quot;iter1&quot;]} == 0) Console.WriteLine(&quot;&quot;DEBUG!!!&quot;&quot;);&quot;,
+                $@&quot;if ({value} &gt; {so[&quot;const5&quot;]}) 
+                        Console.WriteLine({value}.ToString() + &quot;&quot; is more than {so[&quot;const5&quot;]}&quot;&quot;);&quot;,
+                $@&quot;if ({value} &lt; {so[&quot;const5&quot;]})
+                        Console.WriteLine({value}.ToString() + &quot;&quot; is less than {so[&quot;const5&quot;]}&quot;&quot;);&quot;,
+                $@&quot;Console.WriteLine({value})&quot;,
+                &quot;Console.WriteLine(\&quot;Hello User!\&quot;)&quot;,
+                &quot;Console.WriteLine(\&quot;Hello!\&quot;)&quot;,
+                &quot;Console.WriteLine(\&quot;Hi there!\&quot;)&quot;,
+                &quot;Console.WriteLine(\&quot;Hello there!\&quot;)&quot;,
+                $@&quot;count += {so[&quot;from1&quot;]};&quot;,
+                &quot;count++;&quot;,
+                $@&quot;c += {so[&quot;from1&quot;]};&quot;,
+                &quot;c++;&quot;
+            }.Select(x=&gt;x+ &quot;\t\t// ←  Θ(1)&quot;)));
+
+        /// &lt;summary&gt;
+        ///     You can define properties and fields that will be able to be used in templates;
+        /// &lt;/summary&gt;
+        [ScriptMemberIgnore]
+        public static int Random(Random random, int from, int to)
+        {
+            return random.Next(from, to);
+        }
+
+        /// &lt;summary&gt;
+        ///     This is an example of a method that is possible to be used in templates;
+        /// &lt;/summary&gt;
+        [ScriptMemberIgnore]
+        public static object AnyOf(Random random, ScriptArray array)
+        {
+            return array[random.Next(array.Count)];
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,62,1],[21,9,21,62,1],[22,9,22,69,1],[23,9,23,69,1],[24,9,24,72,1],[25,9,25,70,1],[26,9,26,77,1],[27,9,27,84,1],[28,9,28,100,1],[40,9,40,10,1],[41,13,41,63,1],[42,13,42,72,1],[43,13,43,58,1],[44,9,44,10,1],[52,13,78,25,1],[78,25,78,44,1],[78,44,78,47,1],[52,13,78,47,1],[85,9,85,10,1],[86,13,86,42,1],[87,9,87,10,1],[94,9,94,10,1],[95,13,95,52,1],[96,9,96,10,1]]);
+    </script>
+  </body>
+</html>

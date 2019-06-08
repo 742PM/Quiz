@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\database\fillers\program.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DataBase
+{
+    internal static class Program
+    {
+        public static void Main(string[] args)
+        {
+            var fillers = new List&lt;IDatabaseFiller&gt; { new ReworkedComplexityFiller(), new HistoryDatabaseFiller() };
+            var username = Environment.GetEnvironmentVariable(&quot;MONGO_USERNAME&quot;);
+            if (username == null)
+            {
+                Console.Write(&quot;Username: &quot;);
+                username = Console.ReadLine();
+            }
+            var password = Environment.GetEnvironmentVariable(&quot;MONGO_PASSWORD&quot;);
+            if (password == null)
+            {
+                Console.Write(&quot;Password: &quot;);
+                password = Console.ReadLine();
+            }
+            var repository = CreateRepository(username, password);
+            fillers.ForEach(r =&gt; r.Fill(repository));
+        }
+
+        private static MongoTaskRepository CreateRepository(string username, string password)
+        {
+            var db = MongoDatabaseInitializer.CreateMongoDatabase(&quot;ComplexityBot&quot;, username, password);
+            return new MongoTaskRepository(db);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,10,0],[11,13,11,117,0],[12,13,12,81,0],[13,13,13,34,0],[14,13,14,14,0],[15,17,15,45,0],[16,17,16,47,0],[17,13,17,14,0],[18,13,18,81,0],[19,13,19,34,0],[20,13,20,14,0],[21,17,21,45,0],[22,17,22,47,0],[23,13,23,14,0],[24,13,24,67,0],[25,13,25,34,0],[25,34,25,52,0],[25,52,25,54,0],[25,13,25,54,0],[26,9,26,10,0],[29,9,29,10,0],[30,13,30,104,0],[31,13,31,48,0],[32,9,32,10,0]]);
+    </script>
+  </body>
+</html>

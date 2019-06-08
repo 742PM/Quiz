@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizrequestservice\dto\taskdto.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+
+namespace QuizRequestService.DTO
+{
+    public class TaskDTO
+    {
+        public string Question { get; set; }
+        public string Text { get; set; }
+        public IEnumerable&lt;string&gt; Answers { get; set; }
+        public bool HasHints { get; set; }
+
+        public TaskDTO(string question, IEnumerable&lt;string&gt; answers, bool hasHints, string text)
+        {
+            Question = question;
+            Text = text;
+            Answers = answers;
+            HasHints = hasHints;
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,34,7,38,0],[7,39,7,43,0],[8,30,8,34,0],[8,35,8,39,0],[9,46,9,50,0],[9,51,9,55,0],[10,32,10,36,0],[10,37,10,41,0],[12,9,12,97,0],[13,9,13,10,0],[14,13,14,33,0],[15,13,15,25,0],[16,13,16,31,0],[17,13,17,33,0],[18,9,18,10,0]]);
+    </script>
+  </body>
+</html>

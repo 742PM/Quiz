@@ -40,9 +40,31 @@ namespace Domain.Entities.TaskGenerators
         {
             AddMethod<object, ScriptArray>(AnyOf, random, so);
             AddInstanceMethod<object, string>(GetLoopBody, random, so);
+            AddInstanceMethod<object,string ,string>(GetLoopBodyWithDependentVar, random, so);
             AddMethod<int, int, int>(Random, random, so);
         }
 
+        /// <summary>
+        ///     EXAMPLE USAGE:
+        ///         {{get_loop_body_with_dependent_var from1 iter3}}
+        /// </summary>
+        [ScriptMemberIgnore]
+        public static object GetLoopBodyWithDependentVar(Random random, ScriptObject so, string first, string second)
+        {
+            return AnyOf(random, new ScriptArray(values: new[]
+            {
+$@"if ({first} % {so["iter1"]} == 0) 
+    {second}++;",
+$@"if ({first} % {so["iter1"]} == 0) 
+    {second} += {first};",
+$@"if ({first} > {so["iter1"]})
+    {second} = {first};",
+$@"if ({first} >= {so["iter1"]}) 
+    {second} = {first};",
+$@"if ({first} == {so["iter1"]}) 
+    {second}++;",
+            }.Select(x => x + "\t\t// ←  Θ(1)")));
+        }
         /// <summary>
         ///     EXAMPLE USAGE:
         ///         {{get_loop_body from1}}
@@ -50,31 +72,31 @@ namespace Domain.Entities.TaskGenerators
         [ScriptMemberIgnore]
         public static object GetLoopBody(Random random,ScriptObject so, string value) =>
             AnyOf(random, new ScriptArray(values: new[]
-            {
-                $@"if ({value} % {so["iter1"]} == 0)
-                        Console.WriteLine({value});",
-                $@"if ({value} > {so["const5"]})
-                        Console.WriteLine({value});",
-                $@"if ({value} < {so["const5"]}) 
-                        Console.WriteLine({value});",
-                $@"if ({value} >= {so["const5"]}) 
-                        Console.WriteLine({value});",
-                $@"if ({value} <= {so["const5"]}) 
-                        Console.WriteLine({value});",
-                $@"if ({value} % {so["iter1"]} == 0) Console.WriteLine(""DEBUG!!!"");",
-                $@"if ({value} > {so["const5"]}) 
-                        Console.WriteLine({value}.ToString() + "" is more than {so["const5"]}"");",
-                $@"if ({value} < {so["const5"]})
-                        Console.WriteLine({value}.ToString() + "" is less than {so["const5"]}"");",
-                $@"Console.WriteLine({value})",
-                "Console.WriteLine(\"Hello User!\")",
-                "Console.WriteLine(\"Hello!\")",
-                "Console.WriteLine(\"Hi there!\")",
-                "Console.WriteLine(\"Hello there!\")",
-                $@"count += {so["from1"]};",
-                "count++;",
-                $@"c += {so["from1"]};",
-                "c++;"
+        {
+$@"if ({value} % {so["iter1"]} == 0)
+    Console.WriteLine({value});",
+$@"if ({value} > {so["const5"]})
+    Console.WriteLine({value});",
+$@"if ({value} < {so["const5"]}) 
+    Console.WriteLine({value});",
+$@"if ({value} >= {so["const5"]}) 
+    Console.WriteLine({value});",
+$@"if ({value} <= {so["const5"]}) 
+    Console.WriteLine({value});",
+$@"if ({value} % {so["iter1"]} == 0) Console.WriteLine(""DEBUG!!!"");",
+$@"if ({value} > {so["const5"]}) 
+    Console.WriteLine({value}.ToString() + "" is more than {so["const5"]}"");",
+$@"if ({value} < {so["const5"]})
+    Console.WriteLine({value}.ToString() + "" is less than {so["const5"]}"");",
+$@"Console.WriteLine({value})",
+"Console.WriteLine(\"Hello User!\")",
+"Console.WriteLine(\"Hello!\")",
+"Console.WriteLine(\"Hi there!\")",
+"Console.WriteLine(\"Hello there!\")",
+$@"count += {so["from1"]};",
+"count++;",
+$@"c += {so["from1"]};",
+"c++;"
             }.Select(x=>x+ "\t\t// ←  Θ(1)")));
 
         /// <summary>

@@ -96,6 +96,14 @@ namespace Domain.Entities.TaskGenerators
             so.Import(method.Method.Name.ToSnakeCase(),
                 new Func<TIn1, TOut>(first => method(random,so ,first )));
         }
+        private static void AddInstanceMethod<TOut, TIn1,TIn2>(
+            Func<Random, ScriptObject, TIn1,TIn2, TOut> method,
+            Random random,
+            ScriptObject so)
+        {
+            so.Import(method.Method.Name.ToSnakeCase(),
+                new Func<TIn1,TIn2, TOut>((first,second) => method(random, so, first,second)));
+        }
 
         private static IEnumerable<(string, string)> GenerateLiteralSubstitutions(Random random)
         {

@@ -57,11 +57,11 @@ $@"if ({first} % {so["iter1"]} == 0)
         {second}++;",
 $@"if ({first} % {so["iter1"]} == 0) 
         {second} += {first};",
-$@"if ({first} > {so["iter1"]})
+$@"if ({first} > {second})
         {second} = {first};",
-$@"if ({first} >= {so["iter1"]}) 
+$@"if ({first} >= {second}) 
         {second} = {first};",
-$@"if ({first} == {so["iter1"]}) 
+$@"if ({first} == {second}) 
         {second}++;",
             }.Select(x => x + "\t\t// ←  Θ(1)")));
         }

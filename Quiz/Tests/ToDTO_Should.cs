@@ -16,7 +16,7 @@ namespace Tests
         {
             ((TopicDto) new Topic(Guid.NewGuid(), "t", "opic", new Level[0]))
                 .Should()
-                .BeEquivalentTo(new TopicDto {Name = "t", Description = "opic", Levels = new LevelDto[0]});
+                .BeEquivalentTo(new TopicDto {Name = "t", Description = "opic", Levels = new LevelDto<int>[0]});
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Tests
                 new Level(ids[3], "d", new TaskGenerator[0], new Guid[0])
             };
             ((TopicDto) new Topic(Guid.NewGuid(), "t", "opic", levels))
-                .Levels.Select(l => (n: l.Number, nl: l.NextLevels))
+                .Levels.Select(l => (n: l.Id, nl: l.NextLevels))
                 .ToArray()
                 .Should()
                 .BeEquivalentTo(new[]

@@ -10,12 +10,14 @@ using Application.TaskService;
 using AutoMapper;
 using DataBase;
 using Domain.Entities.TaskGenerators;
+using Infrastructure.Logger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using QuizWebApp.Services.QuizService.DTO;
 using QuizWebApp.Services.TaskService;
 using QuizWebApp.Services.TaskService.DTO;
@@ -40,6 +42,7 @@ namespace QuizWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc(o => o.InputFormatters.Insert(0, new RawRequestBodyFormatter())).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

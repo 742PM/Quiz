@@ -38,7 +38,7 @@ namespace QuizBotCore
             "задачи могут отображаться не самым комфортным образом. " +
             "Советуем повернуть ваш мобильный телефон в горизонтальное положение.";
 
-        public string RequestForRotateDeviceGif { get; private set; } = "https://i.imgur.com/KPxuZ8H.png";
+        public string RequestForRotateDeviceGif { get; private set; } = "https://i.imgur.com/H2ebNRg.png";
 
         public string ReportThanks { get; private set; } = "Спасибо за обратную связь. " +
                                                    "Мы обязательно рассмотрим ваше сообщение 🤙🏿";

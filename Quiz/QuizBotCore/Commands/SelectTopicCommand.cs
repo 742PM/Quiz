@@ -21,9 +21,8 @@ namespace QuizBotCore.Commands
                                 .WithCallbackData(x.Name, x.Id.ToString())
                         })
             );
-
-            await client.SendTextMessageAsync(chatId, serviceManager.Dialog.Messages.Welcome, replyMarkup: keyboard);
             await client.SendPhotoAsync(chat.Id, serviceManager.Dialog.Messages.RequestForRotateDeviceGif, serviceManager.Dialog.Messages.RequestForRotateDevice);
+            await client.SendTextMessageAsync(chatId, serviceManager.Dialog.Messages.Welcome, replyMarkup: keyboard);
         }
     }
 }

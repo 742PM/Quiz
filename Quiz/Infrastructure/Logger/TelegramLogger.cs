@@ -10,7 +10,6 @@ namespace Infrastructure.Logger
     {
         public LogLevel LogLevel { get; set; } = LogLevel.Warning;
         public int EventId { get; set; } = 0;
-        public ConsoleColor Color { get; set; } = ConsoleColor.Yellow;
     }
     class TelegramLogger : ILogger
     {
@@ -42,10 +41,7 @@ namespace Infrastructure.Logger
 
             if (config.EventId == 0 || config.EventId == eventId.Id)
             {
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = config.Color;
                 Console.WriteLine($"{logLevel.ToString()} - {eventId.Id} - {name} - {formatter(state, exception)}");
-                Console.ForegroundColor = color;
             }
         }
     }

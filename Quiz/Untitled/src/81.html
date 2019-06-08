@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\application\repositories\entities\userprogressentity.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using Infrastructure.DDD;
+
+namespace Application.Repositories.Entities
+{
+    public class UserProgressEntity : Entity
+    {
+        public UserProgressEntity(
+            Guid currentTopicId,
+            Guid currentLevelId,
+            Guid userId,
+            Dictionary&lt;Guid, TopicProgressEntity&gt; topicsProgress,
+            TaskInfoEntity currentTask,
+            Guid id) : base(id)
+        {
+            CurrentTopicId = currentTopicId;
+            CurrentLevelId = currentLevelId;
+            UserId = userId;
+            TopicsProgress = topicsProgress;
+            CurrentTask = currentTask;
+        }
+
+        public Guid CurrentTopicId { get; }
+        public Guid CurrentLevelId { get; }
+
+        public Guid UserId { get; }
+
+        /// &lt;summary&gt;
+        ///     Maps Topic Id to progress of the Topic
+        /// &lt;/summary&gt;
+        public Dictionary&lt;Guid, TopicProgressEntity&gt; TopicsProgress { get; }
+
+        /// &lt;inheritdoc /&gt;
+        public override string ToString() =&gt; $&quot;{base.ToString()}, {nameof(CurrentTopicId)}: {CurrentTopicId}, {nameof(CurrentLevelId)}: {CurrentLevelId}, {nameof(UserId)}: {UserId}, {nameof(TopicsProgress)}: {TopicsProgress}, {nameof(CurrentTask)}: {CurrentTask}&quot;;
+
+        public TaskInfoEntity CurrentTask { get; }
+
+        public UserProgressEntity With(
+            Guid? currentTopicId = default,
+            Guid? currentLevelId = default,
+            Guid? userId = default,
+            Dictionary&lt;Guid, TopicProgressEntity&gt; topicsProgress = default,
+            TaskInfoEntity currentTask = default) =&gt;
+            new UserProgressEntity(currentTopicId ?? CurrentTopicId, currentLevelId ?? CurrentLevelId, userId ?? UserId,
+                topicsProgress ?? TopicsProgress, currentTask ?? CurrentTask, Id);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,24,15,32,1],[16,9,16,10,1],[17,13,17,45,1],[18,13,18,45,1],[19,13,19,29,1],[20,13,20,45,1],[21,13,21,39,1],[22,9,22,10,1],[24,38,24,42,1],[25,38,25,42,1],[27,30,27,34,1],[32,71,32,75,1],[35,46,35,264,0],[37,45,37,49,1],[45,13,46,82,1]]);
+    </script>
+  </body>
+</html>

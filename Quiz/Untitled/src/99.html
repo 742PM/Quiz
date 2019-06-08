@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizwebhookbot\services\botservice.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Telegram.Bot;
+using System;
+using Microsoft.Extensions.Logging;
+
+namespace QuizWebHookBot.Services
+{
+    public class BotService : IBotService
+    {
+        private const string TelegramTokenVariableName = &quot;TELEGRAM_TOKEN&quot;;
+
+        public BotService(ILogger&lt;BotService&gt; logger)
+        {
+            var environmentVariable = Environment.GetEnvironmentVariable(TelegramTokenVariableName);
+            logger.LogInformation($&quot;Got token {environmentVariable}&quot;);
+            Client = new TelegramBotClient(environmentVariable ?? &quot;854957716:AAHjU_wFLwX5Sz23CV-9qs-kSYAcVqewERU&quot;);
+        }
+        
+        public TelegramBotClient Client { get; }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,54,0],[12,9,12,10,0],[13,13,13,101,0],[14,13,14,71,0],[15,13,15,116,0],[16,9,16,10,0],[18,43,18,47,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\result\resultfailureexception.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+
+namespace Infrastructure.Result
+{
+    public class ResultFailureException : Exception
+    {
+        internal ResultFailureException(string error) : base(ResultMessages.ValueIsInaccessibleForFailure)
+        {
+            Error = error;
+        }
+
+        public ResultFailureException() : base()
+        {
+        }
+
+        public ResultFailureException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        public string Error { get; }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,57,7,107,0],[8,9,8,10,0],[9,13,9,27,0],[10,9,10,10,0],[12,43,12,49,0],[13,9,13,10,0],[14,9,14,10,0],[16,83,16,112,0],[17,9,17,10,0],[18,9,18,10,0],[20,31,20,35,0]]);
+    </script>
+  </body>
+</html>

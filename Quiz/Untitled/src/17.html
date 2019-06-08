@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\complexityweb\services\quizservice\dto\topicinfodto.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Newtonsoft.Json;
+
+namespace QuizWebApp.Services.QuizService.DTO
+{
+    public class TopicInfoDTO
+    {
+        public TopicInfoDTO(string name, Guid id)
+        {
+            Name = name;
+            Id = id;
+        }
+
+        [JsonProperty(&quot;id&quot;)] public Guid Id { get; }
+
+        [JsonProperty(&quot;name&quot;)] public string Name { get; }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,9,8,50,0],[9,9,9,10,0],[10,13,10,25,0],[11,13,11,21,0],[12,9,12,10,0],[14,47,14,51,0],[16,53,16,57,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\application\selectors\primitivetaskgeneratorselector.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Entities.TaskGenerators;
+using Infrastructure.Result;
+
+namespace Application.Selectors
+{
+    [Obsolete]
+    public class PrimitiveTaskGeneratorSelector : ITaskGeneratorSelector
+    {
+        private int current;
+
+        public Result&lt;TaskGenerator, Exception&gt; SelectGenerator(
+            IEnumerable&lt;TaskGenerator&gt; generators,
+            Dictionary&lt;Guid, int&gt; streaks)
+        {
+            var taskGenerators = generators.ToArray();
+            var index = current % taskGenerators.Length;
+            current++;
+            return taskGenerators[index];
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,10,0],[18,13,18,55,0],[19,13,19,57,0],[20,13,20,23,0],[21,13,21,42,0],[22,9,22,10,0]]);
+    </script>
+  </body>
+</html>

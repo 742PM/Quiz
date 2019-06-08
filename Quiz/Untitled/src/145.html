@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\tests\mocks\testuserrepository.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using Application.Repositories;
+using Application.Repositories.Entities;
+
+namespace Tests.Mocks
+{
+    public class TestUserRepository : IUserRepository
+    {
+        private readonly Dictionary&lt;Guid, UserEntity&gt; users = new Dictionary&lt;Guid, UserEntity&gt;();
+
+        public UserEntity Insert(UserEntity user)
+        {
+            users[user.Id] = user;
+            return user;
+        }
+
+        public UserEntity FindById(Guid id) =&gt; users.TryGetValue(id, out var user) ? user : null;
+
+        public void Update(UserEntity user)
+        {
+            users[user.Id] = user;
+        }
+
+        public UserEntity UpdateOrInsert(UserEntity user)
+        {
+            Update(user);
+            return user;
+        }
+
+        public void Delete(Guid id)
+        {
+            users.Remove(id);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,98,1],[13,9,13,10,1],[14,13,14,35,1],[15,13,15,25,1],[16,9,16,10,1],[18,48,18,97,1],[21,9,21,10,1],[22,13,22,35,1],[23,9,23,10,1],[26,9,26,10,0],[27,13,27,26,0],[28,13,28,25,0],[29,9,29,10,0],[32,9,32,10,0],[33,13,33,30,0],[34,9,34,10,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\extensions\arrayextensions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+
+namespace Infrastructure.Extensions
+{
+    public static class ArrayExtensions
+    {
+        public static void Deconstruct&lt;T&gt;(this T[] array, out T first, out T second)
+        {
+            if (array is null)
+                throw new ArgumentException(&quot;Null can not be deconstructed&quot;);
+            if (array.Length != 2)
+                throw new ArgumentException($&quot;Amount of items in array is not 2 - it is {array.Length}&quot;);
+            first = array[0];
+            second = array[1];
+        }
+        public static void Deconstruct&lt;T&gt;(this T[] array, out T first, out T second, out T third)
+        {
+            if (array is null)
+                throw new ArgumentException(&quot;Null can not be deconstructed&quot;);
+            if (array.Length != 3)
+                throw new ArgumentException($&quot;Amount of items in array is not 3 - it is {array.Length}&quot;);
+            first = array[0];
+            second = array[1];
+            third = array[2];
+        }
+        public static void Deconstruct&lt;T&gt;(this T[] array, out T first, out T second, out T third, out T forth)
+        {
+            if (array is null)
+                throw new ArgumentException(&quot;Null can not be deconstructed&quot;);
+            if (array.Length != 4)
+                throw new ArgumentException($&quot;Amount of items in array is not 4 - it is {array.Length}&quot;);
+            first = array[0];
+            second = array[1];
+            third = array[2];
+            forth = array[3];
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,9,8,10,0],[9,13,9,31,0],[10,17,10,78,0],[11,13,11,35,0],[12,17,12,106,0],[13,13,13,30,0],[14,13,14,31,0],[15,9,15,10,0],[17,9,17,10,1],[18,13,18,31,1],[19,17,19,78,0],[20,13,20,35,1],[21,17,21,106,0],[22,13,22,30,1],[23,13,23,31,1],[24,13,24,30,1],[25,9,25,10,1],[27,9,27,10,0],[28,13,28,31,0],[29,17,29,78,0],[30,13,30,35,0],[31,17,31,106,0],[32,13,32,30,0],[33,13,33,31,0],[34,13,34,30,0],[35,13,35,30,0],[36,9,36,10,0]]);
+    </script>
+  </body>
+</html>

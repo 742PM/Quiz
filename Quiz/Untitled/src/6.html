@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\complexityweb\services\taskservice\templatecontroller.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+using Application.TaskService;
+using Domain.Entities.TaskGenerators;
+using Microsoft.AspNetCore.Mvc;
+using QuizWebApp.Services.TaskService.DTO;
+
+namespace QuizWebApp.Services.TaskService
+{
+    [Route(&quot;templates&quot;)]
+    [ApiController]
+    public class TemplateController : ControllerBase
+    {
+        private readonly ITaskService applicationApi;
+
+        public TemplateController(ITaskService applicationApi)
+        {
+            this.applicationApi = applicationApi;
+        }
+
+        /// &lt;summary&gt;
+        ///     Рендерит и возвращает задачу по шаблону из запроса
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        ///     Sample request:
+        ///     &lt;code&gt;
+        ///     POST templates/renderTask
+        ///     {
+        ///        &quot;question&quot;: &quot;Оцените временную сложность алгоритма&quot;,
+        ///        &quot;text&quot;: &quot;for (int i = {{from1}}; i &amp;lt; {{to1}}; i += {{iter1}})\r\nc++\r\n&quot;,
+        ///        &quot;possibleAnswers&quot;: [&quot;Θ(1)&quot;, &quot;Θ(log({{to1}}))&quot;, &quot;Θ({{to1}})&quot;],
+        ///        &quot;answer&quot;: &quot;Θ({{to1}})&quot;,
+        ///        &quot;hints&quot;: []
+        ///     }
+        ///     &lt;/code&gt;
+        /// &lt;/remarks&gt;
+        /// &lt;response code=&quot;200&quot;&gt; Возвращает отрендеренную задачу&lt;/response&gt;
+        [HttpPost(&quot;renderTask&quot;)]
+        public ActionResult RenderTask([FromBody] TemplateGeneratorForRenderDTO templateGenerator)
+        {
+            var task = applicationApi.RenderTask(
+                templateGenerator.Text,
+                templateGenerator.PossibleAnswers,
+                templateGenerator.Answer,
+                templateGenerator.Hints,
+                templateGenerator.Question);
+
+            return Ok(task);
+        }
+
+        /// &lt;summary&gt;
+        ///     Показывает набор существующих по умолчанию подстановок и их значений
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        ///     Sample request:
+        ///     &lt;code&gt;
+        ///     GET templates/substitutions/examples
+        ///     &lt;/code&gt;
+        /// &lt;/remarks&gt;
+        /// &lt;response code=&quot;200&quot;&gt; Возвращает список пар ключ-значение&lt;/response&gt;
+        [HttpGet(&quot;substitutions/examples&quot;)]
+        public ActionResult&lt;List&lt;TemplateLanguage.SubstitutionData&gt;&gt; GetSubstitutions()
+        {
+            return Ok(TemplateLanguage.GetValuesExample());
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,63,0],[16,9,16,10,0],[17,13,17,50,0],[18,9,18,10,0],[39,9,39,10,0],[40,13,45,45,0],[47,13,47,29,0],[48,9,48,10,0],[62,9,62,10,0],[63,13,63,60,0],[64,9,64,10,0]]);
+    </script>
+  </body>
+</html>

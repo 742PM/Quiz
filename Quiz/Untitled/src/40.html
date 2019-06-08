@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\commands\showhintcommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using QuizBotCore.Database;
+using QuizBotCore.States;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
+
+namespace QuizBotCore.Commands
+{
+    public class ShowHintCommand : ICommand
+    {
+        public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
+        {
+            var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
+            var hint = serviceManager.QuizService.GetHint(user.Id);
+            await client.SendTextMessageAsync(chat.Id, hint.HintText);
+            if (!hint.HasNext)
+                await EditReplyButtons(user, chat, client, serviceManager);
+        }
+
+        private async Task EditReplyButtons(UserEntity user, Chat chat, TelegramBotClient client, ServiceManager serviceManager)
+        {
+            var messageId = user.MessageId;
+            var state = user.CurrentState as TaskState;
+            var task = serviceManager.QuizService.GetTaskInfo(user.Id, state.TopicDto.Id, state.LevelDto.Id);
+            var reportCallback = user.MessageId.CreateMessageReportCallback(state.TopicDto.Id, state.LevelDto.Id);
+            var controlButtons = new[]
+            {
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Report, reportCallback)
+
+                
+            };
+            var answers = task.Answers.Select((e, index) =&gt; (letter: DialogMessages.Alphabet[index], answer: $&quot;{e}&quot;))
+                .ToList();
+            var keyboard = new InlineKeyboardMarkup(new[]
+            {
+                answers.Select(x =&gt; InlineKeyboardButton
+                    .WithCallbackData(x.letter.ToString(), x.answer)),
+                controlButtons
+            });
+            await client.EditMessageReplyMarkupAsync(chat.Id, messageId, keyboard);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,10,0],[16,13,16,80,0],[17,13,17,68,0],[18,13,18,71,0],[19,13,19,31,0],[20,17,20,76,0],[21,9,21,10,0],[24,9,24,10,0],[25,13,25,44,0],[26,13,26,56,0],[27,13,27,110,0],[28,13,28,115,0],[29,13,37,15,0],[38,13,38,61,0],[38,61,38,117,0],[38,117,39,27,0],[38,13,39,27,0],[40,13,42,37,0],[42,37,43,69,0],[43,69,45,16,0],[40,13,45,16,0],[46,13,46,84,0],[47,9,47,10,0]]);
+    </script>
+  </body>
+</html>

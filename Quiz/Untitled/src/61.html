@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\result\resultmessages.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace Infrastructure.Result
+{
+    internal static class ResultMessages
+    {
+        public static readonly string ErrorIsInaccessibleForSuccess =
+            &quot;You attempted to access the Error property for a successful result. A successful result has no Error.&quot;;
+
+        public static readonly string ValueIsInaccessibleForFailure =
+            &quot;You attempted to access the Value property for a failed result. A failed result has no Value.&quot;;
+
+        public static readonly string ErrorObjectIsNotProvidedForFailure =
+            &quot;You attempted to create a failure result, which must have an error, but a null error object was passed to the constructor.&quot;;
+
+        public static readonly string ErrorObjectIsProvidedForSuccess =
+            &quot;You attempted to create a success result, which cannot have an error, but a non-null error object was passed to the constructor.&quot;;
+
+        public static readonly string ErrorMessageIsNotProvidedForFailure =
+            &quot;You attempted to create a failure result, which must have an error, but a null or empty string was passed to the constructor.&quot;;
+
+        public static readonly string ErrorMessageIsProvidedForSuccess =
+            &quot;You attempted to create a success result, which cannot have an error, but a non-null string was passed to the constructor.&quot;;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[5,9,6,117,0],[8,9,9,109,0],[11,9,12,138,0],[14,9,15,144,0],[17,9,18,141,0],[20,9,21,138,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\application\dto\topicdto.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using Domain.Entities;
+using Domain.Entities.TaskGenerators;
+using Infrastructure.Extensions;
+using static System.Guid;
+
+namespace Application.DTO
+{
+    public class TopicDto
+    {
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public LevelDto[] Levels { get; set; }
+
+        public static explicit operator Topic(TopicDto dto)
+        {
+            var ids = dto.Levels.Select(_ =&gt; NewGuid()).ToArray();
+            return new Topic(NewGuid(),
+                dto.Name,
+                dto.Description,
+                dto.Levels
+                    .Select(levelDto =&gt;
+                        new Level(
+                            ids[levelDto.Number],
+                            levelDto.Description,
+                            levelDto.Generators
+                                .Select(generatorDto =&gt; (TaskGenerator)generatorDto)
+                                .ToArray(),
+                            levelDto.NextLevels.Select(i =&gt; ids[i]).ToArray()))
+                    .ToArray());
+        }
+
+        public static explicit operator TopicDto(Topic topic)
+        {
+            var ids = topic.Levels
+                .Select((l, i) =&gt; (level: l, i))
+                .ToDictionary(tup =&gt; tup.level.Id, tup =&gt; tup.i);
+
+            return new TopicDto
+            {
+                Description = topic.Description,
+                Name = topic.Name,
+                Levels = topic.Levels.Select(level =&gt;
+                        new LevelDto
+                        {
+                            Description = level.Description,
+                            Generators = level
+                                .Generators
+                                .Select(g =&gt; (TemplateTaskGeneratorDto)g
+                                    .Cast&lt;TemplateTaskGenerator&gt;())
+                                .ToArray(),
+                            NextLevels = level
+                                .NextLevels.Select(id =&gt; ids[id])
+                                .ToArray(),
+                            Number = ids[level.Id]
+                        }
+                    )
+                    .ToArray()
+            };
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,30,12,34,1],[12,35,12,39,1],[14,37,14,41,1],[14,42,14,46,1],[16,36,16,40,1],[16,41,16,45,1],[19,9,19,10,0],[20,13,20,46,0],[20,46,20,55,0],[20,55,20,67,0],[20,13,20,67,0],[21,13,26,25,0],[26,25,30,57,0],[30,57,30,84,0],[30,84,32,61,0],[32,61,32,67,0],[32,67,32,79,0],[26,25,32,79,0],[32,79,33,33,0],[21,13,33,33,0],[34,9,34,10,0],[37,9,37,10,1],[38,13,39,35,1],[39,35,39,48,1],[39,48,40,38,1],[40,38,40,50,1],[40,50,40,59,1],[40,59,40,64,1],[40,64,40,66,1],[38,13,40,66,1],[42,13,47,25,1],[47,25,52,46,1],[52,46,53,67,0],[53,67,56,58,1],[56,58,56,65,1],[56,65,59,26,1],[47,25,59,26,1],[59,26,62,15,1],[42,13,62,15,1],[63,9,63,10,1]]);
+    </script>
+  </body>
+</html>

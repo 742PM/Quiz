@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\commands\feedbackcommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Threading.Tasks;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
+
+namespace QuizBotCore.Commands
+{
+    public class FeedBackCommand : ICommand
+    {
+        public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
+        {
+            var keyboard = new InlineKeyboardMarkup(
+                InlineKeyboardButton.WithUrl(
+                    serviceManager.Dialog.Messages.FeedbackWelcomeMessage,
+                    serviceManager.Dialog.Messages.FeedbackContact)
+                );
+            await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.FeedbackMessage, replyMarkup: keyboard);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,10,0],[12,13,16,19,0],[17,13,17,127,0],[18,9,18,10,0]]);
+    </script>
+  </body>
+</html>

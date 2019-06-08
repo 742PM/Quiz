@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\tests\storage_should.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using FluentAssertions;
+using Infrastructure;
+using Infrastructure.Extensions;
+using NUnit.Framework;
+
+namespace Tests
+{
+    [TestFixture]
+    // ReSharper disable once InconsistentNaming
+    public class Storage_Should
+    {
+
+        [Test]
+        public void Throw_OnNull()
+        {
+            Action creation = () =&gt; Storage.Concat(null);
+            creation.Should()
+                    .Throw&lt;ArgumentException&gt;();
+        }
+
+        [Test]
+        public void ReturnEmptyArray_OnEmptyArray()
+        {
+            Storage.Concat()
+                   .Split()
+                   .Should()
+                   .BeEquivalentTo(new string[0]);
+        }
+        
+
+
+        [TestCase(&quot;a&quot;,&quot;b&quot;)]
+        [TestCase(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)]
+        public void SplitAndConcat(params string[] strings)
+        {
+            Storage.Concat(strings)
+                   .Split()
+                   .Should()
+                   .BeEquivalentTo(strings);
+        }
+
+        [Test]
+        public void Map()
+        {
+            Storage.Concat(&quot;a&quot;, &quot;b&quot;).Map(s =&gt; s.ToUpper()).Split().Should().BeEquivalentTo(&quot;A&quot;, &quot;B&quot;);
+        }
+
+        /// &lt;summary&gt;
+        /// Если честно, я черт знает, как описать здесь нужное поведение.
+        /// Функция не должна менять ключ, использованный для склейки. Но в принципе может и менять, если не сильно.
+        /// Оставлю так и буду надеяться, что никто не будет пользоваться этим методом.
+        /// С &lt;see cref=&quot;Domain.Entities.TaskGenerators.TemplateTaskGenerator&quot;/&gt; он работает адекватно и верно, так там
+        /// строка меняется вне ключа.
+        /// &lt;/summary&gt;
+        [Test]
+        public void Throw_WhenMappedWithBreakingFunctions()
+        {
+            Action mapping = () =&gt; Storage.Concat(&quot;a&quot;, &quot;b&quot;,&quot;c&quot;).Map(_ =&gt; &quot;_&quot;);
+            mapping.Should().Throw&lt;ArgumentException&gt;();
+        }
+
+        [Test]
+        public void NotChangeAnything_WhenMappedWithIdentity()
+        {
+            Storage.Concat(&quot;a&quot;, &quot;b&quot;).Map(StorageExtensions.Identity).Split().Should().BeEquivalentTo(&quot;a&quot;, &quot;b&quot;);
+        }
+
+        [Test]
+        public void MapMany()
+        {
+            new[] { Storage.Concat(&quot;a&quot;, &quot;b&quot;), Storage.Concat(&quot;c&quot;, &quot;d&quot;) }
+                .MapMany(arr =&gt; arr.Select(s =&gt; s.ToUpper()).ToArray())
+                .Should()   
+                .BeEquivalentTo(Storage.Concat(&quot;A&quot;, &quot;B&quot;), Storage.Concat(&quot;C&quot;, &quot;D&quot;));
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,10,1],[18,13,18,37,1],[18,37,18,57,1],[18,57,18,58,1],[18,13,18,58,1],[19,13,20,49,1],[21,9,21,10,1],[25,9,25,10,1],[26,13,29,51,1],[30,9,30,10,1],[37,9,37,10,1],[38,13,41,45,1],[42,9,42,10,1],[46,9,46,10,1],[47,13,47,47,1],[47,47,47,58,1],[47,58,47,102,1],[47,13,47,102,1],[48,9,48,10,1],[59,9,59,10,1],[60,13,60,36,1],[60,36,60,74,1],[60,74,60,77,1],[60,77,60,78,1],[60,36,60,78,1],[60,78,60,79,1],[60,13,60,79,1],[61,13,61,57,1],[62,9,62,10,1],[66,9,66,10,1],[67,13,67,112,1],[68,9,68,10,1],[72,9,72,10,1],[73,13,74,33,1],[74,33,74,49,1],[74,49,74,60,1],[74,60,74,71,1],[74,33,74,71,1],[74,71,76,85,1],[73,13,76,85,1],[77,9,77,10,1]]);
+    </script>
+  </body>
+</html>

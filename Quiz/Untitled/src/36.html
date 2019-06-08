@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\commands\showtaskcommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using QuizBotCore.Database;
+using QuizBotCore.ProgressBar;
+using QuizRequestService;
+using QuizRequestService.DTO;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
+
+namespace QuizBotCore.Commands
+{
+    public class ShowTaskCommand : ICommand
+    {
+        private readonly TopicDTO topicDto;
+        private readonly LevelDTO levelDto;
+        private readonly bool isNext;
+
+        public ShowTaskCommand(TopicDTO topicDto, LevelDTO levelDto, bool isNext = false)
+        {
+            this.topicDto = topicDto;
+            this.levelDto = levelDto;
+            this.isNext = isNext;
+        }
+
+        public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
+        {
+            var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
+            var task = await GetTask(user, chat, client, serviceManager);
+            if (task != null)
+            {
+                var progress = serviceManager.QuizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
+                var isLevelSolved = IsLevelSolved(progress);
+                if (isLevelSolved)
+                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
+                var message = await SendTask(task, progress, chat, user, client, serviceManager);
+                var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
+                serviceManager.UserRepository.Update(newUser);
+            }
+        }
+
+        private async Task&lt;TaskDTO&gt; GetTask(UserEntity user, Chat chat, TelegramBotClient client,
+            ServiceManager serviceManager)
+        {
+            TaskDTO task;
+            if (!isNext)
+            {
+                task = serviceManager.QuizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
+            }
+            else
+            {
+                task = serviceManager.QuizService.GetNextTaskInfo(user.Id);
+                if (task == null)
+                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.NextTaskNotAvailable);
+            }
+
+            return task;
+        }
+
+        private async Task&lt;Message&gt; SendTask(TaskDTO task, ProgressDTO userProgress, Chat chat, UserEntity user, TelegramBotClient client,
+            ServiceManager serviceManager)
+        {
+            var progress = PrepareProgress(serviceManager.Logger, userProgress);
+            var isLevelSolved = IsLevelSolved(userProgress);
+
+            var answers = task.Answers.Select((e, index) =&gt; (letter: DialogMessages.Alphabet[index], answer: $&quot;{e}&quot;))
+                .ToList();
+            var answerBlock = PrepareAnswers(answers, serviceManager.Logger);
+
+            var message = FormatMessage(task, progress, answerBlock, isLevelSolved, serviceManager);
+            serviceManager.Logger.LogInformation($&quot;messageToSend : {message}&quot;);
+
+            var keyboard = PrepareButtons(user, task, serviceManager.Logger, answers);
+
+            var taskMessage = await client.SendTextMessageAsync(chat.Id, message,
+                ParseMode.Markdown);
+            var reportCallback = taskMessage.MessageId.CreateMessageReportCallback(topicDto.Id, levelDto.Id);
+            var reportButton = new[]
+            {
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Report, reportCallback)
+            };
+            var keyboardWithReport = new InlineKeyboardMarkup(keyboard.InlineKeyboard.Append(reportButton));
+            await client.EditMessageReplyMarkupAsync(chat.Id, taskMessage.MessageId, keyboardWithReport);
+            return taskMessage;
+        }
+
+        private bool IsLevelSolved(ProgressDTO progress)
+        {
+            return progress.TasksCount == progress.TasksSolved;
+        }
+
+        private static string PrepareProgress(ILogger logger, ProgressDTO userProgress)
+        {
+            logger.LogInformation($&quot;Progress: {userProgress.TasksSolved}:{userProgress.TasksCount}&quot;);
+            var progressBar = new CircleProgressBar();
+            var progress = progressBar.GenerateProgressBar(userProgress.TasksSolved, userProgress.TasksCount);
+            return progress;
+        }
+
+        private static string PrepareAnswers(IEnumerable&lt;(char letter, string answer)&gt; answers, ILogger logger)
+        {
+            var answerBlock = string.Join(&#39;\n&#39;, answers.Select(x =&gt; $&quot;*{x.letter}.* `{x.answer}`&quot;));
+            logger.LogInformation($&quot;Answers: {answerBlock}&quot;);
+            return answerBlock;
+        }
+
+        private InlineKeyboardMarkup PrepareButtons(UserEntity user, TaskDTO task, ILogger logger,
+            IEnumerable&lt;(char letter, string answer)&gt; answers)
+        {
+            var controlButtons = new[]
+            {
+                InlineKeyboardButton
+                    .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
+            };
+            logger.LogInformation($&quot;HasHints: {task.HasHints}&quot;);
+            if (task.HasHints)
+                controlButtons =
+                    new[]
+                    {
+                        InlineKeyboardButton
+                            .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
+                        InlineKeyboardButton
+                            .WithCallbackData(ButtonNames.Hint, StringCallbacks.Hint)
+                    };
+            var keyboard = new InlineKeyboardMarkup(new[]
+            {
+                answers.Select(x =&gt; InlineKeyboardButton
+                    .WithCallbackData(x.letter.ToString(), x.answer)),
+                controlButtons
+            });
+            return keyboard;
+        }
+
+        private string FormatMessage(TaskDTO task, string progressBar, string answers, bool isSolved, ServiceManager serviceManager)
+        {
+            var topicName = $&quot;{serviceManager.Dialog.Messages.TopicName} {topicDto.Name} \n&quot;;
+            var levelName = $&quot;{serviceManager.Dialog.Messages.LevelName} {levelDto.Description} \n&quot;;
+            var progress = $&quot;{serviceManager.Dialog.Messages.Progress} {progressBar}\n&quot;;
+            var question = $&quot;{task.Question}\n&quot;;
+
+            if (isSolved)
+                progress = $&quot;{progress}\n{serviceManager.Dialog.Messages.LevelSolved}\n&quot;;
+
+            var questionFormatted = &quot;```csharp\n&quot; +
+                                    $&quot;{task.Text}\n&quot; +
+                                    &quot;```&quot;;
+
+            return $&quot;{topicName}&quot; +
+                   $&quot;{levelName}&quot; +
+                   $&quot;{progress}&quot; +
+                   $&quot;{question}\n&quot; +
+                   $&quot;{questionFormatted}\n&quot; +
+                   $&quot;{answers}\n\n&quot;;
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[24,9,24,90,1],[25,9,25,10,1],[26,13,26,38,1],[27,13,27,38,1],[28,13,28,34,1],[29,9,29,10,1],[32,9,32,10,0],[33,13,33,80,0],[34,13,34,74,0],[35,13,35,30,0],[36,13,36,14,0],[37,17,37,106,0],[38,17,38,61,0],[39,17,39,35,0],[40,21,40,111,0],[41,17,41,98,0],[42,17,42,110,0],[43,17,43,63,0],[44,13,44,14,0],[45,9,45,10,0],[49,9,49,10,0],[51,13,51,25,0],[52,13,52,14,0],[53,17,53,98,0],[54,13,54,14,0],[56,13,56,14,0],[57,17,57,76,0],[58,17,58,34,0],[59,21,59,117,0],[60,13,60,14,0],[62,13,62,25,0],[63,9,63,10,0],[67,9,67,10,0],[68,13,68,81,0],[69,13,69,61,0],[71,13,72,27,0],[71,61,71,117,0],[73,13,73,78,0],[75,13,75,101,0],[76,13,76,80,0],[78,13,78,87,0],[80,13,81,37,0],[82,13,82,110,0],[83,13,87,15,0],[88,13,88,109,0],[89,13,89,106,0],[90,13,90,32,0],[91,9,91,10,0],[94,9,94,10,0],[95,13,95,64,0],[96,9,96,10,0],[99,9,99,10,0],[100,13,100,102,0],[101,13,101,55,0],[102,13,102,111,0],[103,13,103,29,0],[104,9,104,10,0],[107,9,107,10,0],[108,13,108,69,0],[108,69,108,98,0],[108,98,108,101,0],[108,13,108,101,0],[109,13,109,62,0],[110,13,110,32,0],[111,9,111,10,0],[115,9,115,10,0],[116,13,120,15,0],[121,13,121,65,0],[122,13,122,31,0],[123,17,130,23,0],[131,13,133,37,0],[133,37,134,69,0],[134,69,136,16,0],[131,13,136,16,0],[137,13,137,29,0],[138,9,138,10,0],[141,9,141,10,0],[142,13,142,94,0],[143,13,143,101,0],[144,13,144,89,0],[145,13,145,49,0],[147,13,147,26,0],[148,17,148,90,0],[150,13,152,43,0],[154,13,159,37,0],[160,9,160,10,0]]);
+    </script>
+  </body>
+</html>

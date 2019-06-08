@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\result\maybeextensions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Infrastructure.Extensions;
+
+namespace Infrastructure.Result
+{
+    public static class MaybeExtensions
+    {
+        public static Maybe&lt;TOut&gt; Try&lt;TIn, TOut&gt;(this TIn item, Func&lt;TIn, TOut&gt; func) =&gt; item.Try(x =&gt; func(x).Sure());
+
+        public static Maybe&lt;TOut&gt; Try&lt;TIn, TOut&gt;(this TIn item, Func&lt;TIn, Maybe&lt;TOut&gt;&gt; func)
+        {
+            try
+            {
+                return func(item);
+            }
+            catch
+            {
+                return Maybe&lt;TOut&gt;.None;
+            }
+        }
+
+        public static Result&lt;T&gt; ToResult&lt;T&gt;(this Maybe&lt;T&gt; maybe, string errorMessage)
+        {
+            if (maybe.HasNoValue)
+                return Result.Fail&lt;T&gt;(errorMessage);
+
+            return Result.Ok(maybe.Value);
+        }
+
+        public static Result&lt;T, E&gt; ToResult&lt;T, E&gt;(this Maybe&lt;T&gt; maybe, E error) where E : Exception
+        {
+            if (maybe.HasNoValue)
+                return Result.Fail&lt;T, E&gt;(error);
+
+            return Result.Ok&lt;T, E&gt;(maybe.Value);
+        }
+
+        public static T Unwrap&lt;T&gt;(this Maybe&lt;T&gt; maybe, T defaultValue = default) =&gt; maybe.Unwrap(x =&gt; x, defaultValue);
+
+        public static K Unwrap&lt;T, K&gt;(this Maybe&lt;T&gt; maybe, Func&lt;T, K&gt; selector, K defaultValue = default) =&gt; maybe.HasValue ? selector(maybe.Value) : defaultValue;
+
+        public static Maybe&lt;T&gt; Where&lt;T&gt;(this Maybe&lt;T&gt; maybe, Func&lt;T, bool&gt; predicate)
+        {
+            if (maybe.HasNoValue)
+                return Maybe&lt;T&gt;.None;
+
+            return predicate(maybe.Value) ? maybe : Maybe&lt;T&gt;.None;
+        }
+
+        public static Maybe&lt;K&gt; Select&lt;T, K&gt;(this Maybe&lt;T&gt; maybe, Func&lt;T, K&gt; selector) =&gt; maybe.HasNoValue ? Maybe&lt;K&gt;.None : selector(maybe.Value);
+
+        public static Maybe&lt;K&gt; Select&lt;T, K&gt;(this Maybe&lt;T&gt; maybe, Func&lt;T, Maybe&lt;K&gt;&gt; selector) =&gt; maybe.HasNoValue ? Maybe&lt;K&gt;.None : selector(maybe.Value);
+
+        public static void Execute&lt;T&gt;(this Maybe&lt;T&gt; maybe, Action&lt;T&gt; action)
+        {
+            if (maybe.HasNoValue)
+                return;
+            action(maybe.Value);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,90,8,104,0],[8,104,8,118,0],[8,118,8,119,0],[8,90,8,119,0],[11,9,11,10,0],[13,13,13,14,0],[14,17,14,35,0],[16,13,16,18,0],[17,13,17,14,0],[18,17,18,41,0],[20,9,20,10,0],[23,9,23,10,0],[24,13,24,34,0],[25,17,25,53,0],[27,13,27,43,0],[28,9,28,10,0],[31,9,31,10,0],[32,13,32,34,0],[33,17,33,49,0],[35,13,35,49,0],[36,9,36,10,0],[38,85,38,103,0],[38,103,38,104,0],[38,104,38,119,0],[38,85,38,119,0],[40,109,40,162,0],[43,9,43,10,0],[44,13,44,34,0],[45,17,45,38,0],[47,13,47,67,0],[48,9,48,10,0],[50,90,50,146,0],[52,97,52,153,0],[55,9,55,10,0],[56,13,56,34,0],[57,17,57,24,0],[58,13,58,33,0],[59,9,59,10,0]]);
+    </script>
+  </body>
+</html>

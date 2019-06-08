@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\result\asyncmaybeextensions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Threading.Tasks;
+
+namespace Infrastructure.Result
+{
+    public static class AsyncMaybeExtensions
+    {
+        public static async Task&lt;Result&lt;T&gt;&gt; ToResult&lt;T&gt;(this Task&lt;Maybe&lt;T&gt;&gt; maybeTask, string errorMessage)
+            where T : class
+        {
+            var maybe = await maybeTask.ConfigureAwait(Result.DefaultConfigureAwait);
+            return maybe.ToResult(errorMessage);
+        }
+
+        public static async Task&lt;Result&lt;T, E&gt;&gt; ToResult&lt;T, E&gt;(this Task&lt;Maybe&lt;T&gt;&gt; maybeTask, E error)
+            where T : class where E : Exception
+        {
+            var maybe = await maybeTask.ConfigureAwait(Result.DefaultConfigureAwait);
+            return maybe.ToResult(error);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,10,0],[11,13,11,86,0],[12,13,12,49,0],[13,9,13,10,0],[17,9,17,10,0],[18,13,18,86,0],[19,13,19,42,0],[20,9,20,10,0]]);
+    </script>
+  </body>
+</html>

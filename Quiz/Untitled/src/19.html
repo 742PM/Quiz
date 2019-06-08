@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\telegramstatemachine.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using QuizBotCore.Commands;
+using QuizBotCore.Database;
+using QuizBotCore.Parser;
+using QuizBotCore.States;
+using QuizBotCore.Transitions;
+using QuizRequestService;
+
+namespace QuizBotCore
+{
+    public class TelegramStateMachine : IStateMachine&lt;ICommand&gt;
+    {
+        private readonly IQuizService service;
+        private readonly IUserRepository userRepository;
+
+        public TelegramStateMachine(IQuizService service, IUserRepository userRepository)
+        {
+            this.service = service;
+            this.userRepository = userRepository;
+        }
+
+        public (State state, ICommand command) GetNextState&lt;TState, TTransition&gt;(
+            TState currentState,
+            TTransition transition) where TState : State where TTransition : Transition
+        {
+            switch ((state: currentState, transition: transition))
+            {
+                case var t when t.transition is HelpTransition:
+                    return (new TopicSelectionState(), new SelectTopicCommand());
+                case var t when t.transition is FeedbackTransition:
+                    return (new TopicSelectionState(), new FeedBackCommand());
+                case var t when t.state is UnknownUserState:
+                    return (new TopicSelectionState(), new SelectTopicCommand());
+                case var t when t.state is ReportState reportState:
+                    return ProcessReportState(reportState, t.transition);
+                case var t when t.state is TopicSelectionState topicSelectionState:
+                    return ProcessTopicSelectionState(topicSelectionState, t.transition);
+                case var t when t.state is LevelSelectionState levelSelectionState:
+                    return ProcessLevelSelectionState(levelSelectionState, t.transition);
+                case var t when t.state is TaskState taskState:
+                    return ProcessTaskState(taskState, t.transition);
+            }
+            return default;
+        }
+
+        private static (State, ICommand) ProcessReportState(ReportState state, Transition transition)
+        {
+            switch (transition)
+            {
+                case ReplyReportTransition reportTransition:
+                    return (new TaskState(state.TopicDto, state.LevelDto),
+                        new SendReportTaskCommand(state, state.MessageId, reportTransition.MessageId));
+                case CancelTransition cancelTransition:
+                    return (new TaskState(state.TopicDto, state.LevelDto),
+                        new ShowTaskCommand(state.TopicDto, state.LevelDto));
+            }
+
+            return default;
+        }
+
+        private static (State, ICommand) ProcessTaskState(TaskState state, Transition transition)
+        {
+            switch (transition)
+            {
+                case BackTransition _:
+                    return (new LevelSelectionState(state.TopicDto), new SelectLevelCommand(state.TopicDto));
+                case ShowHintTransition _:
+                    return (state, new ShowHintCommand());
+                case ReportTransition reportTransition:
+                    return (new ReportState(
+                            reportTransition.MessageId,
+                            reportTransition.TopicDto,
+                            reportTransition.LevelDto),
+                        new ReportTaskCommand());
+                case CorrectTransition correctTransition:
+                    return (state, new CheckTaskCommand(state.TopicDto, state.LevelDto, correctTransition.Content));
+            }
+
+            return (new TopicSelectionState(), new SelectTopicCommand());
+        }
+
+        private (State, ICommand) ProcessLevelSelectionState(LevelSelectionState state, Transition transition)
+        {
+            switch (transition)
+            {
+                case BackTransition _:
+                    return (new TopicSelectionState(), new SelectTopicCommand());
+                case CorrectTransition correctTransition:
+                    var levelDto = service.GetLevels(state.TopicDto.Id)
+                        .First(x =&gt; x.Id == Guid.Parse(correctTransition.Content));
+                    return
+                        (new TaskState(state.TopicDto, levelDto),
+                            new ShowTaskCommand(state.TopicDto, levelDto));
+            }
+
+            return (new TopicSelectionState(), new SelectTopicCommand());
+        }
+
+        private (State, ICommand) ProcessTopicSelectionState(TopicSelectionState state, Transition transition)
+        {
+            switch (transition)
+            {
+                case BackTransition _:
+                    return (new TopicSelectionState(), new SelectTopicCommand());
+                case CorrectTransition correctTransition:
+                    var topicDto = service.GetTopics().First(x =&gt; x.Id == Guid.Parse(correctTransition.Content));
+                    return (new LevelSelectionState(topicDto),
+                        new SelectLevelCommand(topicDto));
+            }
+
+            return (new TopicSelectionState(), new SelectTopicCommand());
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,90,1],[18,9,18,10,1],[19,13,19,36,1],[20,13,20,50,1],[21,9,21,10,1],[26,9,26,10,1],[27,13,27,67,1],[29,28,29,63,1],[30,21,30,82,1],[31,28,31,67,1],[32,21,32,79,1],[33,28,33,60,1],[34,21,34,82,1],[35,28,35,67,1],[36,21,36,74,0],[37,28,37,83,1],[38,21,38,90,1],[39,28,39,83,1],[40,21,40,90,1],[41,28,41,63,1],[42,21,42,70,1],[44,13,44,28,0],[45,9,45,10,1],[48,9,48,10,0],[49,13,49,32,0],[52,21,53,104,0],[55,21,56,78,0],[59,13,59,28,0],[60,9,60,10,0],[63,9,63,10,1],[64,13,64,32,1],[67,21,67,110,1],[69,21,69,59,1],[71,21,75,50,0],[77,21,77,117,1],[80,13,80,74,0],[81,9,81,10,1],[84,9,84,10,1],[88,21,88,82,1],[90,21,91,37,1],[91,37,91,82,1],[91,82,91,84,1],[90,21,91,84,1],[92,21,94,76,1],[97,13,97,74,0],[98,9,98,10,1],[101,9,101,10,1],[105,21,105,82,1],[107,21,107,67,1],[107,67,107,112,1],[107,112,107,114,1],[107,21,107,114,1],[108,21,109,59,1],[112,13,112,74,0],[113,9,113,10,1]]);
+    </script>
+  </body>
+</html>

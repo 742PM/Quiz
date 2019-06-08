@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizbotcore\buttons & callbacks\dialogmessages.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Linq;
+using Infrastructure.DDD;
+
+namespace QuizBotCore
+{
+    public class DialogMessages : Entity
+    {
+        public static readonly char[] Alphabet = Enumerable.Range(&#39;A&#39;, 26).Select(x =&gt; (char) x).ToArray();
+        public string CorrectAnswer { get; private set; } = &quot;Верно ✅&quot;;
+        public string WrongAnswer { get; private set; } = &quot;Подумай еще ❌&quot;;
+        public string FeedbackMessage { get; private set; } = &quot;Есть вопрос? Пиши нам!&quot;;
+        public string FeedbackWelcomeMessage { get; private set; } = &quot;Отправляй вопрос прямо сюда :)&quot;;
+        public  string FeedbackContact { get; private set; } =  &quot;telegram.me/funfine&quot;;
+        public string NextTaskNotAvailable { get; private set; } = &quot;Реши эту, а потом подумаем о следующей&quot;;
+
+        public string LevelSelection { get; private set; } = &quot;Вижу с темой ты определился. &quot; +
+                                                     &quot;Выбирай уровень:&quot;;
+
+        public string Progress { get; private set; } = &quot;Прогресс:&quot;;
+        public string ClosedLevel { get; private set; } = &quot;[Заблокирован]&quot;;
+        public string TopicName { get; private set; } = &quot;Тема:&quot;;
+        public string LevelName { get; private set; } = &quot;Уровень:&quot;;
+
+        public string Welcome { get; private set; } = &quot;Привет! Я Quibble бот, представляю из себя бесконечную викторину. \n&quot; +
+                                              &quot;Решай задачки, открывай новые уровни, становись лучше. \n&quot; +
+                                              &quot;Но не все так просто!\n&quot; +
+                                              &quot;Каждая задача уникальна и создается на основе шаблона.&quot; +
+                                              &quot;На каждый шаблон нужно решить определенное количество задач подряд и без ошибок.\n&quot; +
+                                              &quot;В случае неверного ответа, прогресс по шаблону откатывается.&quot; +
+                                              &quot;Не удивляйся, когда прогресс уменьшится.\n\n&quot; +
+                                              &quot;Пора перейти к задачкам)\n&quot; +
+                                              &quot;Выбирай тему и начинай!\n\n&quot;;
+
+
+        public string RequestForRotateDevice { get; private set; } =
+            &quot;ВАЖНО: Из-за ограничения на максимальную ширину сообщения в Телеграм &quot; +
+            &quot;задачи могут отображаться не самым комфортным образом. &quot; +
+            &quot;Советуем повернуть ваш мобильный телефон в горизонтальное положение.&quot;;
+
+        public string RequestForRotateDeviceGif { get; private set; } = &quot;https://i.imgur.com/H2ebNRg.png&quot;;
+
+        public string ReportThanks { get; private set; } = &quot;Спасибо за обратную связь. &quot; +
+                                                   &quot;Мы обязательно рассмотрим ваше сообщение &#129305;&#127999;&quot;;
+
+        public string ReportRequesting { get; private set; } = &quot;Опишите вашу проблему:&quot;;
+
+        public string LevelSolved { get; private set; } = &quot;&#127942;&#127942;&#127942; Уровень пройден &#127942;&#127942;&#127942;\n&quot;;
+
+        public string LevelCompleted { get; private set; } = &quot;Молодец! Ты решил все задачки из этого уровня.&quot; +
+                                                     &quot;Можешь продолжать решать этот уровень и дальше, задачки будут бесконечны,&quot; +
+                                                     &quot;или же, можешь вернуться в меню выбора уровней и выбрать новый.&quot;;
+
+        public DialogMessages(Guid id) : base(id)
+        {
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,88,0],[9,88,9,96,0],[9,96,9,108,0],[9,9,9,108,0],[10,39,10,43,0],[10,44,10,56,0],[10,61,10,70,0],[11,37,11,41,0],[11,42,11,54,0],[11,59,11,74,0],[12,41,12,45,0],[12,46,12,58,0],[12,63,12,87,0],[13,48,13,52,0],[13,53,13,65,0],[13,70,13,102,0],[14,42,14,46,0],[14,47,14,59,0],[14,65,14,86,0],[15,46,15,50,0],[15,51,15,63,0],[15,68,15,108,0],[17,40,17,44,0],[17,45,17,57,0],[17,62,18,72,0],[20,34,20,38,0],[20,39,20,51,0],[20,56,20,67,0],[21,37,21,41,0],[21,42,21,54,0],[21,59,21,75,0],[22,35,22,39,0],[22,40,22,52,0],[22,57,22,64,0],[23,35,23,39,0],[23,40,23,52,0],[23,57,23,67,0],[25,33,25,37,0],[25,38,25,50,0],[25,55,33,76,0],[36,48,36,52,0],[36,53,36,65,0],[37,13,39,83,0],[41,51,41,55,0],[41,56,41,68,0],[41,73,41,106,0],[43,38,43,42,0],[43,43,43,55,0],[43,60,44,99,0],[46,42,46,46,0],[46,47,46,59,0],[46,64,46,88,0],[48,37,48,41,0],[48,42,48,54,0],[48,59,48,92,0],[50,40,50,44,0],[50,45,50,57,0],[50,62,52,119,0],[54,42,54,50,0],[55,9,55,10,0],[56,9,56,10,0]]);
+    </script>
+  </body>
+</html>

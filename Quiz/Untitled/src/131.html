@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\domain\entities\topic.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Infrastructure;
+using Infrastructure.DDD;
+
+namespace Domain.Entities
+{
+    [Entity]
+    [MustBeSaved]
+    public class Topic : Entity
+    {
+        public Topic(Guid id, string name, string description, ICollection&lt;Level&gt; levels) : base(id)
+        {
+            Name = name;
+            Description = description;
+            Levels = levels.ToArray();
+        }
+
+        public string Name { get; }
+
+        public string Description { get; }
+
+        public Level[] Levels { get; }
+
+        public Topic With(
+            Guid? id = default,
+            string name = default,
+            string description = default,
+            ICollection&lt;Level&gt; levels = default) =&gt;
+            new Topic(id ?? Id, name ?? Name, description ?? Description, levels ?? Levels);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,93,13,101,1],[14,9,14,10,1],[15,13,15,25,1],[16,13,16,39,1],[17,13,17,39,1],[18,9,18,10,1],[20,30,20,34,1],[22,37,22,41,1],[24,33,24,37,1],[31,13,31,92,0]]);
+    </script>
+  </body>
+</html>

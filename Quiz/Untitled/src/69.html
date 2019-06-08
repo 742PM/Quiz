@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\infrastructure\extensions\stringextensions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Linq;
+
+namespace Infrastructure.Extensions
+{
+    public static class StringExtensions
+    {
+        public static string ToSnakeCase(this string str)
+        {
+            return string.Concat(str.Select((x, i) =&gt; i &gt; 0 &amp;&amp; char.IsUpper(x) ? &quot;_&quot; + x.ToString() : x.ToString())).ToLower();
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,9,8,10,1],[9,13,9,55,1],[9,55,9,115,1],[9,115,9,128,1],[9,13,9,128,1],[10,9,10,10,1]]);
+    </script>
+  </body>
+</html>

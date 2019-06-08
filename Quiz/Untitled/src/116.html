@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>e:\users\funfine\source\quiz\quiz\quizlevelmanager\startup.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
+using QuizRequestExtendedService;
+using QuizRequestExtendedService.Database;
+
+namespace QuizLevelManager
+{
+    public class Startup
+    {
+        private const string ServerUrlEnvironmentVariable = &quot;SERVER_URL&quot;;
+        public const string MongoUsernameEnvironmentVariable = &quot;MONGO_USERNAME&quot;;
+        public const string MongoPasswordEnvironmentVariable = &quot;MONGO_PASSWORD&quot;;
+        public const string MongoDatabaseNameEnvironmentVariable = &quot;MONGO_DB_NAME&quot;;
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSingleton(ConnectToDatabase());
+
+            services.AddScoped&lt;IQuizServiceExtended&gt;(_ =&gt;
+                new Requester(Environment.GetEnvironmentVariable(ServerUrlEnvironmentVariable)));
+            services.AddScoped&lt;IUserRepository&lt;Guid, Guid&gt;&gt;(provider =&gt;
+                new UserRepository&lt;Guid, Guid&gt;(provider.GetService&lt;IMongoDatabase&gt;(), Guid.NewGuid));
+
+            services.AddSpaStaticFiles(configuration =&gt; configuration.RootPath = &quot;ClientApp/build&quot;);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(&quot;/Error&quot;);
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
+            app.UseMvc(routes =&gt;
+            {
+                routes.MapRoute(
+                    &quot;default&quot;,
+                    &quot;{controller}/{action=Index}/{id?}&quot;);
+            });
+
+            app.UseSpa(spa =&gt;
+            {
+                spa.Options.SourcePath = &quot;ClientApp&quot;;
+
+                if (env.IsDevelopment()) spa.UseReactDevelopmentServer(&quot;start&quot;);
+            });
+        }
+
+        private static IMongoDatabase ConnectToDatabase(string databaseName = default, string username = default,
+            string password = default, string name = &quot;QuizDatabase&quot;)
+        {
+            databaseName = databaseName ?? Environment.GetEnvironmentVariable(MongoDatabaseNameEnvironmentVariable);
+            username = username ?? Environment.GetEnvironmentVariable(MongoUsernameEnvironmentVariable);
+            password = password ?? Environment.GetEnvironmentVariable(MongoPasswordEnvironmentVariable);
+            var connectionString = username is null || password is null
+                ? &quot;mongodb://localhost:27017&quot;
+                : $&quot;mongodb://{username}:{password}@quizcluster-shard-00-00-kzjb8.azure.mongodb.net:27017,&quot; +
+                  &quot;quizcluster-shard-00-01-kzjb8.azure.mongodb.net:27017,&quot; +
+                  &quot;quizcluster-shard-00-02-kzjb8.azure.mongodb.net:27017/&quot; +
+                  $&quot;{databaseName}?ssl=true&amp;replicaSet=QuizCluster-shard-0&amp;authSource=admin&amp;retryWrites=true&quot;;
+            var client = new MongoClient(connectionString);
+            return client.GetDatabase(name);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[21,9,21,53,0],[22,9,22,10,0],[23,13,23,43,0],[24,9,24,10,0],[26,47,26,51,0],[30,9,30,10,0],[31,13,31,89,0],[33,13,33,56,0],[35,13,36,17,0],[36,17,36,96,0],[36,96,36,98,0],[35,13,36,98,0],[37,13,38,17,0],[38,17,38,100,0],[38,100,38,102,0],[37,13,38,102,0],[40,13,40,57,0],[40,57,40,99,0],[40,99,40,101,0],[40,13,40,101,0],[41,9,41,10,0],[45,9,45,10,0],[46,13,46,37,0],[47,13,47,14,0],[48,17,48,49,0],[49,13,49,14,0],[51,13,51,14,0],[52,17,52,51,0],[54,17,54,31,0],[55,13,55,14,0],[57,13,57,39,0],[58,13,58,34,0],[59,13,59,37,0],[61,13,62,13,0],[62,13,62,14,0],[62,14,63,17,0],[63,17,65,58,0],[65,58,66,13,0],[66,13,66,14,0],[66,14,66,16,0],[61,13,66,16,0],[68,13,69,13,0],[69,13,69,14,0],[69,14,70,17,0],[70,17,70,54,0],[70,54,72,17,0],[72,17,72,41,0],[72,41,72,42,0],[72,42,72,81,0],[72,81,73,13,0],[73,13,73,14,0],[73,14,73,16,0],[68,13,73,16,0],[74,9,74,10,0],[78,9,78,10,0],[79,13,79,117,0],[80,13,80,105,0],[81,13,81,105,0],[82,13,87,111,0],[88,13,88,60,0],[89,13,89,45,0],[90,9,90,10,0]]);
+    </script>
+  </body>
+</html>

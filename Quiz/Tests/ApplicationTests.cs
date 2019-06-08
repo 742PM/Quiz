@@ -210,17 +210,17 @@ namespace Tests
                 .BeTrue();
         }
 
-[Test]
-public void GetTopicsInfo_ReturnsAllTopics()
-{
-    var ids = Enumerable.Range(1,5).Select(_=>AddEmptyTopic()).ToArray();
-    application
-        .GetTopicsInfo()
-        .Value
-        .Select(t => t.Id)
-        .Should()
-        .BeEquivalentTo(ids);
-}
+        [Test]
+        public void GetTopicsInfo_ReturnsAllTopics()
+        {
+            var ids = Enumerable.Range(1,5).Select(_=>AddEmptyTopic()).ToArray();
+            application
+                .GetTopicsInfo()
+                .Value
+                .Select(t => t.Id)
+                .Should()
+                .BeEquivalentTo(ids);
+        }
 
         [Test]
         public void GetTopicsInfo_ReturnsSuccess_WhenNoTopics()

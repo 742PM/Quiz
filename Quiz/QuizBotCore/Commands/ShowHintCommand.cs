@@ -40,7 +40,7 @@ namespace QuizBotCore.Commands
             var keyboard = new InlineKeyboardMarkup(new[]
             {
                 answers.Select(x => InlineKeyboardButton
-                    .WithCallbackData(x.letter.ToString(), x.answer)),
+                    .WithCallbackData(x.answer, x.answer)),
                 controlButtons
             });
             await client.EditMessageReplyMarkupAsync(chat.Id, messageId, keyboard);

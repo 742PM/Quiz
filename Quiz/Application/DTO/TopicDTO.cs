@@ -13,7 +13,7 @@ namespace Application.DTO
 
         public string Description { get; set; }
 
-        public LevelDto[] Levels { get; set; }
+        public LevelDto<int>[] Levels { get; set; }
 
         public static explicit operator Topic(TopicDto dto)
         {
@@ -24,7 +24,7 @@ namespace Application.DTO
                 dto.Levels
                     .Select(levelDto =>
                         new Level(
-                            ids[levelDto.Number],
+                            ids[levelDto.Id],
                             levelDto.Description,
                             levelDto.Generators
                                 .Select(generatorDto => (TaskGenerator)generatorDto)
@@ -44,7 +44,7 @@ namespace Application.DTO
                 Description = topic.Description,
                 Name = topic.Name,
                 Levels = topic.Levels.Select(level =>
-                        new LevelDto
+                        new LevelDto<int>
                         {
                             Description = level.Description,
                             Generators = level
@@ -55,7 +55,7 @@ namespace Application.DTO
                             NextLevels = level
                                 .NextLevels.Select(id => ids[id])
                                 .ToArray(),
-                            Number = ids[level.Id]
+                            Id = ids[level.Id]
                         }
                     )
                     .ToArray()

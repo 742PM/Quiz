@@ -41,7 +41,7 @@ namespace Infrastructure.Logger
             foreach (var group in messages.GroupBy(GetGrouping))
             {
                 var fullName = GetFullName(group.Key);
-                await Client.SendTextMessageAsync(chatId, fullName, cancellationToken: cancellationToken);
+                //await Client.SendTextMessageAsync(chatId, fullName, cancellationToken: cancellationToken);
                 foreach (var item in group)
                     await Client.SendTextMessageAsync(chatId, item.Message, cancellationToken: cancellationToken);
             }

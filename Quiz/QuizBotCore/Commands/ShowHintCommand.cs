@@ -31,8 +31,6 @@ namespace QuizBotCore.Commands
                     .WithCallbackData(ButtonNames.Back, StringCallbacks.Back),
                 InlineKeyboardButton
                     .WithCallbackData(ButtonNames.Report, reportCallback)
-
-                
             };
             var answers = user.CurrentTask.Answers.Select((e, index) => (letter: DialogMessages.Alphabet[index], answer: $"{e}"))
                 .ToList();

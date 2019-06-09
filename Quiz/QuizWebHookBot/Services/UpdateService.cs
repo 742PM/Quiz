@@ -61,7 +61,7 @@ namespace QuizWebHookBot.Services
             
             logger.LogInformation($"New state {currentState}");
 
-            userRepository.Update(new UserEntity(currentState, userId, userEntity.Id, userEntity.MessageId));
+            userRepository.Update(new UserEntity(currentState, userId, userEntity.Id, userEntity.MessageId, userEntity.CurrentTask));
 
             return currentCommand;
         }

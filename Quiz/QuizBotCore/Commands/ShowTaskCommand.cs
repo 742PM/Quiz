@@ -39,7 +39,7 @@ namespace QuizBotCore.Commands
                 if (isLevelSolved)
                     await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
                 var message = await SendTask(task, progress, chat, user, client, serviceManager);
-                var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId);
+                var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId, task);
                 serviceManager.UserRepository.Update(newUser);
             }
         }

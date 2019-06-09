@@ -6,5 +6,7 @@ namespace Infrastructure.Logger
     {
         public DateTimeOffset Timestamp { get; set; }
         public string Message { get; set; }
+
+        public string ToTelegramFormat() => $"**{Timestamp.LocalDateTime}**\n\n{Message}";
     }
 }

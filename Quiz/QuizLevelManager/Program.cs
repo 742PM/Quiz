@@ -14,7 +14,8 @@ namespace QuizLevelManager
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>().ConfigureLogging(b=>b.AddTelegram());
+                .UseStartup<Startup>()
+                .ConfigureLogging(b => b.AddTelegram());
         }
     }
 }

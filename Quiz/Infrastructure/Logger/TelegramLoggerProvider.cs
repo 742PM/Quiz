@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace Infrastructure.Logger
 {
@@ -36,7 +37,7 @@ namespace Infrastructure.Logger
             CancellationToken cancellationToken)
         {
             foreach (var message in messages)
-                await Client.SendTextMessageAsync(chatId, message.ToTelegramFormat(),
+                await Client.SendTextMessageAsync(chatId, message.ToTelegramFormat(), ParseMode.Markdown,
                     cancellationToken: cancellationToken);
         }
     }

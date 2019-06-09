@@ -1,14 +1,13 @@
 ﻿using System;
-using Application.Repositories;
 using Application.Repositories.Entities;
 using Domain.Entities;
 using Domain.Entities.TaskGenerators;
+using Infrastructure;
 using Infrastructure.DDD;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using static MongoDB.Bson.Serialization.BsonClassMap;
-using static DataBase.MongoHelpers;
 
-namespace DataBase
+namespace QuizServiceDatabase.QuizService
 {
     public static class MongoDatabaseInitializer
     {
@@ -40,44 +39,44 @@ namespace DataBase
 
         internal static void SetupDatabase()
         {
-            RegisterClassMap<Entity<Guid>>(cm =>
+            BsonClassMap.RegisterClassMap<Entity<Guid>>(cm =>
             {
                 cm.AutoMap();
                 cm.MapIdMember(c => c.Id);
                 cm.AddKnownType(typeof(Entity));
             });
 
-            RegisterClassMap<Entity>(cm =>
+            BsonClassMap.RegisterClassMap<Entity>(cm =>
             {
                 cm.AutoMap();
                 cm.SetIsRootClass(true);
             });
 
-            AutoRegisterClassMap<Level>(c => new Level(c.Id, c.Description, c.Generators, c.NextLevels));
-            AutoRegisterClassMap<Topic>(c => new Topic(c.Id, c.Name, c.Description, c.Levels));
+            MongoHelpers.AutoRegisterClassMap<Level>(c => new Level(c.Id, c.Description, c.Generators, c.NextLevels));
+            MongoHelpers.AutoRegisterClassMap<Topic>(c => new Topic(c.Id, c.Name, c.Description, c.Levels));
 
-            AutoRegisterClassMap<TemplateTaskGenerator>(c => new TemplateTaskGenerator(c.Id, c.PossibleAnswers,
+            MongoHelpers.AutoRegisterClassMap<TemplateTaskGenerator>(c => new TemplateTaskGenerator(c.Id, c.PossibleAnswers,
                 c.Text, c.Hints,
                 c.Answer, c.Streak, c.Question));
-            AutoRegisterClassMap<TaskGenerator>(cm => cm.SetIsRootClass(true));
-            AutoRegisterClassMap<TaskInfoEntity>(c => new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
+            MongoHelpers.AutoRegisterClassMap<TaskGenerator>(cm => cm.SetIsRootClass(true));
+            MongoHelpers.AutoRegisterClassMap<TaskInfoEntity>(c => new TaskInfoEntity(c.Question, c.Answer, c.Hints, c.HintsTaken,
                 c.ParentGeneratorId, c.IsSolved, c.Id));
 
-            AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity));
+            MongoHelpers.AutoRegisterClassMap<UserEntity>(c => new UserEntity(c.Id, c.UserProgressEntity));
 
-            AutoRegisterClassMap<LevelProgressEntity>(cm =>
+            MongoHelpers.AutoRegisterClassMap<LevelProgressEntity>(cm =>
             {
-                cm.MapDictionary(c => c.CurrentLevelStreaks);
+                MongoHelpers.MapDictionary<LevelProgressEntity, Guid, int>(cm, c => c.CurrentLevelStreaks);
                 cm.MapCreator(c => new LevelProgressEntity(c.LevelId, c.CurrentLevelStreaks, c.Id));
             });
-            AutoRegisterClassMap<TopicProgressEntity>(cm =>
+            MongoHelpers.AutoRegisterClassMap<TopicProgressEntity>(cm =>
             {
-                cm.MapDictionary(c => c.LevelProgressEntities);
+                MongoHelpers.MapDictionary<TopicProgressEntity, Guid, LevelProgressEntity>(cm, c => c.LevelProgressEntities);
                 cm.MapCreator(c => new TopicProgressEntity(c.LevelProgressEntities, c.TopicId, c.Id));
             });
-            AutoRegisterClassMap<UserProgressEntity>(cm =>
+            MongoHelpers.AutoRegisterClassMap<UserProgressEntity>(cm =>
             {
-                cm.MapDictionary(c => c.TopicsProgress);
+                MongoHelpers.MapDictionary<UserProgressEntity, Guid, TopicProgressEntity>(cm, c => c.TopicsProgress);
                 cm.MapCreator(c => new UserProgressEntity(c.CurrentTopicId, c.CurrentLevelId, c.UserId,
                     c.TopicsProgress, c.CurrentTask, c.Id));
             });

@@ -3,7 +3,7 @@ using Application.Repositories;
 using Application.Repositories.Entities;
 using MongoDB.Driver;
 
-namespace DataBase
+namespace QuizServiceDatabase.QuizService
 {
     public class MongoUserRepository : IUserRepository
     {

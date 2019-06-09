@@ -18,6 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\DataBase\DataBase.csproj" />
+    <ProjectReference Include="..\QuizServiceDatabase\QuizServiceDatabase.csproj" />
   </ItemGroup>
 </Project>

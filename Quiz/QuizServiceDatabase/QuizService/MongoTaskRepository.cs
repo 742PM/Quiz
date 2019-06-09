@@ -6,7 +6,7 @@ using Domain.Entities;
 using Domain.Entities.TaskGenerators;
 using MongoDB.Driver;
 
-namespace DataBase
+namespace QuizServiceDatabase.QuizService
 {
     public class MongoTaskRepository : ITaskRepository
     {

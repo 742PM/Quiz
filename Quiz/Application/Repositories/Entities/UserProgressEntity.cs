@@ -27,7 +27,7 @@ namespace Application.Repositories.Entities
         public Guid UserId { get; }
 
         /// <summary>
-        ///     Maps Topic Id to progress of the Topic
+        ///     Maps Topic Number to progress of the Topic
         /// </summary>
         public Dictionary<Guid, TopicProgressEntity> TopicsProgress { get; }
 

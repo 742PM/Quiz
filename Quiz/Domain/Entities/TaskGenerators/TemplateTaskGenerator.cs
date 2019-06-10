@@ -70,7 +70,7 @@ namespace Domain.Entities.TaskGenerators
                 = fields.MapMany(vs => Concat(vs).Map(s => Template.Parse(s).Render(so)).Split())
                     .Select(r => r.Split().ToArray())
                     .ToArray();
-            return new Task(code, hints, answer, Id, answers, question);
+            return new Task(code, hints, answer, Id, answers.Shuffle(), question);
         }
 
         public static ScriptObject CreateScriptObject(Random random)

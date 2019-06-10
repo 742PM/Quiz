@@ -15,7 +15,7 @@ namespace Application.Repositories.Entities
         public Guid LevelId { get; }
 
         /// <summary>
-        ///     Maps Generator Id to current streak in it
+        ///     Maps Generator Number to current streak in it
         /// </summary>
         public Dictionary<Guid, int> CurrentLevelStreaks { get; }
 

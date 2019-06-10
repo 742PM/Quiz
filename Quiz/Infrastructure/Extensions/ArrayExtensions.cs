@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Infrastructure.Extensions
 {
@@ -34,5 +35,12 @@ namespace Infrastructure.Extensions
             third = array[2];
             forth = array[3];
         }
+
+        public static T[] Shuffle<T>(this T[] array, Random random = default)
+        {
+            random = random ?? new Random();
+            return array.OrderBy(_ => random.Next()).ToArray();
+        }
+
     }
 }

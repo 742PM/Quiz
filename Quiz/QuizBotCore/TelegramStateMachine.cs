@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Infrastructure.Result;
 using QuizBotCore.Commands;
 using QuizBotCore.Database;
 using QuizBotCore.Parser;
@@ -13,11 +14,13 @@ namespace QuizBotCore
     {
         private readonly IQuizService service;
         private readonly IUserRepository userRepository;
+        private readonly ServiceManager serviceManager;
 
-        public TelegramStateMachine(IQuizService service, IUserRepository userRepository)
+        public TelegramStateMachine(IQuizService service, IUserRepository userRepository, ServiceManager serviceManager)
         {
             this.service = service;
             this.userRepository = userRepository;
+            this.serviceManager = serviceManager;
         }
 
         public (State state, ICommand command) GetNextState<TState, TTransition>(
@@ -87,11 +90,15 @@ namespace QuizBotCore
                 case BackTransition _:
                     return (new TopicSelectionState(), new SelectTopicCommand());
                 case CorrectTransition correctTransition:
-                    var levelDto = service.GetLevels(state.TopicDto.Id)
-                        .First(x => x.Id == Guid.Parse(correctTransition.Content));
-                    return
-                        (new TaskState(state.TopicDto, levelDto),
-                            new ShowTaskCommand(state.TopicDto, levelDto));
+                    var request = service.GetLevels(state.TopicDto.Id).Result;
+                    if (request.HasValue)
+                    {
+                        var levelDto = request.Value.First(x => x.Id == Guid.Parse(correctTransition.Content));
+                        return
+                            (new TaskState(state.TopicDto, levelDto),
+                                new ShowTaskCommand(state.TopicDto, levelDto));
+                    }
+                    return (state, new NoConnectionCommand());
             }
 
             return (new TopicSelectionState(), new SelectTopicCommand());
@@ -104,9 +111,14 @@ namespace QuizBotCore
                 case BackTransition _:
                     return (new TopicSelectionState(), new SelectTopicCommand());
                 case CorrectTransition correctTransition:
-                    var topicDto = service.GetTopics().First(x => x.Id == Guid.Parse(correctTransition.Content));
-                    return (new LevelSelectionState(topicDto),
-                        new SelectLevelCommand(topicDto));
+                    var request = service.GetTopics().Result;
+                    if (request.HasValue)
+                    {
+                        var topicDto = request.Value.First(x => x.Id == Guid.Parse(correctTransition.Content));
+                        return (new LevelSelectionState(topicDto),
+                            new SelectLevelCommand(topicDto));
+                    }
+                    return (state, new NoConnectionCommand());
             }
 
             return (new TopicSelectionState(), new SelectTopicCommand());

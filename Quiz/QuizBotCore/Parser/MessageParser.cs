@@ -84,7 +84,7 @@ namespace QuizBotCore.Parser
             return new InvalidTransition();
         }
 
-        private ReportTransition HandleReportCallback(string callback, IQuizService quizService, ILogger logger)
+        private Transition HandleReportCallback(string callback, IQuizService quizService, ILogger logger)
         {
             var (_, message, topicId, levelId) = callback.Split('\n').ToArray();
             var messageId = int.Parse(message);
@@ -94,10 +94,18 @@ namespace QuizBotCore.Parser
             var levelGuid = new Guid(Convert.FromBase64String(levelId));
             logger.LogInformation($"topicId: {topidGuid.ToString()}");
             logger.LogInformation($"levelId: {levelGuid.ToString()}");
-            var topicDto = quizService.GetTopics().FirstOrDefault(x => x.Id == topidGuid);
-            var levelDto = quizService.GetLevels(topicDto.Id)
-                .FirstOrDefault(x => x.Id == levelGuid);
-            return new ReportTransition(messageId, topicDto, levelDto);
+            var topicRequest = quizService.GetTopics().Result;
+            if (topicRequest.HasValue)
+            {
+                var topicDto = topicRequest.Value.FirstOrDefault(x => x.Id == topidGuid);
+                var levelRequest = quizService.GetLevels(topicDto.Id).Result;
+                if (levelRequest.HasValue)
+                {
+                    var levelDto = levelRequest.Value.FirstOrDefault(x => x.Id == levelGuid);
+                    return new ReportTransition(messageId, topicDto, levelDto);
+                }
+            }
+            return new InvalidTransition();
         }
 
         private Transition LevelSelectionStateParser(LevelSelectionState state, Update update, 
@@ -133,9 +141,13 @@ namespace QuizBotCore.Parser
                 if (int.TryParse(levelId, out var index))
                 {
                     logger.LogInformation($"levelId: {index}");
-                    var level = quizService.GetLevels(state.TopicDto.Id).ElementAt(index);
-                    logger.LogInformation($"level: {level.Id}");
-                    return new CorrectTransition(level.Id.ToString());
+                    var levelRequest = quizService.GetLevels(state.TopicDto.Id).Result;
+                    if (levelRequest.HasValue)
+                    {
+                        var level = levelRequest.Value.ElementAt(index);
+                        logger.LogInformation($"level: {level.Id}");
+                        return new CorrectTransition(level.Id.ToString());
+                    }
                 }
                 return new InvalidTransition();
             }

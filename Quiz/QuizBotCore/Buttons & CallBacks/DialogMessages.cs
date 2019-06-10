@@ -51,6 +51,8 @@ namespace QuizBotCore
                                                      "Можешь продолжать решать этот уровень и дальше, задачки будут бесконечны," +
                                                      "или же, можешь вернуться в меню выбора уровней и выбрать новый.";
 
+        public string NoServiceConnection { get; private set; } = "Сервис сейчас не доступен. Попробуй позже.";
+
         public DialogMessages(Guid id) : base(id)
         {
         }

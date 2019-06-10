@@ -26,7 +26,6 @@ namespace QuizWebHookBot.Controllers
         /// </summary>
         /// <returns>true -- обновление произошло успешно, иначе false</returns>
         [HttpOptions("/reload")] //может быть не опшнс, хз
-        [Route("")]
         public ActionResult ReloadMessages() => repository.UpdateMessages() ? (ActionResult) Ok(): NotFound();
 
         /// <summary>
@@ -35,7 +34,6 @@ namespace QuizWebHookBot.Controllers
         /// <param name="messagesId"></param>
         /// <returns></returns>
         [HttpOptions("/set/{messagesId}")] //может быть не опшнс, хз
-        [Route("")]
         public ActionResult<bool> SetMessages(Guid messagesId) => repository.SetMessages(messagesId) ? (ActionResult)Ok() : NotFound();
 
         [HttpGet]

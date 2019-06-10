@@ -9,22 +9,29 @@ namespace Application.DTO
 {
     public class TopicDto
     {
+        public TopicDto(string name, string description, LevelDto[] levels)
+        {
+            Name = name;
+            Description = description;
+            Levels = levels;
+        }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public LevelDto<int>[] Levels { get; set; }
+        public LevelDto[] Levels { get; set; }
 
         public static explicit operator Topic(TopicDto dto)
         {
-            var ids = dto.Levels.Select(_ => NewGuid()).ToArray();
+            var ids = dto.Levels.ToDictionary(l=>l.Number, _=>NewGuid());
             return new Topic(NewGuid(),
                 dto.Name,
                 dto.Description,
                 dto.Levels
                     .Select(levelDto =>
                         new Level(
-                            ids[levelDto.Id],
+                            ids[levelDto.Number],
                             levelDto.Description,
                             levelDto.Generators
                                 .Select(generatorDto => (TaskGenerator)generatorDto)
@@ -33,6 +40,10 @@ namespace Application.DTO
                     .ToArray());
         }
 
+        public TopicDto()
+        {
+            
+        }
         public static explicit operator TopicDto(Topic topic)
         {
             var ids = topic.Levels
@@ -44,7 +55,7 @@ namespace Application.DTO
                 Description = topic.Description,
                 Name = topic.Name,
                 Levels = topic.Levels.Select(level =>
-                        new LevelDto<int>
+                        new LevelDto
                         {
                             Description = level.Description,
                             Generators = level
@@ -55,7 +66,7 @@ namespace Application.DTO
                             NextLevels = level
                                 .NextLevels.Select(id => ids[id])
                                 .ToArray(),
-                            Id = ids[level.Id]
+                            Number = ids[level.Id]
                         }
                     )
                     .ToArray()

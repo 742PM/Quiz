@@ -8,7 +8,7 @@ namespace QuizBotCore
     {
         public static readonly char[] Alphabet = Enumerable.Range('A', 26).Select(x => (char) x).ToArray();
         public string CorrectAnswer { get; private set; } = "Верно ✅";
-        public string WrongAnswer { get; private set; } = "Подумай еще ❌";
+        public string WrongAnswer { get; private set; } = "Неверно ❌";
         public string FeedbackMessage { get; private set; } = "Есть вопрос? Пиши нам!";
         public string FeedbackWelcomeMessage { get; private set; } = "Отправляй вопрос прямо сюда :)";
         public  string FeedbackContact { get; private set; } = "telegram.me/funfine telegram.me/vaspahomov";

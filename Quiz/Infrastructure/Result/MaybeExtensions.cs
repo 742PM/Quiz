@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Infrastructure.Extensions;
 
 namespace Infrastructure.Result
@@ -27,17 +28,17 @@ namespace Infrastructure.Result
             return Result.Ok(maybe.Value);
         }
 
-        public static Result<T, E> ToResult<T, E>(this Maybe<T> maybe, E error) where E : Exception
+        public static Result<T, TE> ToResult<T, TE>(this Maybe<T> maybe, TE error) where TE : Exception
         {
             if (maybe.HasNoValue)
-                return Result.Fail<T, E>(error);
+                return Result.Fail<T, TE>(error);
 
-            return Result.Ok<T, E>(maybe.Value);
+            return Result.Ok<T, TE>(maybe.Value);
         }
 
         public static T Unwrap<T>(this Maybe<T> maybe, T defaultValue = default) => maybe.Unwrap(x => x, defaultValue);
 
-        public static K Unwrap<T, K>(this Maybe<T> maybe, Func<T, K> selector, K defaultValue = default) => maybe.HasValue ? selector(maybe.Value) : defaultValue;
+        public static TK Unwrap<T, TK>(this Maybe<T> maybe, Func<T, TK> selector, TK defaultValue = default) => maybe.HasValue ? selector(maybe.Value) : defaultValue;
 
         public static Maybe<T> Where<T>(this Maybe<T> maybe, Func<T, bool> predicate)
         {
@@ -47,9 +48,16 @@ namespace Infrastructure.Result
             return predicate(maybe.Value) ? maybe : Maybe<T>.None;
         }
 
-        public static Maybe<K> Select<T, K>(this Maybe<T> maybe, Func<T, K> selector) => maybe.HasNoValue ? Maybe<K>.None : selector(maybe.Value);
+        public static Maybe<TK> Map<T, TK>(this Maybe<T> maybe, Func<T, TK> selector) => maybe.HasNoValue ? Maybe<TK>.None : selector(maybe.Value);
 
-        public static Maybe<K> Select<T, K>(this Maybe<T> maybe, Func<T, Maybe<K>> selector) => maybe.HasNoValue ? Maybe<K>.None : selector(maybe.Value);
+        public static Maybe<TK> FlatMap<T, TK>(this Maybe<T> maybe, Func<T, Maybe<TK>> selector) => maybe.HasNoValue ? Maybe<TK>.None : selector(maybe.Value);
+
+        public static async Task<Maybe<TK>> MapAsync<T, TK>(this Task<Maybe<T>> maybe, Func<T, TK> selector) => (await maybe).HasNoValue ? Maybe<TK>.None : selector(maybe.Result.Value);
+
+        public static async Task<Maybe<TK>> FlatMapAsync<T, TK>(this Task<Maybe<T>> maybe, Func<T, Maybe<TK>> selector) =>
+            (await maybe).HasNoValue ? Maybe<TK>.None : selector(maybe.Result.Value);
+        public static async Task<Maybe<TK>> FlatMapAsync<T, TK>(this Task<Maybe<T>> maybe, Func<T, Task<Maybe<TK>>> selector) =>
+            (await maybe).HasNoValue ? Maybe<TK>.None : await selector(maybe.Result.Value);
 
         public static void Execute<T>(this Maybe<T> maybe, Action<T> action)
         {

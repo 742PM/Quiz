@@ -143,7 +143,7 @@ namespace QuizBotCore.Commands
             var question = $"{task.Question}\n";
 
             if (isSolved)
-                progress = $"\n{progress}\n{serviceManager.Dialog.Messages.LevelSolved}\n{serviceManager.Dialog.Messages.LevelCompleted}";
+                progress = $"\n{progress}\n{serviceManager.Dialog.Messages.LevelSolved}\n{serviceManager.Dialog.Messages.LevelCompleted}\n";
 
             var questionFormatted = "```csharp\n" +
                                     $"{task.Text}\n" +

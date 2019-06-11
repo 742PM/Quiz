@@ -25,15 +25,15 @@ namespace QuizWebHookBot.Controllers
         /// Обновляет набор сообщений из БД с тем же айди, что был раньше
         /// </summary>
         /// <returns>true -- обновление произошло успешно, иначе false</returns>
-        [HttpOptions("/reload")] //может быть не опшнс, хз
-        public ActionResult ReloadMessages() => repository.UpdateMessages() ? (ActionResult) Ok(): NotFound();
+        [HttpGet("reload")] //может быть не опшнс, хз
+        public ActionResult ReloadMessages() => repository.UpdateMessages() ? (ActionResult) Ok(): BadRequest();
 
         /// <summary>
         /// Устанавливает набор сообщений с данным айди
         /// </summary>
         /// <param name="messagesId"></param>
         /// <returns></returns>
-        [HttpOptions("/set/{messagesId}")] //может быть не опшнс, хз
+        [HttpGet("set/{messagesId}")] //может быть не опшнс, хз
         public ActionResult<bool> SetMessages(Guid messagesId) => repository.SetMessages(messagesId) ? (ActionResult)Ok() : NotFound();
 
         [HttpGet]

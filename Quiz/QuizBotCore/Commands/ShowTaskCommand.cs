@@ -38,9 +38,9 @@ namespace QuizBotCore.Commands
                 var progress = await serviceManager.QuizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
                 if (progress.HasNoValue)
                     await new NoConnectionCommand().ExecuteAsync(chat, client, serviceManager);
-                var isLevelSolved = IsLevelSolved(progress.Value);
-                if (isLevelSolved)
-                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
+                //var isLevelSolved = IsLevelSolved(progress.Value);
+                //if (isLevelSolved)
+                    //await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
                 var message = await SendTask(task, progress.Value, chat, user, client, serviceManager);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId, task);
                 serviceManager.UserRepository.Update(newUser);
@@ -143,7 +143,7 @@ namespace QuizBotCore.Commands
             var question = $"{task.Question}\n";
 
             if (isSolved)
-                progress = $"{progress}\n{serviceManager.Dialog.Messages.LevelSolved}\n";
+                progress = $"\n{progress}\n{serviceManager.Dialog.Messages.LevelSolved}\n{serviceManager.Dialog.Messages.LevelCompleted}";
 
             var questionFormatted = "```csharp\n" +
                                     $"{task.Text}\n" +

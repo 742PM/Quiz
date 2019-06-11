@@ -37,16 +37,17 @@ namespace Infrastructure.Logger
             if (!IsEnabled(logLevel)) return;
 
             var builder = new StringBuilder();
+            builder.AppendLine($"*{System.Reflection.Assembly.GetEntryAssembly().GetName().Name}*");
             builder.Append(timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"));
-            builder.Append(" [");
+            builder.Append(" *[");
             builder.Append(logLevel.ToString());
-            builder.Append("] ");
+            builder.Append("]* ");
             builder.Append(category);
 
             var scopeProvider = provider.ScopeProvider;
             if (scopeProvider != null)
             {
-                scopeProvider.ForEachScope((scope, stringBuilder) => { stringBuilder.Append(" => ").Append(scope); },
+                scopeProvider.ForEachScope((scope, stringBuilder) => stringBuilder.Append(" => ").Append(scope),
                     builder);
 
                 builder.AppendLine(":");

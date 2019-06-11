@@ -45,7 +45,7 @@ namespace Domain.Entities.TaskGenerators
                     {
                         "c++", "k1--", "service.Update()", "queue.Pop()",
                         "k3++"
-                    }.Select(s => s + ";")
+                    }.Select(s => s + ";    // ←  Θ(1)")
                     .ToArray()
             };
 

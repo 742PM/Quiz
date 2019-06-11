@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Infrastructure.Result;
 using Microsoft.Extensions.Logging;
 using QuizBotCore.Database;
 using QuizBotCore.ProgressBar;
@@ -34,11 +35,13 @@ namespace QuizBotCore.Commands
             var task = await GetTask(user, chat, client, serviceManager);
             if (task != null)
             {
-                var progress = serviceManager.QuizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
-                var isLevelSolved = IsLevelSolved(progress);
+                var progress = await serviceManager.QuizService.GetProgress(user.Id, topicDto.Id, levelDto.Id);
+                if (progress.HasNoValue)
+                    await new NoConnectionCommand().ExecuteAsync(chat, client, serviceManager);
+                var isLevelSolved = IsLevelSolved(progress.Value);
                 if (isLevelSolved)
                     await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.LevelCompleted);
-                var message = await SendTask(task, progress, chat, user, client, serviceManager);
+                var message = await SendTask(task, progress.Value, chat, user, client, serviceManager);
                 var newUser = new UserEntity(user.CurrentState, user.TelegramId, user.Id, message.MessageId, task);
                 serviceManager.UserRepository.Update(newUser);
             }
@@ -47,19 +50,14 @@ namespace QuizBotCore.Commands
         private async Task<TaskDTO> GetTask(UserEntity user, Chat chat, TelegramBotClient client,
             ServiceManager serviceManager)
         {
-            TaskDTO task;
+            Maybe<TaskDTO> task;
             if (!isNext)
-            {
-                task = serviceManager.QuizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
-            }
-            else
-            {
-                task = serviceManager.QuizService.GetNextTaskInfo(user.Id);
-                if (task == null)
-                    await client.SendTextMessageAsync(chat.Id, serviceManager.Dialog.Messages.NextTaskNotAvailable);
-            }
-
-            return task;
+                task = await serviceManager.QuizService.GetTaskInfo(user.Id, topicDto.Id, levelDto.Id);
+            else task = await serviceManager.QuizService.GetNextTaskInfo(user.Id);
+            if (task.HasValue)
+                return task.Value;
+            await new NoConnectionCommand().ExecuteAsync(chat, client, serviceManager);
+            return null;
         }
 
         private async Task<Message> SendTask(TaskDTO task, ProgressDTO userProgress, Chat chat, UserEntity user, TelegramBotClient client,

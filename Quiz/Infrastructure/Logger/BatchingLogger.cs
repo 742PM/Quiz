@@ -37,7 +37,7 @@ namespace Infrastructure.Logger
             if (!IsEnabled(logLevel)) return;
 
             var builder = new StringBuilder();
-            builder.AppendLine($"*{System.Reflection.Assembly.GetEntryAssembly().GetName().Name}*");
+            //builder.AppendLine($"*{System.Reflection.Assembly.GetEntryAssembly().GetName().Name}*");
             builder.Append(timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"));
             builder.Append(" *[");
             builder.Append(logLevel.ToString());

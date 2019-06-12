@@ -26,7 +26,7 @@ namespace QuizBotCore.Commands
         public async Task ExecuteAsync(Chat chat, TelegramBotClient client, ServiceManager serviceManager)
         {
             var user = serviceManager.UserRepository.FindByTelegramId(chat.Id);
-            var isCorrect = serviceManager.QuizService.SendAnswer(user.Id, answer);
+            var isCorrect = await serviceManager.QuizService.SendAnswer(user.Id, answer);
             if (isCorrect.HasValue)
             {
                 await RemoveButtonsForPreviousTask(user, chat, client);

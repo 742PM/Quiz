@@ -1,3 +1,4 @@
+using Infrastructure.Logger;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -13,7 +14,8 @@ namespace QuizLevelManager
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .ConfigureLogging(b => b.AddTelegram());
         }
     }
 }

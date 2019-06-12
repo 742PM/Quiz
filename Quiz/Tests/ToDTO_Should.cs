@@ -16,7 +16,7 @@ namespace Tests
         {
             ((TopicDto) new Topic(Guid.NewGuid(), "t", "opic", new Level[0]))
                 .Should()
-                .BeEquivalentTo(new TopicDto {Name = "t", Description = "opic", Levels = new LevelDto<int>[0]});
+                .BeEquivalentTo(new TopicDto {Name = "t", Description = "opic", Levels = new LevelDto[0]});
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Tests
                 new Level(ids[3], "d", new TaskGenerator[0], new Guid[0])
             };
             ((TopicDto) new Topic(Guid.NewGuid(), "t", "opic", levels))
-                .Levels.Select(l => (n: l.Id, nl: l.NextLevels))
+                .Levels.Select(l => (n: l.Number, nl: l.NextLevels))
                 .ToArray()
                 .Should()
                 .BeEquivalentTo(new[]
@@ -41,6 +41,20 @@ namespace Tests
                     (n: 2, new int[0]),
                     (n: 3, new int[0])
                 });
+        }
+
+        [Test]
+        public void CastWithUniqueIds()
+        {
+            var levels = new[]
+            {
+                new LevelDto(0, "a", new TemplateTaskGeneratorDto[0], new[] {1}),
+                new LevelDto(1, "b", new TemplateTaskGeneratorDto[0], new[] {2, 3}),
+                new LevelDto(2, "c", new TemplateTaskGeneratorDto[0], new int[0]),
+                new LevelDto(3, "d", new TemplateTaskGeneratorDto[0], new int[0])
+            };
+            var topic = new TopicDto("abcd", "", levels);
+            ((Topic) topic).Levels.Select(x => x.Id).Distinct().Count().Should().Be(4);
         }
     }
 }

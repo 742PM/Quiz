@@ -17,6 +17,7 @@ namespace Tests
     {
         private IQuizService quizService;
         private IUserRepository userRepository;
+        private ServiceManager serviceManager;
         private IStateMachine<ICommand> stateMachine;
         private TopicDTO testTopic;
         private LevelDTO testLevel;
@@ -30,7 +31,8 @@ namespace Tests
             A.CallTo(() => quizService.GetTopics()).Returns(new[] { testTopic });
             A.CallTo(() => quizService.GetLevels(testTopic.Id)).Returns(new[] { testLevel });
             userRepository = A.Fake<IUserRepository>();
-            stateMachine = new TelegramStateMachine(quizService, userRepository);
+            serviceManager = A.Fake<ServiceManager>();
+            stateMachine = new TelegramStateMachine(quizService, userRepository, serviceManager);
         }
 
         [Test]

@@ -38,8 +38,8 @@ namespace QuizWebApp.Services.TaskService
         public ActionResult<Guid> UploadTopic([FromBody] string rawData)
         {
              var id =  rawData.ConvertToJson()
-                .Select(j => j.Deserialize<TopicDto>())
-                .Select(UploadTopic);
+                .Map(j => j.Deserialize<TopicDto>())
+                .Map(UploadTopic);
              return id.HasNoValue ? BadRequest("Can not parse HJson") : id.Value;
         }
 

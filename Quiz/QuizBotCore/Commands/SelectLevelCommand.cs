@@ -24,11 +24,15 @@ namespace QuizBotCore.Commands
             var chatId = chat.Id;
             var user = serviceManager.UserRepository.FindByTelegramId(chatId);
             
-            var allLevels = serviceManager.QuizService.GetLevels(topicDto.Id);
-            var availableLevels = serviceManager.QuizService.GetAvailableLevels(user.Id, topicDto.Id).ToList();
-            var closedLevels = allLevels.Select(x => x.Description).Except(availableLevels.Select(x => x.Description));
+            var allLevels = await serviceManager.QuizService.GetLevels(topicDto.Id);
+            if (allLevels.HasNoValue)
+                await new NoConnectionCommand().ExecuteAsync(chat, client, serviceManager);
+            var availableLevels = await serviceManager.QuizService.GetAvailableLevels(user.Id, topicDto.Id);
+            if (availableLevels.HasNoValue)
+                await new NoConnectionCommand().ExecuteAsync(chat, client, serviceManager);
+            var closedLevels = allLevels.Value.Select(x => x.Description).Except(availableLevels.Value.Select(x => x.Description));
             
-            var activeLevels = availableLevels.Select((e,index)=> $"/level{index} {e.Description}");
+            var activeLevels = availableLevels.Value.Select((e,index)=> $"/level{index} {e.Description}");
             var nonActiveLevels = closedLevels.Select(x => $"{serviceManager.Dialog.Messages.ClosedLevel} {x}");
             
             var activeLevelsMessage = string.Join("\n", activeLevels);

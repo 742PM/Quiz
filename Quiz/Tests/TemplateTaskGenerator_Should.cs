@@ -99,7 +99,7 @@ namespace Tests
         [TestCase("{{iter1}}", @"[2,3,4,5,6,7,8]$", TestName = nameof(TemplateLanguage.IterateConstant))]
         [TestCase("{{loop_var2}}", @"(i)|(j)|(k)|(x)|(y)|(step)", TestName = nameof(TemplateLanguage.LoopVariable))]
         [TestCase("{{to3}}", @"^(n)|(m)|(length)|(size)|(amount)$", TestName = nameof(TemplateLanguage.To))]
-        [TestCase("{{const5}}", @"^-?\d{0,2}[^0]$", TestName = nameof(TemplateLanguage.Const))]
+        [TestCase("{{const5}}", @"^-?(?![0]\b)\d{1,2}$", TestName = nameof(TemplateLanguage.Const))]
         public void Render_WhenBuiltInFieldsAreUsed(string actual, string regex) => TestFieldWithRegex((actual, regex));
 
         [TestCase("{{theta}}", TemplateLanguage.Theta)]

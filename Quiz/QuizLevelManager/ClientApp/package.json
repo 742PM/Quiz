@@ -10,10 +10,10 @@
     "react-dom": "^16.8.6",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.1.5",
+    "react-scripts": "^5.0.1",
     "reactstrap": "^6.3.0",
     "rimraf": "^2.6.2",
-    "sass-loader": "^7.1.0"
+    "sass-loader": "^13.2.0"
   },
   "devDependencies": {
     "ajv": "^6.0.0",
@@ -25,7 +25,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.11.1",
-    "react-hot-loader": "^4.8.7"
+    "react-hot-loader": "^4.13.1"
   },
   "eslintConfig": {
     "extends": "react-app"
